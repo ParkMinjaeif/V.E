@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IFVisionEngine.Manager;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,12 @@ namespace IFVisionEngine
         public Form1()
         {
             InitializeComponent();
+            AppUIManager.Initialize(this);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.pnlLeft.Controls.Add(AppUIManager.ucNodeEditor);
         }
     }
 }
