@@ -26,7 +26,7 @@ namespace IFVisionEngine.Manager
             _mainFormInstance = mainForm ?? throw new ArgumentNullException(nameof(mainForm));
 
             // FormMain 인스턴스를 사용하여 UserControl들 생성
-            ucNodeEditor = new UcNodeEditor();
+            ucNodeEditor = new UcNodeEditor(_mainFormInstance);
         }
     }
 }

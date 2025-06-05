@@ -30,9 +30,9 @@
         {
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.pnlLeft = new System.Windows.Forms.Panel();
+            this.pnlMid = new System.Windows.Forms.Panel();
+            this.pnlRight = new System.Windows.Forms.Panel();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -56,29 +56,29 @@
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // panel1
+            // pnlLeft
             // 
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(460, 991);
-            this.panel1.TabIndex = 6;
+            this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlLeft.Location = new System.Drawing.Point(0, 24);
+            this.pnlLeft.Name = "pnlLeft";
+            this.pnlLeft.Size = new System.Drawing.Size(460, 991);
+            this.pnlLeft.TabIndex = 6;
             // 
-            // panel2
+            // pnlMid
             // 
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel2.Location = new System.Drawing.Point(460, 24);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(460, 991);
-            this.panel2.TabIndex = 7;
+            this.pnlMid.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlMid.Location = new System.Drawing.Point(460, 24);
+            this.pnlMid.Name = "pnlMid";
+            this.pnlMid.Size = new System.Drawing.Size(460, 991);
+            this.pnlMid.TabIndex = 7;
             // 
-            // panel3
+            // pnlRight
             // 
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(920, 24);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(984, 991);
-            this.panel3.TabIndex = 8;
+            this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlRight.Location = new System.Drawing.Point(920, 24);
+            this.pnlRight.Name = "pnlRight";
+            this.pnlRight.Size = new System.Drawing.Size(984, 991);
+            this.pnlRight.TabIndex = 8;
             // 
             // fileToolStripMenuItem
             // 
@@ -91,9 +91,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlRight);
+            this.Controls.Add(this.pnlMid);
+            this.Controls.Add(this.pnlLeft);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -110,10 +110,10 @@
         #endregion
         private System.Windows.Forms.Panel pnlBottom;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel pnlMid;
+        private System.Windows.Forms.Panel pnlRight;
     }
 }
 

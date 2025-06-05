@@ -13,6 +13,9 @@ namespace IFVisionEngine
 {
     public partial class Form1: Form
     {
+        private int _originalPnlLeftWidth;
+        private bool _isPnlLeftExpanded = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -22,6 +25,22 @@ namespace IFVisionEngine
         private void Form1_Load(object sender, EventArgs e)
         {
             this.pnlLeft.Controls.Add(AppUIManager.ucNodeEditor);
+            _originalPnlLeftWidth = pnlLeft.Width;
+        }
+
+        public void togglePnlLeft()
+        {
+            _isPnlLeftExpanded = !_isPnlLeftExpanded;
+            if (_isPnlLeftExpanded)
+            {
+                pnlLeft.Width = 1904; 
+            }
+            else
+            {
+                pnlLeft.Width = _originalPnlLeftWidth;
+            }
         }
     }
+
+
 }
