@@ -13,6 +13,7 @@ namespace IFVisionEngine.Manager
         private static Form1 _mainFormInstance;
 
         public static UcNodeEditor ucNodeEditor;
+        public static UcImageControler ucImageControler;
 
         public static void Initialize(Form1 mainForm)
         {

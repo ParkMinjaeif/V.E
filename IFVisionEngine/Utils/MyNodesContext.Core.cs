@@ -14,6 +14,8 @@ public partial class MyNodesContext : INodesContext
 {
     public NodeVisual CurrentProcessingNode { get; set; }
     public event Action<string, NodeVisual, FeedbackType, object, bool> FeedbackInfo;
+    public Control Invoker { get; set; }
+
 
     // --- 기존 Vector3W 클래스 ---
     [Serializable]

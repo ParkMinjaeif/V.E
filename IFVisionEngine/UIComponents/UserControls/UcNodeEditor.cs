@@ -24,6 +24,7 @@ namespace IFVisionEngine.UIComponents.UserControls
 
             // 컨텍스트 초기화 및 할당
             _nodesContext = new MyNodesContext();
+            _nodesContext.Invoker = this; // 컨텍스트에 UI 컨트롤 참조를 전달합니다.
             nodesControl1.Context = _nodesContext;
         }
 
@@ -120,5 +121,10 @@ namespace IFVisionEngine.UIComponents.UserControls
 
         }
 
+        private void toolStripButton_Run_Click(object sender, EventArgs e)
+        {
+            // '실행' 버튼을 누르면 전체 워크플로우를 실행합니다.
+            nodesControl1.Execute();
+        }
     }
 }
