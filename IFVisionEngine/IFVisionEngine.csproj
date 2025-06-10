@@ -138,16 +138,28 @@
     <Compile Include="UIComponents\UserControls\UcImageControler.Designer.cs">
       <DependentUpon>UcImageControler.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIComponents\UserControls\UcLogView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcLogView.Designer.cs">
+      <DependentUpon>UcLogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcNodeDataView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcNodeDataView.Designer.cs">
+      <DependentUpon>UcNodeDataView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UIComponents\UserControls\UcNodeEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UIComponents\UserControls\UcNodeEditor.Designer.cs">
       <DependentUpon>UcNodeEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\MyNodesContext.Core.cs" />
-    <Compile Include="Utils\MyNodesContext.ImageIO.cs" />
-    <Compile Include="Utils\MyNodesContext.Inputs.cs" />
-    <Compile Include="Utils\MyNodesContext.Preprocessing.cs" />
+    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Core.cs" />
+    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.ImageIO.cs" />
+    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Inputs.cs" />
+    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Preprocessing.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -163,6 +175,12 @@
     </Compile>
     <EmbeddedResource Include="UIComponents\UserControls\UcImageControler.resx">
       <DependentUpon>UcImageControler.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\UserControls\UcLogView.resx">
+      <DependentUpon>UcLogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\UserControls\UcNodeDataView.resx">
+      <DependentUpon>UcNodeDataView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\UserControls\UcNodeEditor.resx">
       <DependentUpon>UcNodeEditor.cs</DependentUpon>

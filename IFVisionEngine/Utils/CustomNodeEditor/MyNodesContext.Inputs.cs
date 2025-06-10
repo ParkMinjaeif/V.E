@@ -59,6 +59,7 @@ public partial class MyNodesContext
             }
         }
     }
+
     /// <summary>
     /// *** 새로 추가된 노드 ***
     /// 이 노드는 실행되면 파일 열기 대화상자를 띄워 사용자에게 이미지 파일을 선택받고,
@@ -92,5 +93,6 @@ public partial class MyNodesContext
                 selectedFilePath = "";
             }
         }
+        Console.WriteLine($"FilePath : {selectedFilePath}");
     }
 }

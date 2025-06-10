@@ -1,4 +1,7 @@
 ﻿using IFVisionEngine.Manager;
+using IFVisionEngine.UIComponents.UserControls;
+using NodeEditor;
+using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,8 +16,8 @@ namespace IFVisionEngine
 {
     public partial class Form1: Form
     {
-        private int _originalPnlLeftWidth;
-        private bool _isPnlLeftExpanded = false;
+        private int _originalPnlLeftWidth, _originalPnlBotHeight;
+        private bool _isPnlLeftExpanded = false, _isPnlBotExpanded = false;
 
         public Form1()
         {
@@ -24,8 +27,17 @@ namespace IFVisionEngine
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.pnlLeft.Controls.Add(AppUIManager.ucNodeEditor);
             _originalPnlLeftWidth = pnlLeft.Width;
+            _originalPnlBotHeight = pnlBottom.Height;
+
+            this.pnlLeft.Controls.Add(AppUIManager.ucNodeEditor);
+            AppUIManager.ucNodeEditor.Dock = DockStyle.Fill;
+
+            this.pnlRight.Controls.Add(AppUIManager.ucImageControler);
+            AppUIManager.ucImageControler.Dock = DockStyle.Fill;
+
+            this.pnlBottom.Controls.Add(AppUIManager.ucLogView); 
+            AppUIManager.ucLogView.Dock = DockStyle.Fill;
         }
 
         public void togglePnlLeft()
@@ -40,7 +52,18 @@ namespace IFVisionEngine
                 pnlLeft.Width = _originalPnlLeftWidth;
             }
         }
+
+        public void togglePnlBottom()
+        {
+            _isPnlBotExpanded = !_isPnlBotExpanded;
+            if (_isPnlBotExpanded)
+            {
+                pnlBottom.Height = 256;
+            }
+            else
+            {
+                pnlBottom.Height = _originalPnlBotHeight;
+            }
+        }
     }
-
-
 }

@@ -58,6 +58,7 @@
             this.pBMain.Location = new System.Drawing.Point(0, 0);
             this.pBMain.Name = "pBMain";
             this.pBMain.Size = new System.Drawing.Size(984, 768);
+            this.pBMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pBMain.TabIndex = 0;
             this.pBMain.TabStop = false;
             // 

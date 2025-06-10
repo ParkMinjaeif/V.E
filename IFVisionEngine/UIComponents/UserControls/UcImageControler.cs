@@ -14,9 +14,12 @@ namespace IFVisionEngine.UIComponents.UserControls
 {
     public partial class UcImageControler: UserControl
     {
-        public UcImageControler()
+        private Form1 _formMainInstance;
+
+        public UcImageControler(Form1 mainForm)
         {
             InitializeComponent();
+            _formMainInstance = mainForm;
         }
 
         /// <summary>
@@ -25,6 +28,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         /// <param name="image">표시할 이미지의 Mat 객체입니다.</param>
         public void DisplayImage(Mat image)
         {
+            Console.WriteLine("Activate Display Image");
             // 이미지가 null이거나 비어있으면 아무것도 하지 않습니다.
             if (image == null || image.Empty())
             {

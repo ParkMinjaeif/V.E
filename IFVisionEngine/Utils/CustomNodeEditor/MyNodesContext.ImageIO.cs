@@ -1,6 +1,7 @@
 ﻿// MyNodesContext.ImageIO.cs
 using System;
 using System.ComponentModel;
+using IFVisionEngine.Manager;
 using NodeEditor;
 using OpenCvSharp; // Mat, Cv2, ImreadModes 등
 
@@ -30,16 +31,24 @@ public partial class MyNodesContext
 
         try
         {
-            // try 블록 안에서 초기화
-            Mat image = Cv2.ImRead(filePath, ImreadModes.Color);
-            if (image.Empty())
+            // using 문을 사용하여 로컬 Mat 객체가 확실히 해제되도록 합니다.
+            using (Mat image = Cv2.ImRead(filePath, ImreadModes.Color))
             {
-                FeedbackInfo?.Invoke($"이미지 로드 실패 (파일은 존재하나 읽을 수 없음): {filePath}", CurrentProcessingNode, FeedbackType.Error, null, true);
-                outputImage = null;
-                return;
+                if (image.Empty())
+                {
+                    FeedbackInfo?.Invoke($"이미지 로드 실패 (파일은 존재하나 읽을 수 없음): {filePath}", CurrentProcessingNode, FeedbackType.Error, null, true);
+                    outputImage = null;
+                    return;
+                }
+
+                FeedbackInfo?.Invoke($"이미지 로드 성공: {filePath} ({image.Width}x{image.Height})", CurrentProcessingNode, FeedbackType.Information, image.Clone(), false);
+                Console.WriteLine("이미지 로드 성공");
+                AppUIManager.ucImageControler.DisplayImage(image);
+
+                // *** 가장 중요한 수정 사항 ***
+                // 원본 객체가 아닌, 완전히 독립된 복제본을 출력으로 내보냅니다.
+                outputImage = image.Clone();
             }
-            FeedbackInfo?.Invoke($"이미지 로드 성공: {filePath} ({image.Width}x{image.Height})", CurrentProcessingNode, FeedbackType.Information, image.Clone(), false);
-            outputImage = image; // 성공 시 출력 매개변수에 Mat 객체 할당
         }
         catch (Exception ex)
         {
@@ -47,19 +56,6 @@ public partial class MyNodesContext
             outputImage = null;
         }
     }
-
-    // 이 노드 역시 입력 핀들이 매개변수로부터 자동으로 생성됩니다.
-    // 매개변수 이름(imageToDisplay, windowTitle)이 그대로 핀의 이름이 될 가능성이 높습니다.
-    [Node(name: "이미지 표시 요청", menu: "이미지 IO", description: "입력된 이미지를 UI에 표시하도록 요청합니다.")]
-    public void RequestDisplayImage(
-        Mat imageToDisplay,
-        string windowTitle = "결과 이미지") // C#의 기본값 지정 문법이 그대로 적용됩니다.
-    {
-        if (imageToDisplay == null || imageToDisplay.Empty())
-        {
-            FeedbackInfo?.Invoke("표시할 이미지가 없습니다.", CurrentProcessingNode, FeedbackType.Warning, null, false);
-            return;
-        }
-        FeedbackInfo?.Invoke(windowTitle, CurrentProcessingNode, FeedbackType.Information, imageToDisplay.Clone(), false);
-    }
 }
+
+

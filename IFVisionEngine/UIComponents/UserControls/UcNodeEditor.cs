@@ -14,7 +14,7 @@ namespace IFVisionEngine.UIComponents.UserControls
 {
     public partial class UcNodeEditor: UserControl
     {
-        private MyNodesContext _nodesContext; // 컨텍스트 멤버 변수
+        public static MyNodesContext _nodesContext; // 컨텍스트 멤버 변수
         private Form1 _formMainInstance;
 
         public UcNodeEditor(Form1 mainForm)
@@ -31,6 +31,11 @@ namespace IFVisionEngine.UIComponents.UserControls
         private void UcNodeEditor_Load(object sender, EventArgs e)
         {
             nodesControl1.Execute();
+        }
+
+        public MyNodesContext GetContext()
+        {
+            return _nodesContext;
         }
 
         private void toolStripButton_Save_Click(object sender, EventArgs e)
@@ -126,5 +131,6 @@ namespace IFVisionEngine.UIComponents.UserControls
             // '실행' 버튼을 누르면 전체 워크플로우를 실행합니다.
             nodesControl1.Execute();
         }
+
     }
 }
