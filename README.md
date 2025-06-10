@@ -89,6 +89,7 @@ public partial class Form1 : Form
         AppUIManager.ucLogView.Dock = DockStyle.Fill;
     }
 }
-'''
+
+---
 
 * 본 문서는 Gemini(LLM모델)을 이용하여 초안을 작성하였으며, 모든 내용은 직접 검토 하였습니다. 
