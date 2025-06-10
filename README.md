@@ -90,22 +90,29 @@ public partial class Form1 : Form
 }
 ```
 
-**MyNodesContext.cs - 다른 컨트롤에 작업 요청**
+**MyNodesContext.cs - 노드 실행 중 로그 전송**
 
 ```csharp
-// "이미지 표시 요청" 노드에서 직접 PictureBox를 건드리는 대신,
-// FeedbackInfo 이벤트를 통해 UIManager에게 이미지 표시를 '요청'합니다.
+// "가우시안 블러" 노드에서 현재 진행 상황을 '요청'합니다.
 
-public void RequestDisplayImage(Mat imageToDisplay)
+public void ApplyGaussianBlur(out Mat outputImage, Mat inputImage, GaussianBlurParameters parameters)
 {
-    if (imageToDisplay == null || imageToDisplay.Empty()) 
-    {
-        // ... 오류 처리 ...
-        return;
-    }
+    // ... 입력값 검증 로직 ...
 
-    // AppUIManager가 이 신호를 듣고 ucImageControler의 UI를 업데이트합니다.
-    FeedbackInfo?.Invoke("이미지 표시", CurrentProcessingNode, FeedbackType.Information, imageToDisplay, false);
+    outputImage = new Mat();
+    try
+    {
+        Size ksize = new Size(parameters.KernelWidth, parameters.KernelHeight);
+        Cv2.GaussianBlur(inputImage, outputImage, ksize, parameters.SigmaX, parameters.SigmaY);
+        
+        // AppUIManager가 이 신호를 듣고 ucLogView의 UI를 업데이트합니다.
+        FeedbackInfo?.Invoke("가우시안 블러 적용 완료.", CurrentProcessingNode, FeedbackType.Information, null, false);
+    }
+    catch (Exception ex)
+    {
+        // 오류가 발생했을 때도 AppUIManager에게 알립니다.
+        FeedbackInfo?.Invoke($"처리 중 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
+    }
 }
 ```
 
