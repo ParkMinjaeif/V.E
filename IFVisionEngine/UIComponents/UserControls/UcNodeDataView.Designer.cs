@@ -28,30 +28,99 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.pnlTitle = new System.Windows.Forms.Panel();
+            this.uiLabel1 = new Sunny.UI.UILabel();
+            this.pnlTop = new System.Windows.Forms.Panel();
+            this.pnlTitle2 = new System.Windows.Forms.Panel();
+            this.uiLabel2 = new Sunny.UI.UILabel();
+            this.pnlBot = new System.Windows.Forms.Panel();
+            this.pnlTitle.SuspendLayout();
+            this.pnlTitle2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // propertyGrid1
+            // pnlTitle
             // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(420, 936);
-            this.propertyGrid1.TabIndex = 7;
+            this.pnlTitle.Controls.Add(this.uiLabel1);
+            this.pnlTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTitle.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.pnlTitle.Location = new System.Drawing.Point(0, 0);
+            this.pnlTitle.Name = "pnlTitle";
+            this.pnlTitle.Size = new System.Drawing.Size(420, 36);
+            this.pnlTitle.TabIndex = 8;
+            // 
+            // uiLabel1
+            // 
+            this.uiLabel1.BackColor = System.Drawing.Color.White;
+            this.uiLabel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiLabel1.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold);
+            this.uiLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.uiLabel1.Location = new System.Drawing.Point(0, 0);
+            this.uiLabel1.Name = "uiLabel1";
+            this.uiLabel1.Size = new System.Drawing.Size(420, 36);
+            this.uiLabel1.TabIndex = 4;
+            this.uiLabel1.Text = "Data Viewer";
+            this.uiLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pnlTop
+            // 
+            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTop.Location = new System.Drawing.Point(0, 36);
+            this.pnlTop.Name = "pnlTop";
+            this.pnlTop.Size = new System.Drawing.Size(420, 610);
+            this.pnlTop.TabIndex = 9;
+            // 
+            // pnlTitle2
+            // 
+            this.pnlTitle2.Controls.Add(this.uiLabel2);
+            this.pnlTitle2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTitle2.Location = new System.Drawing.Point(0, 646);
+            this.pnlTitle2.Name = "pnlTitle2";
+            this.pnlTitle2.Size = new System.Drawing.Size(420, 36);
+            this.pnlTitle2.TabIndex = 10;
+            // 
+            // uiLabel2
+            // 
+            this.uiLabel2.BackColor = System.Drawing.Color.White;
+            this.uiLabel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uiLabel2.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold);
+            this.uiLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.uiLabel2.Location = new System.Drawing.Point(0, 0);
+            this.uiLabel2.Name = "uiLabel2";
+            this.uiLabel2.Size = new System.Drawing.Size(420, 36);
+            this.uiLabel2.TabIndex = 5;
+            this.uiLabel2.Text = "Selected Data";
+            this.uiLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // pnlBot
+            // 
+            this.pnlBot.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlBot.Location = new System.Drawing.Point(0, 682);
+            this.pnlBot.Name = "pnlBot";
+            this.pnlBot.Size = new System.Drawing.Size(420, 254);
+            this.pnlBot.TabIndex = 11;
             // 
             // UcNodeDataView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.propertyGrid1);
+            this.Controls.Add(this.pnlBot);
+            this.Controls.Add(this.pnlTitle2);
+            this.Controls.Add(this.pnlTop);
+            this.Controls.Add(this.pnlTitle);
             this.Name = "UcNodeDataView";
             this.Size = new System.Drawing.Size(420, 936);
+            this.pnlTitle.ResumeLayout(false);
+            this.pnlTitle2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.Panel pnlTitle;
+        private Sunny.UI.UILabel uiLabel1;
+        private System.Windows.Forms.Panel pnlTop;
+        private System.Windows.Forms.Panel pnlTitle2;
+        private Sunny.UI.UILabel uiLabel2;
+        private System.Windows.Forms.Panel pnlBot;
     }
 }

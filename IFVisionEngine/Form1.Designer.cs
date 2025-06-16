@@ -30,15 +30,16 @@
         {
             this.pnlBottom = new System.Windows.Forms.Panel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.pnlLeft = new System.Windows.Forms.Panel();
-            this.pnlMid = new System.Windows.Forms.Panel();
-            this.pnlRight = new System.Windows.Forms.Panel();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pnlLeft = new System.Windows.Forms.Panel();
+            this.pnlRight = new System.Windows.Forms.Panel();
+            this.pnlMid = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlBottom
             // 
+            this.pnlBottom.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlBottom.Location = new System.Drawing.Point(0, 1015);
             this.pnlBottom.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -56,35 +57,38 @@
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
             // pnlLeft
             // 
+            this.pnlLeft.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlLeft.Location = new System.Drawing.Point(0, 24);
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Size = new System.Drawing.Size(460, 991);
             this.pnlLeft.TabIndex = 6;
             // 
-            // pnlMid
-            // 
-            this.pnlMid.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlMid.Location = new System.Drawing.Point(460, 24);
-            this.pnlMid.Name = "pnlMid";
-            this.pnlMid.Size = new System.Drawing.Size(460, 991);
-            this.pnlMid.TabIndex = 7;
-            // 
             // pnlRight
             // 
+            this.pnlRight.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlRight.Location = new System.Drawing.Point(920, 24);
             this.pnlRight.Name = "pnlRight";
             this.pnlRight.Size = new System.Drawing.Size(984, 991);
             this.pnlRight.TabIndex = 8;
             // 
-            // fileToolStripMenuItem
+            // pnlMid
             // 
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.pnlMid.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlMid.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlMid.Location = new System.Drawing.Point(460, 24);
+            this.pnlMid.Name = "pnlMid";
+            this.pnlMid.Size = new System.Drawing.Size(460, 991);
+            this.pnlMid.TabIndex = 7;
             // 
             // Form1
             // 
@@ -112,8 +116,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Panel pnlLeft;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.Panel pnlMid;
         private System.Windows.Forms.Panel pnlRight;
+        private System.Windows.Forms.Panel pnlMid;
     }
 }
 

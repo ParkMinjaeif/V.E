@@ -19,6 +19,8 @@ namespace IFVisionEngine.UIComponents.UserControls
         {
             InitializeComponent();
             _formMainInstance = mainForm;
+
+            this.Dock = DockStyle.Fill;
         }
 
         /// <summary>

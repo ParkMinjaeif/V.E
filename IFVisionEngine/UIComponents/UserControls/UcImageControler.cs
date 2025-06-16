@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using OpenCvSharp.Extensions;
 using OpenCvSharp;
+using IFVisionEngine.Manager;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -20,6 +21,9 @@ namespace IFVisionEngine.UIComponents.UserControls
         {
             InitializeComponent();
             _formMainInstance = mainForm;
+            this.Dock = DockStyle.Fill;
+
+            this.pnlBot.Controls.Add(AppUIManager.ucLogView);            
         }
 
         /// <summary>

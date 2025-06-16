@@ -132,6 +132,12 @@
     <Compile Include="UIComponents\CustomControls\InputBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UIComponents\UserControls\UcNodeExecutionView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcNodeExecutionView.Designer.cs">
+      <DependentUpon>UcNodeExecutionView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UIComponents\UserControls\UcImageControler.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -155,6 +161,18 @@
     </Compile>
     <Compile Include="UIComponents\UserControls\UcNodeEditor.Designer.cs">
       <DependentUpon>UcNodeEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcNodeSelectedView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcNodeSelectedView.Designer.cs">
+      <DependentUpon>UcNodeSelectedView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcTitleBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\UserControls\UcTitleBar.Designer.cs">
+      <DependentUpon>UcTitleBar.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Core.cs" />
     <Compile Include="Utils\CustomNodeEditor\MyNodesContext.ImageIO.cs" />
@@ -184,6 +202,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\UserControls\UcNodeEditor.resx">
       <DependentUpon>UcNodeEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\UserControls\UcNodeExecutionView.resx">
+      <DependentUpon>UcNodeExecutionView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\UserControls\UcNodeSelectedView.resx">
+      <DependentUpon>UcNodeSelectedView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\UserControls\UcTitleBar.resx">
+      <DependentUpon>UcTitleBar.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

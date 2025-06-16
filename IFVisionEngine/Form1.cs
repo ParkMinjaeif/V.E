@@ -31,15 +31,11 @@ namespace IFVisionEngine
             _originalPnlBotHeight = pnlBottom.Height;
 
             this.pnlLeft.Controls.Add(AppUIManager.ucNodeEditor);
-            AppUIManager.ucNodeEditor.Dock = DockStyle.Fill;
-
             this.pnlRight.Controls.Add(AppUIManager.ucImageControler);
-            AppUIManager.ucImageControler.Dock = DockStyle.Fill;
-
-            this.pnlBottom.Controls.Add(AppUIManager.ucLogView); 
-            AppUIManager.ucLogView.Dock = DockStyle.Fill;
+            this.pnlMid.Controls.Add(AppUIManager.ucNodeDataView);
         }
 
+        #region Panel Toggle
         public void togglePnlLeft()
         {
             _isPnlLeftExpanded = !_isPnlLeftExpanded;
@@ -65,5 +61,6 @@ namespace IFVisionEngine
                 pnlBottom.Height = _originalPnlBotHeight;
             }
         }
+        #endregion
     }
 }

@@ -16,16 +16,26 @@ namespace IFVisionEngine.UIComponents.UserControls
     {
         public static MyNodesContext _nodesContext; // 컨텍스트 멤버 변수
         private Form1 _formMainInstance;
+        public event Action<List<NodeVisual>> NodeSelectionChanged;
+
+        /// <summary>
+        /// 선택된 노드의 컨텍스트(속성 정보)가 변경되었음을 외부에 알리는 이벤트입니다.
+        /// </summary>
+        public event Action<object> SelectedNodeContextChanged;
+        private bool _nodeWasJustSelected = false; // 노드 선택 여부를 추적하기 위한 플래그
 
         public UcNodeEditor(Form1 mainForm)
         {
             InitializeComponent();
             _formMainInstance = mainForm;
 
+
+            this.Dock = DockStyle.Fill;
             // 컨텍스트 초기화 및 할당
             _nodesContext = new MyNodesContext();
             _nodesContext.Invoker = this; // 컨텍스트에 UI 컨트롤 참조를 전달합니다.
             nodesControl1.Context = _nodesContext;
+
         }
 
         private void UcNodeEditor_Load(object sender, EventArgs e)
@@ -121,16 +131,41 @@ namespace IFVisionEngine.UIComponents.UserControls
             _formMainInstance.togglePnlLeft();
         }
 
-        private void nodesControl1_MouseUp(object sender, MouseEventArgs e)
-        {
-
-        }
-
         private void toolStripButton_Run_Click(object sender, EventArgs e)
         {
+            // 1. 새 실행을 시작하기 전에 이전 실행 기록을 모두 지웁니다.
+            IFVisionEngine.Manager.AppUIManager.ucNodeExecutionView.ClearData();
+
             // '실행' 버튼을 누르면 전체 워크플로우를 실행합니다.
             nodesControl1.Execute();
         }
 
+        private void nodesControl1_MouseDown(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void nodesControl1_OnNodeContextSelected(object obj)
+        {
+            // 1. 노드가 선택되었음을 플래그에 기록합니다.
+            _nodeWasJustSelected = true;
+
+            SelectedNodeContextChanged?.Invoke(obj);
+        }
+
+        private void nodesControl1_MouseUp(object sender, MouseEventArgs e)
+        {
+            // 3. 마우스 클릭 동작이 끝난 후 플래그를 확인합니다.
+            if (!_nodeWasJustSelected)
+            {
+                // 플래그가 false라면, OnNodeContextSelected가 호출되지 않았다는 의미입니다.
+                // 즉, 사용자가 노드가 아닌 배경을 클릭한 경우입니다.
+                // 이때만 PropertyGrid를 비우도록 null 신호를 보냅니다.
+                SelectedNodeContextChanged?.Invoke(null);
+            }
+
+            // 4. 다음 클릭을 위해 플래그를 다시 false로 리셋합니다.
+            _nodeWasJustSelected = false;
+        }
     }
 }

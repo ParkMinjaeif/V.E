@@ -57,7 +57,7 @@ public partial class MyNodesContext
             Cv2.GaussianBlur(inputImage, outputImage, ksize, parameters.SigmaX, parameters.SigmaY, BorderTypes.Default);
             FeedbackInfo?.Invoke("가우시안 블러 적용 완료.", CurrentProcessingNode, FeedbackType.Information, outputImage.Clone(), false);
         }
-        catch (OpenCvSharpException cvEx) // OpenCV 관련 예외
+        catch (OpenCvSharpException cvEx) // OpenCV 관련 예외 
         {
             // 수정된 부분: cvEx.ErrMsg와 cvEx.Code 대신 cvEx.Message 사용
             FeedbackInfo?.Invoke($"가우시안 블러 OpenCV 오류: {cvEx.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
