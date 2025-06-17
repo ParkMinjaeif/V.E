@@ -1,14 +1,14 @@
-﻿// MyNodesContext.Preprocessing.cs
-using System;
-using System.ComponentModel; // GaussianBlurParameters의 DescriptionAttribute는 유지
+﻿using System;
+using System.ComponentModel;
 using NodeEditor;
 using OpenCvSharp;
 
 public partial class MyNodesContext
 {
-    // GaussianBlurParameters 클래스는 그대로 유지 (내부의 DescriptionAttribute는 PropertyGrid 등에 사용될 수 있음)
+    #region GaussianBlur
+    // --- 가우시안 블러 파라미터 클래스 ---
     [Serializable]
-    [System.ComponentModel.TypeConverter(typeof(ExpandableObjectConverter))]
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class GaussianBlurParameters
     {
         private int _kernelWidth = 5;
@@ -37,43 +37,114 @@ public partial class MyNodesContext
         {
             return $"Size:({KernelWidth}x{KernelHeight}), SigmaX:{SigmaX:F1}, SigmaY:{SigmaY:F1}";
         }
-
-        public GaussianBlurParameters() { }
     }
 
+    // --- 가우시안 블러 노드 ---
     [Node(name: "가우시안 블러", menu: "전처리/필터", description: "이미지에 가우시안 블러를 적용합니다.")]
-    // [return: NodeOutput(name: "블러 처리된 이미지", type: typeof(Mat), description:"가우시안 블러가 적용된 이미지입니다.")] // <--- 이 줄 제거 또는 주석 처리
-
-    public Mat ApplyGaussianBlur(
-        Mat inputImage,
-        GaussianBlurParameters parameters)
+    public void ApplyGaussianBlur(Mat inputImage, GaussianBlurParameters parameters, out Mat outputImage)
     {
-        // ... (초반 null 체크 로직) ...
+        if (inputImage == null || inputImage.Empty())
+        {
+            FeedbackInfo?.Invoke("입력 이미지가 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            outputImage = null;
+            return;
+        }
 
-        Mat outputImage = new Mat();
+        outputImage = new Mat();
         try
         {
             Size ksize = new Size(parameters.KernelWidth, parameters.KernelHeight);
             Cv2.GaussianBlur(inputImage, outputImage, ksize, parameters.SigmaX, parameters.SigmaY, BorderTypes.Default);
             FeedbackInfo?.Invoke("가우시안 블러 적용 완료.", CurrentProcessingNode, FeedbackType.Information, outputImage.Clone(), false);
         }
-        catch (OpenCvSharpException cvEx) // OpenCV 관련 예외 
+        catch (Exception ex)
         {
-            // 수정된 부분: cvEx.ErrMsg와 cvEx.Code 대신 cvEx.Message 사용
-            FeedbackInfo?.Invoke($"가우시안 블러 OpenCV 오류: {cvEx.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
-            // 만약 특정 오류 코드가 필요하다면 cvEx.HResult (COM 에러 코드) 등을 확인해 볼 수 있으나,
-            // cvEx.Message에 이미 충분한 정보가 있을 것입니다.
-            // 예: FeedbackInfo?.Invoke($"가우시안 블러 OpenCV 오류: {cvEx.Message} (HResult: {cvEx.HResult})", CurrentProcessingNode, FeedbackType.Error, null, true);
-
+            FeedbackInfo?.Invoke($"가우시안 블러 처리 중 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
             outputImage?.Dispose();
-            return inputImage.Clone(); // 오류 시 원본 복제본 반환
+            outputImage = null;
         }
-        catch (Exception ex) // 일반적인 .NET 예외
-        {
-            FeedbackInfo?.Invoke($"가우시안 블러 처리 중 일반 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage?.Dispose();
-            return inputImage.Clone(); // 오류 시 원본 복제본 반환
-        }
-        return outputImage; // 성공 시 처리된 이미지 반환
     }
+    #endregion
+
+    #region Binarization 
+    // --- 이진화 파라미터 클래스 ---
+    [Serializable]
+    [TypeConverter(typeof(ExpandableObjectConverter))]
+    public class BinarizationParameters
+    {
+        public enum BinarizationMethod
+        {
+            Binary,      // 픽셀값이 임계값보다 크면 MaxValue, 아니면 0
+            BinaryInv,   // 픽셀값이 임계값보다 크면 0, 아니면 MaxValue
+            Trunc,       // 픽셀값이 임계값보다 크면 임계값, 아니면 그대로
+            Tozero,      // 픽셀값이 임계값보다 크면 그대로, 아니면 0
+            TozeroInv    // 픽셀값이 임계값보다 크면 0, 아니면 그대로
+        }
+
+        [Description("이진화 방식을 선택합니다.")]
+        public BinarizationMethod Method { get; set; } = BinarizationMethod.Binary;
+
+        [Description("Otsu의 알고리즘을 사용하여 최적의 임계값을 자동으로 찾으려면 체크하세요. 체크 시 아래 '임계값'은 무시됩니다.")]
+        public bool UseOtsu { get; set; } = true;
+
+        [Description("임계값 (0-255). UseOtsu가 체크 해제된 경우에만 사용됩니다.")]
+        public double ThresholdValue { get; set; } = 127.0;
+
+        [Description("임계값을 통과한 픽셀에 적용할 최대값입니다. 보통 255(흰색)를 사용합니다.")]
+        public double MaxValue { get; set; } = 255.0;
+
+        public override string ToString()
+        {
+            return UseOtsu ? $"Method: {Method}, Otsu" : $"Method: {Method}, Threshold: {ThresholdValue}";
+        }
+    }
+
+    // --- 이진화 노드 ---
+    [Node(name: "이진화", menu: "전처리/필터", description: "이미지를 흑과 백으로 변환(이진화)합니다.")]
+    public void ApplyBinarization(Mat inputImage, BinarizationParameters parameters, out Mat outputImage)
+    {
+        if (inputImage == null || inputImage.Empty())
+        {
+            FeedbackInfo?.Invoke("입력 이미지가 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            outputImage = null;
+            return;
+        }
+
+        outputImage = new Mat();
+        try
+        {
+            // 이진화는 단일 채널(그레이스케일) 이미지에서 수행되어야 합니다.
+            // 입력 이미지가 컬러이면 자동으로 그레이스케일로 변환합니다.
+            using (Mat grayImage = new Mat())
+            {
+                if (inputImage.Channels() >= 3)
+                {
+                    Cv2.CvtColor(inputImage, grayImage, ColorConversionCodes.BGR2GRAY);
+                }
+                else
+                {
+                    inputImage.CopyTo(grayImage);
+                }
+
+                // 선택된 이진화 방식과 Otsu 옵션을 조합하여 최종 ThresholdType을 결정합니다.
+                ThresholdTypes thresholdType = (ThresholdTypes)parameters.Method;
+                if (parameters.UseOtsu)
+                {
+                    thresholdType |= ThresholdTypes.Otsu;
+                }
+
+                // 이진화를 수행합니다.
+                Cv2.Threshold(grayImage, outputImage, parameters.ThresholdValue, parameters.MaxValue, thresholdType);
+
+                FeedbackInfo?.Invoke("이진화 적용 완료.", CurrentProcessingNode, FeedbackType.Information, outputImage.Clone(), false);
+            }
+        }
+        catch (Exception ex)
+        {
+            FeedbackInfo?.Invoke($"이진화 처리 중 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
+            outputImage?.Dispose();
+            outputImage = null;
+        }
+    }
+    #endregion
 }

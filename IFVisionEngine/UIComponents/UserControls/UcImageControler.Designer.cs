@@ -33,18 +33,26 @@
             this.uiLabel1 = new Sunny.UI.UILabel();
             this.pnlMain = new System.Windows.Forms.Panel();
             this.pBMain = new System.Windows.Forms.PictureBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.tLP_StatusBar = new System.Windows.Forms.TableLayoutPanel();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lbl_ordinate = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lbl_PixelValue = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlTitle.SuspendLayout();
             this.pnlMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pBMain)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.tLP_StatusBar.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlBot
             // 
             this.pnlBot.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlBot.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlBot.Location = new System.Drawing.Point(0, 780);
+            this.pnlBot.Location = new System.Drawing.Point(0, 805);
             this.pnlBot.Name = "pnlBot";
-            this.pnlBot.Size = new System.Drawing.Size(984, 211);
+            this.pnlBot.Size = new System.Drawing.Size(984, 186);
             this.pnlBot.TabIndex = 0;
             // 
             // pnlTitle
@@ -72,11 +80,12 @@
             // pnlMain
             // 
             this.pnlMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlMain.Controls.Add(this.pBMain);
+            this.pnlMain.Controls.Add(this.panel1);
+            this.pnlMain.Controls.Add(this.tLP_StatusBar);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlMain.Location = new System.Drawing.Point(0, 36);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(984, 744);
+            this.pnlMain.Size = new System.Drawing.Size(984, 769);
             this.pnlMain.TabIndex = 3;
             // 
             // pBMain
@@ -84,10 +93,59 @@
             this.pBMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pBMain.Location = new System.Drawing.Point(0, 0);
             this.pBMain.Name = "pBMain";
-            this.pBMain.Size = new System.Drawing.Size(982, 742);
+            this.pBMain.Size = new System.Drawing.Size(982, 734);
             this.pBMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pBMain.TabIndex = 0;
             this.pBMain.TabStop = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.pBMain);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(982, 734);
+            this.panel1.TabIndex = 2;
+            // 
+            // tLP_StatusBar
+            // 
+            this.tLP_StatusBar.ColumnCount = 2;
+            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tLP_StatusBar.Controls.Add(this.statusStrip1, 0, 0);
+            this.tLP_StatusBar.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tLP_StatusBar.Location = new System.Drawing.Point(0, 734);
+            this.tLP_StatusBar.Name = "tLP_StatusBar";
+            this.tLP_StatusBar.RowCount = 1;
+            this.tLP_StatusBar.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tLP_StatusBar.Size = new System.Drawing.Size(982, 33);
+            this.tLP_StatusBar.TabIndex = 1;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lbl_ordinate,
+            this.lbl_PixelValue});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(491, 33);
+            this.statusStrip1.TabIndex = 0;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lbl_ordinate
+            // 
+            this.lbl_ordinate.Name = "lbl_ordinate";
+            this.lbl_ordinate.Size = new System.Drawing.Size(52, 28);
+            this.lbl_ordinate.Text = "X: -, Y: -";
+            // 
+            // lbl_PixelValue
+            // 
+            this.lbl_PixelValue.Name = "lbl_PixelValue";
+            this.lbl_PixelValue.Size = new System.Drawing.Size(79, 28);
+            this.lbl_PixelValue.Text = "R: -, G: -, B: -";
             // 
             // UcImageControler
             // 
@@ -101,6 +159,11 @@
             this.pnlTitle.ResumeLayout(false);
             this.pnlMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pBMain)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.tLP_StatusBar.ResumeLayout(false);
+            this.tLP_StatusBar.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -112,5 +175,10 @@
         private Sunny.UI.UILabel uiLabel1;
         private System.Windows.Forms.Panel pnlMain;
         private System.Windows.Forms.PictureBox pBMain;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TableLayoutPanel tLP_StatusBar;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel lbl_ordinate;
+        private System.Windows.Forms.ToolStripStatusLabel lbl_PixelValue;
     }
 }

@@ -14,7 +14,7 @@ namespace IFVisionEngine.UIComponents.UserControls
 {
     public partial class UcNodeEditor: UserControl
     {
-        public static MyNodesContext _nodesContext; // 컨텍스트 멤버 변수
+        public MyNodesContext _nodesContext; // 컨텍스트 멤버 변수
         private Form1 _formMainInstance;
         public event Action<List<NodeVisual>> NodeSelectionChanged;
 
@@ -29,13 +29,11 @@ namespace IFVisionEngine.UIComponents.UserControls
             InitializeComponent();
             _formMainInstance = mainForm;
 
-
             this.Dock = DockStyle.Fill;
             // 컨텍스트 초기화 및 할당
             _nodesContext = new MyNodesContext();
             _nodesContext.Invoker = this; // 컨텍스트에 UI 컨트롤 참조를 전달합니다.
             nodesControl1.Context = _nodesContext;
-
         }
 
         private void UcNodeEditor_Load(object sender, EventArgs e)
