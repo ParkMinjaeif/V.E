@@ -194,7 +194,7 @@ namespace IFVisionEngine.UIComponents.UserControls
 
                 // 4. 상태 표시줄 레이블 업데이트
                 lbl_ordinate.Text = $"X: {imgX}, Y: {imgY}";
-                lbl_PixelValue.Text = $"R: {pixelColor.R}, G: {pixelColor.G}, B: {pixelColor.B}";
+                lbl_PixelValue.Text = $"R: {pixelColor.R}, G: {pixelColor.G}, B: {pixelColor.B}";   
             }
             else
             {
