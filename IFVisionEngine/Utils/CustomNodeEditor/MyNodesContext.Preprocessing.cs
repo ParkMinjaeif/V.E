@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using NodeEditor;
 using OpenCvSharp;
+using IFVisionEngine.Manager; // ImageDataManager를 사용하기 위해 추가
 
 public partial class MyNodesContext
 {
@@ -41,27 +42,41 @@ public partial class MyNodesContext
 
     // --- 가우시안 블러 노드 ---
     [Node(name: "가우시안 블러", menu: "전처리/필터", description: "이미지에 가우시안 블러를 적용합니다.")]
-    public void ApplyGaussianBlur(Mat inputImage, GaussianBlurParameters parameters, out Mat outputImage)
+    public void ApplyGaussianBlur(string inputImageKey, GaussianBlurParameters parameters, out string outputImageKey)
     {
-        if (inputImage == null || inputImage.Empty())
+        outputImageKey = null;
+
+        // 먼저 입력 키가 유효한지 확인합니다.
+        if (string.IsNullOrEmpty(inputImageKey))
         {
-            FeedbackInfo?.Invoke("입력 이미지가 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage = null;
+            FeedbackInfo?.Invoke("입력으로 전달된 이미지 키가 비어있습니다. 이전 노드의 실행 결과를 확인하세요.", CurrentProcessingNode, FeedbackType.Error, null, true);
             return;
         }
 
-        outputImage = new Mat();
+        Mat inputImage = ImageDataManager.GetImage(inputImageKey);
+
+        if (inputImage == null || inputImage.Empty())
+        {
+            FeedbackInfo?.Invoke($"이미지 키 '{inputImageKey}'에 해당하는 이미지를 찾을 수 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            return;
+        }
+
         try
         {
-            Size ksize = new Size(parameters.KernelWidth, parameters.KernelHeight);
-            Cv2.GaussianBlur(inputImage, outputImage, ksize, parameters.SigmaX, parameters.SigmaY, BorderTypes.Default);
-            FeedbackInfo?.Invoke("가우시안 블러 적용 완료.", CurrentProcessingNode, FeedbackType.Information, outputImage.Clone(), false);
+            using (Mat tempOutput = new Mat())
+            {
+                Size ksize = new Size(parameters.KernelWidth, parameters.KernelHeight);
+                Cv2.GaussianBlur(inputImage, tempOutput, ksize, parameters.SigmaX, parameters.SigmaY);
+
+                outputImageKey = CurrentProcessingNode.GetHashCode().ToString();
+                ImageDataManager.RegisterImage(outputImageKey, tempOutput);
+
+                FeedbackInfo?.Invoke("가우시안 블러 적용 완료.", CurrentProcessingNode, FeedbackType.Information, tempOutput.Clone(), false);
+            }
         }
         catch (Exception ex)
         {
             FeedbackInfo?.Invoke($"가우시안 블러 처리 중 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage?.Dispose();
-            outputImage = null;
         }
     }
     #endregion
@@ -101,21 +116,29 @@ public partial class MyNodesContext
 
     // --- 이진화 노드 ---
     [Node(name: "이진화", menu: "전처리/필터", description: "이미지를 흑과 백으로 변환(이진화)합니다.")]
-    public void ApplyBinarization(Mat inputImage, BinarizationParameters parameters, out Mat outputImage)
+    public void ApplyBinarization(string inputImageKey, BinarizationParameters parameters, out string outputImageKey)
     {
-        if (inputImage == null || inputImage.Empty())
+        outputImageKey = null;
+
+        // 먼저 입력 키가 유효한지 확인합니다.
+        if (string.IsNullOrEmpty(inputImageKey))
         {
-            FeedbackInfo?.Invoke("입력 이미지가 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage = null;
+            FeedbackInfo?.Invoke("입력으로 전달된 이미지 키가 비어있습니다. 이전 노드의 실행 결과를 확인하세요.", CurrentProcessingNode, FeedbackType.Error, null, true);
             return;
         }
 
-        outputImage = new Mat();
+        Mat inputImage = ImageDataManager.GetImage(inputImageKey);
+
+        if (inputImage == null || inputImage.Empty())
+        {
+            FeedbackInfo?.Invoke($"이미지 키 '{inputImageKey}'에 해당하는 이미지를 찾을 수 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            return;
+        }
+
         try
         {
-            // 이진화는 단일 채널(그레이스케일) 이미지에서 수행되어야 합니다.
-            // 입력 이미지가 컬러이면 자동으로 그레이스케일로 변환합니다.
             using (Mat grayImage = new Mat())
+            using (Mat tempOutput = new Mat())
             {
                 if (inputImage.Channels() >= 3)
                 {
@@ -126,24 +149,23 @@ public partial class MyNodesContext
                     inputImage.CopyTo(grayImage);
                 }
 
-                // 선택된 이진화 방식과 Otsu 옵션을 조합하여 최종 ThresholdType을 결정합니다.
                 ThresholdTypes thresholdType = (ThresholdTypes)parameters.Method;
                 if (parameters.UseOtsu)
                 {
                     thresholdType |= ThresholdTypes.Otsu;
                 }
 
-                // 이진화를 수행합니다.
-                Cv2.Threshold(grayImage, outputImage, parameters.ThresholdValue, parameters.MaxValue, thresholdType);
+                Cv2.Threshold(grayImage, tempOutput, parameters.ThresholdValue, parameters.MaxValue, thresholdType);
 
-                FeedbackInfo?.Invoke("이진화 적용 완료.", CurrentProcessingNode, FeedbackType.Information, outputImage.Clone(), false);
+                outputImageKey = CurrentProcessingNode.GetHashCode().ToString();
+                ImageDataManager.RegisterImage(outputImageKey, tempOutput);
+
+                FeedbackInfo?.Invoke("이진화 적용 완료.", CurrentProcessingNode, FeedbackType.Information, tempOutput.Clone(), false);
             }
         }
         catch (Exception ex)
         {
             FeedbackInfo?.Invoke($"이진화 처리 중 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage?.Dispose();
-            outputImage = null;
         }
     }
     #endregion
