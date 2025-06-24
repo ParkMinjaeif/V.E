@@ -127,6 +127,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Manager\AppUIManager.cs" />
+    <Compile Include="Manager\ImageDataManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UIComponents\CustomControls\InputBoxControl.cs">

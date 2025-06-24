@@ -41,6 +41,7 @@
             this.toolStripButton_Delete = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_ruler = new System.Windows.Forms.ToolStripButton();
             this.pBMain = new System.Windows.Forms.PictureBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.tLP_StatusBar = new System.Windows.Forms.TableLayoutPanel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbl_ordinate = new System.Windows.Forms.ToolStripStatusLabel();
@@ -52,6 +53,7 @@
             this.panel3.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pBMain)).BeginInit();
+            this.panel1.SuspendLayout();
             this.tLP_StatusBar.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -192,6 +194,15 @@
             this.pBMain.TabIndex = 0;
             this.pBMain.TabStop = false;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.pBMain);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(982, 734);
+            this.panel1.TabIndex = 2;
+            // 
             // tLP_StatusBar
             // 
             this.tLP_StatusBar.ColumnCount = 2;
@@ -250,6 +261,7 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pBMain)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.tLP_StatusBar.ResumeLayout(false);
             this.tLP_StatusBar.PerformLayout();
             this.statusStrip1.ResumeLayout(false);

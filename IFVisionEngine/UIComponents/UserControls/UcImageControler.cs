@@ -49,7 +49,7 @@ namespace IFVisionEngine.UIComponents.UserControls
             // pnlBot에 ucLogView를 추가하는 로직은 Form1이나 AppUIManager에서 처리하는 것이 더 적합할 수 있습니다.
             this.pnlBot.Controls.Add(AppUIManager.ucLogView);
 
-            // 더블버퍼링(화면 깜빡임 방지)
+            // 부드러운 이미지 리사이징과 드래그를 위한 설정
             this.DoubleBuffered = true;
 
             // PictureBox 이벤트 핸들러 연결
@@ -63,7 +63,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         #region 이미지 표시 및 뷰 상태 초기화
 
         /// <summary>
-        /// Mat 객체를 받아 비트맵으로 변환, 뷰포트 상태를 리셋하고 화면을 갱신합니다.
+        /// Mat 객체를 받아 비트맵으로 변환하고, 뷰를 초기화하며, 화면을 갱신합니다.
         /// </summary>
         public void DisplayImage(Mat image)
         {
@@ -79,27 +79,30 @@ namespace IFVisionEngine.UIComponents.UserControls
             _currentBitmap?.Dispose();
             _currentBitmap = BitmapConverter.ToBitmap(image);
 
-            // PictureBox의 Image 속성을 사용하지 않으므로 null로 설정(예상치 못한 동작 방지)
+            // PictureBox의 Image 속성을 사용하지 않으므로 null로 설정하여 오동작을 방지합니다.
             if (pBMain.Image != null)
             {
                 pBMain.Image.Dispose();
                 pBMain.Image = null;
             }
 
-            ResetImageView(); // 뷰포트 상태/줌/오프셋 모두 리셋
+            // 새 이미지가 로드되면 뷰를 초기화합니다.
+            ResetImageView();
         }
 
         /// <summary>
-        /// 줌 및 오프셋을 초기화하여 이미지를 'Best Fit'로 중앙에 표시합니다.
+        /// 줌과 위치를 기본값으로 리셋하고 화면을 다시 그립니다.
         /// </summary>
         private void ResetImageView()
         {
             if (_currentBitmap == null) return;
 
+            // 1. 이미지를 컨트롤에 꽉 채우는 'Best Fit' 줌 비율을 계산합니다.
             float zoomX = (float)pBMain.ClientSize.Width / _currentBitmap.Width;
             float zoomY = (float)pBMain.ClientSize.Height / _currentBitmap.Height;
             _zoomFactor = Math.Min(zoomX, zoomY);
 
+            // 2. 이미지가 중앙에 위치하도록 오프셋을 계산합니다.
             float newWidth = _currentBitmap.Width * _zoomFactor;
             float newHeight = _currentBitmap.Height * _zoomFactor;
             _imageOffset = new PointF(
@@ -107,21 +110,19 @@ namespace IFVisionEngine.UIComponents.UserControls
                 (pBMain.ClientSize.Height - newHeight) / 2f
             );
 
-            pBMain.Invalidate();
+            pBMain.Invalidate(); // PictureBox를 다시 그리도록 요청합니다.
         }
 
-        #endregion
-
-        #region PictureBox 이벤트(페인트, 마우스, 휠)
+        #region 줌/패닝 이벤트 핸들러
 
         /// <summary>
-        /// PictureBox 다시 그리기 - 이미지 확대/이동, 드래그 확대 사각형 시각화.
+        /// PictureBox를 다시 그려야 할 때마다 호출됩니다. 줌/패닝의 핵심 로직입니다.
         /// </summary>
         private void pBMain_Paint(object sender, PaintEventArgs e)
         {
             if (_currentBitmap == null)
             {
-                // 이미지가 없으면 배경만 그림
+                // 이미지가 없으면 배경을 깨끗하게 지웁니다.
                 e.Graphics.Clear(pBMain.BackColor);
                 return;
             }

@@ -1,61 +1,52 @@
-﻿// MyNodesContext.ImageIO.cs
-using System;
-using System.ComponentModel;
+﻿using System;
 using IFVisionEngine.Manager;
 using NodeEditor;
-using OpenCvSharp; // Mat, Cv2, ImreadModes 등
+using OpenCvSharp;
 
 public partial class MyNodesContext
 {
     /// <summary>
-    /// 파일 경로를 받아 이미지를 로드하고, 결과를 'out' 매개변수를 통해 출력 핀으로 내보냅니다.
+    /// *** 수정된 부분 ***
+    /// 이미지를 로드하고, ImageDataManager에 등록한 뒤, 해당 이미지에 접근할 수 있는 '키'를 반환(return)합니다.
     /// </summary>
     /// <param name="filePath">불러올 이미지 파일의 전체 경로입니다.</param>
-    /// <param name="outputImage">성공 시 로드된 Mat 객체, 실패 시 null이 할당되는 출력 매개변수입니다.</param>
-    [Node(name: "이미지 로드", menu: "이미지 IO", description: "파일 시스템에서 이미지를 불러옵니다.")]
-    public void LoadImageFromFile(string filePath, out Mat outputImage)
+    /// <returns>ImageDataManager에 등록된 이미지의 고유 키입니다. 실패 시 null을 반환합니다.</returns>
+    [Node(name: "이미지 로드", menu: "이미지 IO", description: "파일 시스템에서 이미지를 불러옵니다.", width: 200)]
+    public void LoadImageFromFile(string filePath, out string outputImageKey)
     {
-        if (string.IsNullOrEmpty(filePath))
-        {
-            FeedbackInfo?.Invoke("파일 경로가 지정되지 않았습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage = null; // 출력 매개변수를 null로 설정하고 종료
-            return;
-        }
+        // out 매개변수 초기화
+        outputImageKey = null;
 
-        if (!System.IO.File.Exists(filePath))
+        if (string.IsNullOrEmpty(filePath) || !System.IO.File.Exists(filePath))
         {
-            FeedbackInfo?.Invoke($"파일을 찾을 수 없습니다: {filePath}", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage = null; // 출력 매개변수를 null로 설정하고 종료
+            FeedbackInfo?.Invoke("파일 경로가 유효하지 않습니다: " + filePath, CurrentProcessingNode, FeedbackType.Error, null, true);
             return;
         }
 
         try
         {
-            // using 문을 사용하여 로컬 Mat 객체가 확실히 해제되도록 합니다.
             using (Mat image = Cv2.ImRead(filePath, ImreadModes.Color))
             {
                 if (image.Empty())
                 {
-                    FeedbackInfo?.Invoke($"이미지 로드 실패 (파일은 존재하나 읽을 수 없음): {filePath}", CurrentProcessingNode, FeedbackType.Error, null, true);
-                    outputImage = null;
+                    FeedbackInfo?.Invoke("이미지 로드 실패: " + filePath, CurrentProcessingNode, FeedbackType.Error, null, true);
                     return;
                 }
 
-                FeedbackInfo?.Invoke($"이미지 로드 성공: {filePath} ({image.Width}x{image.Height})", CurrentProcessingNode, FeedbackType.Information, image.Clone(), false);
-                Console.WriteLine("이미지 로드 성공");
-                AppUIManager.ucImageControler.DisplayImage(image);
+                // 1. 현재 노드의 고유 ID(해시코드)를 키로 사용합니다.
+                outputImageKey = CurrentProcessingNode.GetHashCode().ToString();
 
-                // *** 가장 중요한 수정 사항 ***
-                // 원본 객체가 아닌, 완전히 독립된 복제본을 출력으로 내보냅니다.
-                outputImage = image.Clone();
+                // 2. 생성된 이미지를 ImageDataManager에 등록합니다.
+                ImageDataManager.RegisterImage(outputImageKey, image);
+
+                // 3. 실행 성공 신호를 보냅니다.
+                FeedbackInfo?.Invoke($"이미지 로드 성공: {filePath} ({image.Width}x{image.Height})", CurrentProcessingNode, FeedbackType.Information, image.Clone(), false);
             }
         }
         catch (Exception ex)
         {
             FeedbackInfo?.Invoke($"이미지 로드 중 오류 발생: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
-            outputImage = null;
+            outputImageKey = null;
         }
     }
 }
-
-
