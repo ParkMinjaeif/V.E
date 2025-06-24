@@ -194,6 +194,7 @@
     </Compile>
     <EmbeddedResource Include="UIComponents\UserControls\UcImageControler.resx">
       <DependentUpon>UcImageControler.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\UserControls\UcLogView.resx">
       <DependentUpon>UcLogView.cs</DependentUpon>

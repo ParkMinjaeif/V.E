@@ -60,7 +60,6 @@ namespace IFVisionEngine.UIComponents.UserControls
             this.pBMain.MouseUp += pBMain_MouseUp;
         }
 
-        #region 이미지 표시 및 뷰 상태 초기화
 
         /// <summary>
         /// Mat 객체를 받아 비트맵으로 변환하고, 뷰를 초기화하며, 화면을 갱신합니다.
