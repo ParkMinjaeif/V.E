@@ -35,7 +35,16 @@ namespace IFVisionEngine.UIComponents.UserControls
         // 4. 임시 사각형/오버레이 변수 (추후 확장 가능)
         private Rectangle _zoomRect;
 
-        public enum MouseMode { None, DragZoom }
+        // 5. 측정 상태
+        private bool _isMeasuring = false;
+        private PointF? _measurePt1 = null;      // 첫 번째 점 (null이면 아직 미지정)
+        private PointF? _measurePt2 = null;      // 두 번째 점
+        private PointF? _measureImgPt1 = null; // 이미지 좌표계
+        private PointF? _measureImgPt2 = null;
+        private PointF? _measureTempMousePt = null;
+        // (옵션) 측정값(길이)을 임시 저장
+        private float _measuredLength = 0f;
+        private enum MouseMode { None, DragZoom, Measure }
 
         /// <summary>
         /// 생성자 - 메인폼 참조, 컨트롤 Dock, 이벤트 핸들러 및 부드러운 화면 설정
@@ -108,7 +117,6 @@ namespace IFVisionEngine.UIComponents.UserControls
                 (pBMain.ClientSize.Width - newWidth) / 2f,
                 (pBMain.ClientSize.Height - newHeight) / 2f
             );
-
             pBMain.Invalidate(); // PictureBox를 다시 그리도록 요청합니다.
         }
 
@@ -141,6 +149,34 @@ namespace IFVisionEngine.UIComponents.UserControls
                 Rectangle rect = GetRectangle(_dragStart, _dragEnd);
                 using (Pen pen = new Pen(Color.Red, 2))
                     e.Graphics.DrawRectangle(pen, rect);
+            }
+            else if (_mouseMode == MouseMode.Measure && _measureImgPt1.HasValue && _measureImgPt2.HasValue)
+            {
+                // 이미지 좌표 → 화면(PictureBox) 좌표로 변환
+                PointF pt1 = ImageToScreenPt(_measureImgPt1.Value);
+                PointF pt2 = ImageToScreenPt(_measureImgPt2.Value);
+
+                // 선, 점, 길이 표시
+                e.Graphics.DrawLine(Pens.Yellow, pt1, pt2);
+                DrawPoint(e.Graphics, pt1, Brushes.Blue);
+                DrawPoint(e.Graphics, pt2, Brushes.Red);
+
+                string lenStr = $"{Distance(_measureImgPt1.Value, _measureImgPt2.Value):F1} px";
+                var midPt = new PointF(
+                    (pt1.X + pt2.X) / 2,
+                    (pt1.Y + pt2.Y) / 2);
+                e.Graphics.DrawString(lenStr, this.Font, Brushes.Yellow, midPt);
+            }
+            else if (_mouseMode == MouseMode.Measure && _isMeasuring && _measureImgPt1.HasValue && _measureTempMousePt.HasValue)
+            {
+                var pt1 = ImageToScreenPt(_measureImgPt1.Value);
+                var pt2 = ImageToScreenPt(_measureTempMousePt.Value);
+                e.Graphics.DrawLine(Pens.Orange, pt1, pt2);
+                DrawPoint(e.Graphics, pt1, Brushes.Blue);
+
+                float tempLen = Distance(_measureImgPt1.Value, _measureTempMousePt.Value);
+                var midPt = new PointF((pt1.X + pt2.X) / 2, (pt1.Y + pt2.Y) / 2);
+                e.Graphics.DrawString($"{tempLen:F1} px", this.Font, Brushes.Orange, midPt);
             }
         }
 
@@ -188,6 +224,25 @@ namespace IFVisionEngine.UIComponents.UserControls
                 _lastMousePosition = e.Location;
                 this.Cursor = Cursors.Hand; // 손 모양 커서
             }
+            else if (_mouseMode == MouseMode.Measure && e.Button == MouseButtons.Left)
+            {
+                if (!_isMeasuring)
+                {
+                    // 치수 측정 시작(이미지 좌표계로 저장)
+                    _measureImgPt1 = ToImagePt(e.Location);
+                    _isMeasuring = true;
+                    _measureImgPt2 = null;
+                    _measureTempMousePt = ToImagePt(e.Location); // 시작점으로 임시값 초기화
+                }
+                else
+                {
+                    // 치수 측정 끝(이미지 좌표계로 저장)
+                    _measureImgPt2 = ToImagePt(e.Location);
+                    _isMeasuring = false;
+                    _measureTempMousePt = null;
+                    pBMain.Invalidate();
+                }
+            }
         }
 
         /// <summary>
@@ -207,6 +262,11 @@ namespace IFVisionEngine.UIComponents.UserControls
                 _imageOffset.X += dx;
                 _imageOffset.Y += dy;
                 _lastMousePosition = e.Location;
+                pBMain.Invalidate();
+            }
+            else if (_mouseMode == MouseMode.Measure && _isMeasuring && _measureImgPt1.HasValue)
+            {
+                _measureTempMousePt = ToImagePt(e.Location);
                 pBMain.Invalidate();
             }
 
@@ -254,7 +314,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                 if (fitRect.Height * zoom > pBMain.ClientSize.Height)
                     zoom = (float)pBMain.ClientSize.Height / fitRect.Height;
                 _zoomFactor = zoom;
-
+                _zoomFactor = Math.Max(0.1f, Math.Min(_zoomFactor, 20.0f)); // 제한
                 float newWidth = fitRect.Width * _zoomFactor;
                 float newHeight = fitRect.Height * _zoomFactor;
                 _imageOffset = new PointF(
@@ -301,6 +361,33 @@ namespace IFVisionEngine.UIComponents.UserControls
         private void toolStripButton_Delete_Click(object sender, EventArgs e)
         {
             ResetOverlay();
+        }
+
+        /// <summary>
+        /// '치수 측정' 버튼 클릭 - 치수를 측정
+        /// </summary>
+        private void toolStripButton_ruler_Click(object sender, EventArgs e)
+        {
+            if (_mouseMode != MouseMode.Measure)
+            {
+                // 치수 측정 모드로 진입
+                _mouseMode = MouseMode.Measure;
+                _isMeasuring = false;
+                _measurePt1 = null;
+                _measurePt2 = null;
+                Cursor = Cursors.Cross; // 또는 '자' 아이콘(커스텀 커서)으로 변경
+            }
+            else
+            {
+                // 치수 측정 모드 종료 및 시각화 초기화
+                _mouseMode = MouseMode.None;
+                _isMeasuring = false;
+                _measurePt1 = null;
+                _measurePt2 = null;
+                _measuredLength = 0f;
+                Cursor = Cursors.Default;
+                pBMain.Invalidate();
+            }
         }
 
         #endregion
@@ -354,16 +441,42 @@ namespace IFVisionEngine.UIComponents.UserControls
         /// </summary>
         private void ResetOverlay()
         {
-            if (_currentBitmap != null)
-            {
-                _currentBitmap.Dispose();
-                _currentBitmap = null;
-            }
-            lbl_ordinate.Text = "X: -, Y: -";
-            lbl_PixelValue.Text = "R: -, G: -, B: -";
+            _measurePt1 = null;
+            _measurePt2 = null;
+            _measureImgPt1 = null;
+            _measureImgPt2 = null;
+            _measuredLength = 0f;
+            _isMeasuring = false;
+            _measureTempMousePt = null;
             pBMain.Invalidate();
+
         }
 
+        private void DrawPoint(Graphics g, PointF pt, Brush b)
+        {
+            float r = 5f;
+            g.FillEllipse(b, pt.X - r, pt.Y - r, 2 * r, 2 * r);
+        }
+        // PictureBox좌표 → 이미지좌표 변환
+        private PointF ToImagePt(PointF pt)
+        {
+            float x = (pt.X - _imageOffset.X) / _zoomFactor;
+            float y = (pt.Y - _imageOffset.Y) / _zoomFactor;
+            return new PointF(x, y);
+        }
+        private float Distance(PointF pt1, PointF pt2)
+        {
+            float dx = pt1.X - pt2.X;
+            float dy = pt1.Y - pt2.Y;
+            return (float)Math.Sqrt(dx * dx + dy * dy);
+        }
+        PointF ImageToScreenPt(PointF pt)
+        {
+            float x = pt.X * _zoomFactor + _imageOffset.X;
+            float y = pt.Y * _zoomFactor + _imageOffset.Y;
+            return new PointF(x, y);
+        }
         #endregion
+
     }
 }
