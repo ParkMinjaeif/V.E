@@ -11,6 +11,7 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp;
 using IFVisionEngine.Manager;
 using System.Drawing.Drawing2D;
+using System.IO;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -26,26 +27,22 @@ namespace IFVisionEngine.UIComponents.UserControls
         private bool _isPanning = false;    // 현재 패닝 중인지 여부 (마우스 오른쪽 버튼)
         private System.Drawing.Point _lastMousePosition;   // 마지막 마우스 위치 (패닝 계산용)
 
-        // 3. 드래그 확대/모드 상태
-        private MouseMode _mouseMode = MouseMode.None;
-        private PointF _dragStart;
-        private PointF _dragEnd;
-        private bool _isDragging = false;
+        // 3. 드래그 확대/모드 상태 변수
+        private MouseMode _mouseMode = MouseMode.None; // 현재 마우스 동작 모드(드래그확대/치수측정/기본)
+        private PointF _dragStart;                       // 드래그 확대 시 시작 좌표(PictureBox 기준)
+        private PointF _dragEnd;                         // 드래그 확대 시 끝 좌표(PictureBox 기준)
+        private bool _isDragging = false;                // 드래그 확대 동작 중 여부
 
-        // 4. 임시 사각형/오버레이 변수 (추후 확장 가능)
-        private Rectangle _zoomRect;
+        // 4. 임시 사각형/오버레이 변수 (추후 오버레이 확장 대비)
+        private Rectangle _zoomRect;                     // 드래그 사각형 등 임시 영역 보관
 
-        // 5. 측정 상태
-        private bool _isMeasuring = false;
-        private PointF? _measurePt1 = null;      // 첫 번째 점 (null이면 아직 미지정)
-        private PointF? _measurePt2 = null;      // 두 번째 점
-        private PointF? _measureImgPt1 = null; // 이미지 좌표계
-        private PointF? _measureImgPt2 = null;
-        private PointF? _measureTempMousePt = null;
-        // (옵션) 측정값(길이)을 임시 저장
-        private float _measuredLength = 0f;
-        private enum MouseMode { None, DragZoom, Measure }
-
+        // 5. 측정 상태 변수 (치수 측정 기능 관련)
+        private bool _isMeasuring = false;               // 치수 측정 진행 중 여부
+        private PointF? _measureImgPt1 = null;           // 치수 측정: 첫 점 (이미지 좌표계)
+        private PointF? _measureImgPt2 = null;           // 치수 측정: 두 번째 점 (이미지 좌표계)
+        private PointF? _measureTempMousePt = null;      // 두번째 클릭 전 임시 마우스 위치(이미지 좌표계, 임시선 표시용)
+        private enum MouseMode { None, DragZoom, Measure } // 마우스 동작 모드(기본/확대/치수측정)
+        #region 생성자/화면 갱신
         /// <summary>
         /// 생성자 - 메인폼 참조, 컨트롤 Dock, 이벤트 핸들러 및 부드러운 화면 설정
         /// </summary>
@@ -67,6 +64,11 @@ namespace IFVisionEngine.UIComponents.UserControls
             this.pBMain.MouseDown += pBMain_MouseDown;
             this.pBMain.MouseMove += pBMain_MouseMove;
             this.pBMain.MouseUp += pBMain_MouseUp;
+            this.toolStripButton_Drag_to_Zoom.Image = Properties.Resources.Zoom;
+            this.toolStripButton_Delete.Image = Properties.Resources.Delete;
+            this.toolStripButton_Panning.Image = Properties.Resources.Panning;
+            this.toolStripButton_Reset.Image = Properties.Resources.Reset;
+            this.toolStripButton_ruler.Image = Properties.Resources.Ruler;
         }
 
 
@@ -96,6 +98,7 @@ namespace IFVisionEngine.UIComponents.UserControls
 
             // 새 이미지가 로드되면 뷰를 초기화합니다.
             ResetImageView();
+            ResetOverlay();
         }
 
         /// <summary>
@@ -119,6 +122,7 @@ namespace IFVisionEngine.UIComponents.UserControls
             );
             pBMain.Invalidate(); // PictureBox를 다시 그리도록 요청합니다.
         }
+        #endregion
 
         #region 줌/패닝 이벤트 핸들러
 
@@ -150,7 +154,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                 using (Pen pen = new Pen(Color.Red, 2))
                     e.Graphics.DrawRectangle(pen, rect);
             }
-            else if (_mouseMode == MouseMode.Measure && _measureImgPt1.HasValue && _measureImgPt2.HasValue)
+            else if (_measureImgPt1.HasValue && _measureImgPt2.HasValue)
             {
                 // 이미지 좌표 → 화면(PictureBox) 좌표로 변환
                 PointF pt1 = ImageToScreenPt(_measureImgPt1.Value);
@@ -343,6 +347,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         private void toolStripButton_Drag_to_Zoom_Click(object sender, EventArgs e)
         {
             _mouseMode = MouseMode.DragZoom;
+            ResetOverlay();
             Cursor = Cursors.Cross; // 드래그용 커서
         }
 
@@ -356,7 +361,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         }
 
         /// <summary>
-        /// '오버레이 초기화' 버튼 클릭 - 현재 이미지를 삭제(초기화)
+        /// '오버레이 초기화' 버튼 클릭 - 오버레이를 초기화
         /// </summary>
         private void toolStripButton_Delete_Click(object sender, EventArgs e)
         {
@@ -373,23 +378,26 @@ namespace IFVisionEngine.UIComponents.UserControls
                 // 치수 측정 모드로 진입
                 _mouseMode = MouseMode.Measure;
                 _isMeasuring = false;
-                _measurePt1 = null;
-                _measurePt2 = null;
-                Cursor = Cursors.Cross; // 또는 '자' 아이콘(커스텀 커서)으로 변경
+                Cursor = Cursors.Cross;
             }
             else
             {
                 // 치수 측정 모드 종료 및 시각화 초기화
                 _mouseMode = MouseMode.None;
                 _isMeasuring = false;
-                _measurePt1 = null;
-                _measurePt2 = null;
-                _measuredLength = 0f;
                 Cursor = Cursors.Default;
+                _measureImgPt1 = null;
+                _measureImgPt2 = null;
+                _isMeasuring = false;
+                _measureTempMousePt = null;
                 pBMain.Invalidate();
             }
         }
-
+        private void toolStripButton_Panning_Click(object sender, EventArgs e)
+        {
+            _mouseMode = MouseMode.None;    // 기본 패닝 모드로 진입
+            this.Cursor = Cursors.Default;  // 커서도 기본 화살표로 변경
+        }
         #endregion
 
         #region 유틸리티 함수(사각형, 확대, 비율계산 등)
@@ -441,41 +449,64 @@ namespace IFVisionEngine.UIComponents.UserControls
         /// </summary>
         private void ResetOverlay()
         {
-            _measurePt1 = null;
-            _measurePt2 = null;
             _measureImgPt1 = null;
             _measureImgPt2 = null;
-            _measuredLength = 0f;
             _isMeasuring = false;
             _measureTempMousePt = null;
             pBMain.Invalidate();
-
         }
 
+        /// <summary>
+        /// 주어진 좌표(pt)를 지정된 색(브러시)으로 화면에 원(점)으로 표시합니다.
+        /// </summary>
+        /// <param name="g">그리기용 Graphics 객체</param>
+        /// <param name="pt">점 위치 (PictureBox 좌표계)</param>
+        /// <param name="b">점 색상(Brush)</param>
         private void DrawPoint(Graphics g, PointF pt, Brush b)
         {
             float r = 5f;
             g.FillEllipse(b, pt.X - r, pt.Y - r, 2 * r, 2 * r);
         }
-        // PictureBox좌표 → 이미지좌표 변환
+
+        /// <summary>
+        /// PictureBox(화면) 좌표를 이미지 원본 좌표로 변환합니다.
+        /// (줌/패닝이 적용된 상태에서 실제 이미지상의 위치를 얻기 위함)
+        /// </summary>
+        /// <param name="pt">화면상 마우스 등 좌표</param>
+        /// <returns>이미지 좌표(PointF)</returns>
         private PointF ToImagePt(PointF pt)
         {
             float x = (pt.X - _imageOffset.X) / _zoomFactor;
             float y = (pt.Y - _imageOffset.Y) / _zoomFactor;
             return new PointF(x, y);
         }
+
+        /// <summary>
+        /// 두 점(pt1, pt2) 사이의 유클리드 거리(픽셀)를 계산합니다.
+        /// </summary>
+        /// <param name="pt1">첫번째 점</param>
+        /// <param name="pt2">두번째 점</param>
+        /// <returns>거리(float, 픽셀 단위)</returns>
         private float Distance(PointF pt1, PointF pt2)
         {
             float dx = pt1.X - pt2.X;
             float dy = pt1.Y - pt2.Y;
             return (float)Math.Sqrt(dx * dx + dy * dy);
         }
+
+        /// <summary>
+        /// 이미지 원본 좌표를 화면(PictureBox) 좌표로 변환합니다.
+        /// (시각화 시 반드시 사용, 줌/패닝이 반영됨)
+        /// </summary>
+        /// <param name="pt">이미지 좌표계 위치</param>
+        /// <returns>PictureBox 좌표(PointF)</returns>
         PointF ImageToScreenPt(PointF pt)
         {
             float x = pt.X * _zoomFactor + _imageOffset.X;
             float y = pt.Y * _zoomFactor + _imageOffset.Y;
             return new PointF(x, y);
         }
+
         #endregion
 
     }

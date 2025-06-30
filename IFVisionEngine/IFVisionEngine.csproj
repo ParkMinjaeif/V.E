@@ -138,6 +138,49 @@
     <Compile Include="UIComponents\CustomControls\InputBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.Designer.cs">
+      <DependentUpon>CLAHEParameterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.Designer.cs">
+      <DependentUpon>EdgeParameterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.Designer.cs">
+      <DependentUpon>CLAHEParameterDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\EdgeParameterDescription.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\EdgeParameterDescription.Designer.cs">
+      <DependentUpon>EdgeParameterDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\GaussianBlurParameterDescription.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\GaussianBlurParameterDescription.Designer.cs">
+      <DependentUpon>GaussianBlurParameterDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Forms\FormParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Forms\FormParameters.Designer.cs">
+      <DependentUpon>FormParameters.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.Designer.cs">
+      <DependentUpon>GaussianBlurParameterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Interface\IPreprocessParameterControl.cs" />
     <Compile Include="UIComponents\UserControls\UcNodeExecutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -192,6 +235,27 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.resx">
+      <DependentUpon>CLAHEParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.resx">
+      <DependentUpon>EdgeParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.resx">
+      <DependentUpon>CLAHEParameterDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\EdgeParameterDescription.resx">
+      <DependentUpon>EdgeParameterDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\GaussianBlurParameterDescription.resx">
+      <DependentUpon>GaussianBlurParameterDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Forms\FormParameters.resx">
+      <DependentUpon>FormParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.resx">
+      <DependentUpon>GaussianBlurParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\UserControls\UcImageControler.resx">
       <DependentUpon>UcImageControler.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -228,14 +292,13 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UIComponents\Forms\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="OpenCvSharpExtern.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\grid.png" />
+    <None Include="Resources\Panning.png" />
     <None Include="Resources\Zoom.png" />
     <None Include="Resources\Reset.png" />
     <None Include="Resources\Delete.png" />

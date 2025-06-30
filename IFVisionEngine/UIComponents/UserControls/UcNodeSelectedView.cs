@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using IFVisionEngine.UIComponents.Dialogs;
+using static MyNodesContext;
+using IFVisionEngine.Manager;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -20,6 +23,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         }
         public void DisplayNowData(object dataObject)
         {
+        
             // --- 디버깅 코드 시작 ---
             // Visual Studio의 '출력' 창에서 어떤 데이터가 들어오는지 확인합니다.
             if (dataObject != null)

@@ -15,8 +15,7 @@ public partial class MyNodesContext : INodesContext
     public NodeVisual CurrentProcessingNode { get; set; }
     public event Action<string, NodeVisual, FeedbackType, object, bool> FeedbackInfo;
     public Control Invoker { get; set; }
-
-
+    public event Action<string,string> ImageKeySelected;
     // --- 기존 Vector3W 클래스 ---
     [Serializable]
     [System.ComponentModel.TypeConverter(typeof(ExpandableObjectConverter))]
@@ -60,7 +59,6 @@ public partial class MyNodesContext : INodesContext
         Console.WriteLine("스타터 노드 실행됨!"); // 디버그 콘솔 출력
         FeedbackInfo?.Invoke("시작 노드가 실행되었습니다.", CurrentProcessingNode, FeedbackType.Information, null, false);
     }
-
     // 수정된 ShowMessageNode
     [Node(name: "메시지 표시 요청", menu: "디버그", description: "입력된 메시지를 UI에 표시하도록 요청합니다.")]
     public void ShowMessageNode(string message) // [NodeInput(...)] 제거

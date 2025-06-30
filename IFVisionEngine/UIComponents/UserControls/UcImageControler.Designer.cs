@@ -41,6 +41,7 @@
             this.toolStripButton_Reset = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_Delete = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton_ruler = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_Panning = new System.Windows.Forms.ToolStripButton();
             this.tLP_StatusBar = new System.Windows.Forms.TableLayoutPanel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbl_ordinate = new System.Windows.Forms.ToolStripStatusLabel();
@@ -144,11 +145,12 @@
             this.toolStripButton_Drag_to_Zoom,
             this.toolStripButton_Reset,
             this.toolStripButton_Delete,
-            this.toolStripButton_ruler});
+            this.toolStripButton_ruler,
+            this.toolStripButton_Panning});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStrip1.Size = new System.Drawing.Size(982, 31);
+            this.toolStrip1.Size = new System.Drawing.Size(982, 25);
             this.toolStrip1.TabIndex = 6;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -156,42 +158,47 @@
             // 
             this.toolStripButton_Drag_to_Zoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButton_Drag_to_Zoom.Font = new System.Drawing.Font("맑은 고딕", 12F);
-            this.toolStripButton_Drag_to_Zoom.Image = global::IFVisionEngine.Properties.Resources.Zoom;
             this.toolStripButton_Drag_to_Zoom.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Drag_to_Zoom.Name = "toolStripButton_Drag_to_Zoom";
-            this.toolStripButton_Drag_to_Zoom.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButton_Drag_to_Zoom.Size = new System.Drawing.Size(23, 28);
             this.toolStripButton_Drag_to_Zoom.Text = "Zoom";
             this.toolStripButton_Drag_to_Zoom.Click += new System.EventHandler(this.toolStripButton_Drag_to_Zoom_Click);
             // 
             // toolStripButton_Reset
             // 
             this.toolStripButton_Reset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_Reset.Image = global::IFVisionEngine.Properties.Resources.Reset;
             this.toolStripButton_Reset.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Reset.Name = "toolStripButton_Reset";
-            this.toolStripButton_Reset.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButton_Reset.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton_Reset.Text = "Reset";
             this.toolStripButton_Reset.Click += new System.EventHandler(this.toolStripButton_Reset_Click);
             // 
             // toolStripButton_Delete
             // 
             this.toolStripButton_Delete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_Delete.Image = global::IFVisionEngine.Properties.Resources.Delete;
             this.toolStripButton_Delete.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Delete.Name = "toolStripButton_Delete";
-            this.toolStripButton_Delete.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButton_Delete.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton_Delete.Text = "Delete";
             this.toolStripButton_Delete.Click += new System.EventHandler(this.toolStripButton_Delete_Click);
             // 
             // toolStripButton_ruler
             // 
             this.toolStripButton_ruler.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton_ruler.Image = global::IFVisionEngine.Properties.Resources.Ruler;
             this.toolStripButton_ruler.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_ruler.Name = "toolStripButton_ruler";
-            this.toolStripButton_ruler.Size = new System.Drawing.Size(28, 28);
+            this.toolStripButton_ruler.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton_ruler.Text = "ruler";
             this.toolStripButton_ruler.Click += new System.EventHandler(this.toolStripButton_ruler_Click);
+            // 
+            // toolStripButton_Panning
+            // 
+            this.toolStripButton_Panning.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton_Panning.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton_Panning.Name = "toolStripButton_Panning";
+            this.toolStripButton_Panning.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton_Panning.Text = "Panning";
+            this.toolStripButton_Panning.Click += new System.EventHandler(this.toolStripButton_Panning_Click);
             // 
             // tLP_StatusBar
             // 
@@ -278,5 +285,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton_Reset;
         private System.Windows.Forms.ToolStripButton toolStripButton_Delete;
         private System.Windows.Forms.ToolStripButton toolStripButton_ruler;
+        private System.Windows.Forms.ToolStripButton toolStripButton_Panning;
     }
 }

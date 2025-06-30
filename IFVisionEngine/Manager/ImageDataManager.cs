@@ -26,7 +26,6 @@ namespace IFVisionEngine.Manager
             {
                 oldImage?.Dispose();
             }
-
             // 복제본을 저장하여 원본과의 참조 문제를 방지합니다.
             _imageStore[nodeId] = image.Clone();
         }

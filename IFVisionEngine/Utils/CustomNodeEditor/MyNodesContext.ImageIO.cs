@@ -38,7 +38,7 @@ public partial class MyNodesContext
 
                 // 2. 생성된 이미지를 ImageDataManager에 등록합니다.
                 ImageDataManager.RegisterImage(outputImageKey, image);
-
+                ImageKeySelected?.Invoke(outputImageKey, CurrentProcessingNode.Name);
                 // 3. 실행 성공 신호를 보냅니다.
                 FeedbackInfo?.Invoke($"이미지 로드 성공: {filePath} ({image.Width}x{image.Height})", CurrentProcessingNode, FeedbackType.Information, image.Clone(), false);
             }
