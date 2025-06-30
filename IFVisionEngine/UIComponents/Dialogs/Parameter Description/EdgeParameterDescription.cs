@@ -57,7 +57,7 @@ namespace IFVisionEngine.UIComponents.Dialogs.Parameter_Description
             richTextBox1.AppendText(indent + "Sobel, Laplacian 선택 시 적용, 미분 계산에 사용될 커널의 크기 (홀수).\n");
             richTextBox1.AppendText(indent + "크기를 올리면 잡음 억제, 경계 부드럽게.\n");
             richTextBox1.AppendText(indent + "너무 크면 세부 경계 손실.\n");
-            richTextBox1.AppendText(indent + "추천 범위: 3, 5, 7\n");
+            richTextBox1.AppendText(indent + "추천 범위: 3\n");
         }
     }
 }

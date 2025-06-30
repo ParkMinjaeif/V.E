@@ -1,19 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
-using static MyNodesContext;
 
 namespace IFVisionEngine.UIComponents.Dialogs
 {
     /// <summary>
-    /// Edge Detection(엣지 검출) 파라미터를 설정하는 사용자 컨트롤
-    /// Canny Edge Detection 알고리즘의 임계값을 조정할 수 있습니다.
+    /// Edge Detection 파라미터를 설정하는 사용자 컨트롤
     /// </summary>
     public partial class EdgeParameterControl : UserControl, IPreprocessParameterControl, IParameterLoadable
     {
         #region Events
-        public event Action<double, double,string> OnParametersChanged; // threshold1, threshold2 변경 이벤트
+        public event Action<double, double, string> OnParametersChanged; // Threshold1, Threshold2, Method 변경 이벤트
         public event Action OnParametersChangedBase; // 기본 파라미터 변경 이벤트
         #endregion
 
@@ -25,7 +22,6 @@ namespace IFVisionEngine.UIComponents.Dialogs
         public EdgeParameterControl()
         {
             InitializeComponent();
-            this.Load += EdgeParameterControl_Load;
         }
         #endregion
 
@@ -42,14 +38,55 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                SetEdgeMethod(parameters);
-                SetCannyThresholdParameters(parameters); // Canny 임계값 파라미터 설정
-                SetLegacyThresholdParameters(parameters); // 하위 호환성을 위한 파라미터 설정
+                if (parameters.ContainsKey("Method"))
+                {
+                    string method = parameters["Method"].ToString();
+                    int index = comboBox_Method.Items.IndexOf(method);
+                    if (index >= 0)
+                    {
+                        comboBox_Method.SelectedIndex = index;
+                        UpdateParameterVisibility(); // 메서드에 따라 파라미터 표시/숨김
+                    }
+                }
+
+                if (parameters.ContainsKey("CannyThreshold1"))
+                {
+                    if (double.TryParse(parameters["CannyThreshold1"].ToString(), out double threshold1))
+                    {
+                        threshold1 = Math.Max(0, Math.Min(500, threshold1)); // 범위 제한 (0 ~ 500)
+                        trackBar_Threshold1.Value = (int)threshold1;
+                        numericUpDown_Threshold1.Value = (decimal)threshold1;
+                    }
+                }
+
+                if (parameters.ContainsKey("CannyThreshold2"))
+                {
+                    if (double.TryParse(parameters["CannyThreshold2"].ToString(), out double threshold2))
+                    {
+                        threshold2 = Math.Max(0, Math.Min(500, threshold2)); // 범위 제한 (0 ~ 500)
+                        trackBar_Threshold2.Value = (int)threshold2;
+                        numericUpDown_Threshold2.Value = (decimal)threshold2;
+                    }
+                }
+
+                if (parameters.ContainsKey("KernelSize"))
+                {
+                    if (int.TryParse(parameters["KernelSize"].ToString(), out int kernelSize))
+                    {
+                        // 홀수만 허용 (1, 3, 5, 7, ...)
+                        if (kernelSize % 2 == 0) kernelSize++;
+                        kernelSize = Math.Max(1, Math.Min(15, kernelSize)); // 범위 제한 (1 ~ 15)
+
+                        // ComboBox에서 해당 값 찾기
+                        int index = comboBox_KernelSize.Items.IndexOf(kernelSize.ToString());
+                        if (index >= 0) comboBox_KernelSize.SelectedIndex = index;
+                    }
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Edge 파라미터 설정 실패: {ex.Message}");
-                ResetParametersToDefault(); // 실패시 기본값으로 복원
+                ResetToDefaultValues(); // 실패시 기본값으로 복원
             }
             finally
             {
@@ -64,13 +101,25 @@ namespace IFVisionEngine.UIComponents.Dialogs
         /// <returns>파라미터 딕셔너리</returns>
         public Dictionary<string, object> GetParameters()
         {
-            return new Dictionary<string, object>
+            var parameters = new Dictionary<string, object>
             {
-                { "Method", comboBox_edgeMethod.SelectedItem ?? EdgeDetectionParameters.EdgeMethod.Canny }, // 엣지 검출 방법
-                { "CannyThreshold1", (double)numericUpDown_threshold1.Value }, // 낮은 임계값
-                { "CannyThreshold2", (double)numericUpDown_threshold2.Value }, // 높은 임계값
-                { "KernelSize", 3 } // 커널 크기 (고정값)
+                { "Method", comboBox_Method.SelectedItem?.ToString() ?? "Canny" }
             };
+
+            string selectedMethod = comboBox_Method.SelectedItem?.ToString() ?? "Canny";
+
+            if (selectedMethod == "Canny")
+            {
+                parameters.Add("CannyThreshold1", (double)numericUpDown_Threshold1.Value);
+                parameters.Add("CannyThreshold2", (double)numericUpDown_Threshold2.Value);
+            }
+            else if (selectedMethod == "Sobel" || selectedMethod == "Laplacian")
+            {
+                int kernelSize = int.Parse(comboBox_KernelSize.SelectedItem?.ToString() ?? "3");
+                parameters.Add("KernelSize", kernelSize);
+            }
+
+            return parameters;
         }
 
         /// <summary>
@@ -82,8 +131,13 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                trackBar_threshold1.Value = 100; // 낮은 임계값 기본값
-                trackBar_threshold2.Value = 200; // 높은 임계값 기본값
+                comboBox_Method.SelectedIndex = 0; // Canny
+                trackBar_Threshold1.Value = 100;
+                numericUpDown_Threshold1.Value = 100;
+                trackBar_Threshold2.Value = 200;
+                numericUpDown_Threshold2.Value = 200;
+                comboBox_KernelSize.SelectedIndex = 1; // 3
+                UpdateParameterVisibility();
             }
             finally
             {
@@ -104,9 +158,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                InitializeControls(); // 컨트롤 초기값 설정
-                SetupControlSynchronization(); // 컨트롤 간 동기화 설정
-                UpdateMinMaxLabels(); // 최소/최대값 라벨 업데이트
+                InitializeControls();
+                SetupEventHandlers();
+                UpdateParameterVisibility();
             }
             finally
             {
@@ -115,161 +169,123 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             RaiseParameterChanged(); // 초기값 이벤트 발생
         }
-        #endregion
 
-        #region Private Helper Methods
-        /// <summary>
-        /// Canny 임계값 파라미터를 설정합니다.
-        /// </summary>
-        private void SetCannyThresholdParameters(Dictionary<string, object> parameters)
-        {
-            // CannyThreshold1 (낮은 임계값) 설정
-            if (parameters.ContainsKey("CannyThreshold1"))
-            {
-                if (double.TryParse(parameters["CannyThreshold1"].ToString(), out double threshold1))
-                {
-                    threshold1 = Math.Max(0, Math.Min(255, threshold1)); // 범위 제한 (0 ~ 255)
-                    numericUpDown_threshold1.Value = (decimal)threshold1;
-                    trackBar_threshold1.Value = (int)threshold1;
-                }
-            }
-
-            // CannyThreshold2 (높은 임계값) 설정
-            if (parameters.ContainsKey("CannyThreshold2"))
-            {
-                if (double.TryParse(parameters["CannyThreshold2"].ToString(), out double threshold2))
-                {
-                    threshold2 = Math.Max(0, Math.Min(255, threshold2)); // 범위 제한 (0 ~ 255)
-                    numericUpDown_threshold2.Value = (decimal)threshold2;
-                    trackBar_threshold2.Value = (int)threshold2;
-                }
-            }
-        }
-        private void SetEdgeMethod(Dictionary<string, object> parameters)
-        {
-            if (parameters.ContainsKey("Method"))
-            {
-                var methodStr = parameters["Method"].ToString();
-                for (int i = 0; i < comboBox_edgeMethod.Items.Count; i++)
-                {
-                    if (comboBox_edgeMethod.Items[i].ToString().Equals(methodStr, StringComparison.OrdinalIgnoreCase))
-                    {
-                        comboBox_edgeMethod.SelectedIndex = i;
-                        break;
-                    }
-                }
-            }
-        }
-        /// <summary>
-        /// 하위 호환성을 위한 레거시 파라미터를 설정합니다.
-        /// </summary>
-        private void SetLegacyThresholdParameters(Dictionary<string, object> parameters)
-        {
-            // LowThreshold (하위 호환성)
-            if (parameters.ContainsKey("LowThreshold"))
-            {
-                if (double.TryParse(parameters["LowThreshold"].ToString(), out double lowThreshold))
-                {
-                    lowThreshold = Math.Max(0, Math.Min(255, lowThreshold));
-                    numericUpDown_threshold1.Value = (decimal)lowThreshold;
-                    trackBar_threshold1.Value = (int)lowThreshold;
-                }
-            }
-
-            // HighThreshold (하위 호환성)
-            if (parameters.ContainsKey("HighThreshold"))
-            {
-                if (double.TryParse(parameters["HighThreshold"].ToString(), out double highThreshold))
-                {
-                    highThreshold = Math.Max(0, Math.Min(255, highThreshold));
-                    numericUpDown_threshold2.Value = (decimal)highThreshold;
-                    trackBar_threshold2.Value = (int)highThreshold;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 모든 컨트롤의 초기값을 설정합니다.
-        /// </summary>
         private void InitializeControls()
         {
-            // Threshold1 컨트롤 설정
-            trackBar_threshold1.Minimum = 0;
-            trackBar_threshold1.Maximum = 255;
-            trackBar_threshold1.Value = 100;
-            numericUpDown_threshold1.Minimum = 0;
-            numericUpDown_threshold1.Maximum = 255;
-            numericUpDown_threshold1.Value = 100;
+            // Method ComboBox 초기화
+            comboBox_Method.Items.AddRange(new string[] { "Canny", "Sobel", "Laplacian" });
+            comboBox_Method.SelectedIndex = 0; // Canny
 
-            // Threshold2 컨트롤 설정
-            trackBar_threshold2.Minimum = 0;
-            trackBar_threshold2.Maximum = 255;
-            trackBar_threshold2.Value = 200;
-            numericUpDown_threshold2.Minimum = 0;
-            numericUpDown_threshold2.Maximum = 255;
-            numericUpDown_threshold2.Value = 200;
+            // KernelSize ComboBox 초기화 (홀수만)
+            comboBox_KernelSize.Items.AddRange(new string[] { "1", "3", "5", "7", "9", "11", "13", "15" });
+            comboBox_KernelSize.SelectedIndex = 1; // 3
 
-            // comboBox 컨트롤 설정
-            comboBox_edgeMethod.Items.Clear();
-            comboBox_edgeMethod.Items.Add(EdgeDetectionParameters.EdgeMethod.Canny.ToString());
-            comboBox_edgeMethod.Items.Add(EdgeDetectionParameters.EdgeMethod.Sobel.ToString());
-            comboBox_edgeMethod.Items.Add(EdgeDetectionParameters.EdgeMethod.Laplacian.ToString());
-            comboBox_edgeMethod.SelectedIndex = 0; // 기본값
-            comboBox_edgeMethod.SelectedIndexChanged += (s, e) => {
-                if (_suppressEvents) return;
-                RaiseParameterChanged();
-            };
+            // Threshold1 컨트롤 설정 (0 ~ 500)
+            trackBar_Threshold1.Minimum = 0;
+            trackBar_Threshold1.Maximum = 500;
+            trackBar_Threshold1.Value = 100;
+            numericUpDown_Threshold1.Minimum = 0;
+            numericUpDown_Threshold1.Maximum = 500;
+            numericUpDown_Threshold1.Value = 100;
+
+            // Threshold2 컨트롤 설정 (0 ~ 500)
+            trackBar_Threshold2.Minimum = 0;
+            trackBar_Threshold2.Maximum = 500;
+            trackBar_Threshold2.Value = 200;
+            numericUpDown_Threshold2.Minimum = 0;
+            numericUpDown_Threshold2.Maximum = 500;
+            numericUpDown_Threshold2.Value = 200;
         }
 
-        /// <summary>
-        /// TrackBar와 NumericUpDown 간의 동기화 이벤트를 설정합니다.
-        /// </summary>
-        private void SetupControlSynchronization()
+        private void SetupEventHandlers()
         {
-            // Threshold1 동기화
-            trackBar_threshold1.ValueChanged += (s, ev) =>
-            {
-                if (_suppressEvents) return;
-                if (numericUpDown_threshold1.Value != trackBar_threshold1.Value)
-                    numericUpDown_threshold1.Value = trackBar_threshold1.Value;
-                RaiseParameterChanged();
+            // Method ComboBox 이벤트
+            comboBox_Method.SelectedIndexChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    UpdateParameterVisibility();
+                    RaiseParameterChanged();
+                }
             };
 
-            numericUpDown_threshold1.ValueChanged += (s, ev) =>
-            {
-                if (_suppressEvents) return;
-                if (trackBar_threshold1.Value != (int)numericUpDown_threshold1.Value)
-                    trackBar_threshold1.Value = (int)numericUpDown_threshold1.Value;
-                RaiseParameterChanged();
+            // KernelSize ComboBox 이벤트
+            comboBox_KernelSize.SelectedIndexChanged += (s, e) => {
+                if (!_suppressEvents) RaiseParameterChanged();
+            };
+
+            // Threshold1 동기화
+            trackBar_Threshold1.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    numericUpDown_Threshold1.Value = trackBar_Threshold1.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
+            };
+
+            numericUpDown_Threshold1.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    trackBar_Threshold1.Value = (int)numericUpDown_Threshold1.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
 
             // Threshold2 동기화
-            trackBar_threshold2.ValueChanged += (s, ev) =>
-            {
-                if (_suppressEvents) return;
-                if (numericUpDown_threshold2.Value != trackBar_threshold2.Value)
-                    numericUpDown_threshold2.Value = trackBar_threshold2.Value;
-                RaiseParameterChanged();
+            trackBar_Threshold2.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    numericUpDown_Threshold2.Value = trackBar_Threshold2.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
 
-            numericUpDown_threshold2.ValueChanged += (s, ev) =>
-            {
-                if (_suppressEvents) return;
-                if (trackBar_threshold2.Value != (int)numericUpDown_threshold2.Value)
-                    trackBar_threshold2.Value = (int)numericUpDown_threshold2.Value;
-                RaiseParameterChanged();
+            numericUpDown_Threshold2.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    trackBar_Threshold2.Value = (int)numericUpDown_Threshold2.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
         }
 
         /// <summary>
-        /// 최소/최대값 표시 라벨을 업데이트합니다.
+        /// 선택된 메서드에 따라 파라미터 컨트롤의 표시/숨김을 업데이트합니다.
         /// </summary>
-        private void UpdateMinMaxLabels()
+        private void UpdateParameterVisibility()
         {
-            Threshold1minimum.Text = trackBar_threshold1.Minimum.ToString(); // Threshold1 최소값
-            Threshold1Maximum.Text = trackBar_threshold1.Maximum.ToString(); // Threshold1 최대값
-            Threshold2minimum.Text = trackBar_threshold2.Minimum.ToString(); // Threshold2 최소값
-            Threshold2Maximum.Text = trackBar_threshold2.Maximum.ToString(); // Threshold2 최대값
+            string selectedMethod = comboBox_Method.SelectedItem?.ToString() ?? "Canny";
+
+            if (selectedMethod == "Canny")
+            {
+                // Canny: Threshold1, Threshold2 표시
+                label_Threshold1.Visible = true;
+                panel_Threshold1.Visible = true;
+                label_Threshold2.Visible = true;
+                panel_Threshold2.Visible = true;
+                label_KernelSize.Visible = false;
+                comboBox_KernelSize.Visible = false;
+
+                label_Threshold1.Text = "하위 임계값:";
+                label_Threshold2.Text = "상위 임계값:";
+            }
+            else if (selectedMethod == "Sobel" || selectedMethod == "Laplacian")
+            {
+                // Sobel/Laplacian: KernelSize만 표시
+                label_Threshold1.Visible = false;
+                panel_Threshold1.Visible = false;
+                label_Threshold2.Visible = false;
+                panel_Threshold2.Visible = false;
+                label_KernelSize.Visible = true;
+                comboBox_KernelSize.Visible = true;
+            }
         }
 
         /// <summary>
@@ -279,23 +295,12 @@ namespace IFVisionEngine.UIComponents.Dialogs
         {
             if (_suppressEvents) return;
 
-            double t1 = trackBar_threshold1.Value; // 낮은 임계값
-            double t2 = trackBar_threshold2.Value; // 높은 임계값
-            string method = comboBox_edgeMethod.Text.ToString();
-            OnParametersChanged?.Invoke(t1, t2,method); // 파라미터 변경 이벤트 발생
-            OnParametersChangedBase?.Invoke(); // 기본 이벤트 발생
-                                               // Canny 선택 여부
-            bool isCanny = method == EdgeDetectionParameters.EdgeMethod.Canny.ToString();
+            double threshold1 = (double)numericUpDown_Threshold1.Value;
+            double threshold2 = (double)numericUpDown_Threshold2.Value;
+            string method = comboBox_Method.SelectedItem?.ToString() ?? "Canny";
 
-            // 컨트롤 활성/비활성 및 색상
-            trackBar_threshold1.Enabled = isCanny;
-            trackBar_threshold2.Enabled = isCanny;
-            numericUpDown_threshold1.Enabled = isCanny;
-            numericUpDown_threshold2.Enabled = isCanny;
-
-            // 흐리게 처리 (BackColor는 NumericUpDown에만 잘 적용, TrackBar는 보통 Enabled만)
-            numericUpDown_threshold1.BackColor = isCanny ? SystemColors.Window : SystemColors.ControlLight;
-            numericUpDown_threshold2.BackColor = isCanny ? SystemColors.Window : SystemColors.ControlLight;
+            OnParametersChanged?.Invoke(threshold1, threshold2, method);
+            OnParametersChangedBase?.Invoke();
         }
 
         /// <summary>
@@ -310,6 +315,26 @@ namespace IFVisionEngine.UIComponents.Dialogs
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ RaiseParameterChanged 실행 실패: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 모든 컨트롤을 기본값으로 설정합니다.
+        /// </summary>
+        private void ResetToDefaultValues()
+        {
+            try
+            {
+                comboBox_Method.SelectedIndex = 0;
+                trackBar_Threshold1.Value = 100;
+                numericUpDown_Threshold1.Value = 100;
+                trackBar_Threshold2.Value = 200;
+                numericUpDown_Threshold2.Value = 200;
+                comboBox_KernelSize.SelectedIndex = 1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ 기본값 설정 실패: {ex.Message}");
             }
         }
         #endregion

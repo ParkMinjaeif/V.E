@@ -446,6 +446,11 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     Console.WriteLine("✅ Edge 컨트롤에 현재 파라미터 설정");
                     edgeControl.SetCurrentParameters(parameterDict);
                 }
+                else if (_currentParameterControl is ContourParameterControl contourControl) 
+                {
+                    Console.WriteLine("✅ Contour 컨트롤에 현재 파라미터 설정");
+                    contourControl.SetCurrentParameters(parameterDict);
+                }
                 else
                 {
                     TrySetParametersUsingReflection(parameterDict); // Reflection 사용
@@ -553,6 +558,8 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     return new GaussianBlurParameterControl();
                 case "edgeparameters":
                     return new EdgeParameterControl();
+                case "contourparameters":
+                    return new ContourParameterControl();
                 default:
                     Console.WriteLine($"알 수 없는 전처리 타입: {preprocessName}");
                     return null;
@@ -572,6 +579,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     return new GaussianBlurParameterDescription();
                 case "edgeparameters":
                     return new EdgeParameterDescription();
+                case "contourparameters": 
+                    return new ContourParameterDescription();
+
                 default:
                     Console.WriteLine($"알 수 없는 전처리 타입(설명): {preprocessName}");
                     return null;
@@ -596,6 +606,11 @@ namespace IFVisionEngine.UIComponents.Dialogs
             {
                 edge.OnParametersChanged += EdgeParameterChanged; // Edge 파라미터 변경 이벤트
                 Console.WriteLine("Edge 이벤트 연결됨");
+            }
+            else if (control is ContourParameterControl contour) 
+            {
+                contour.OnParametersChanged += ContourParameterChanged;
+                Console.WriteLine("Contour 이벤트 연결됨");
             }
         }
 
@@ -731,7 +746,165 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 MessageBox.Show("Edge 적용 실패: " + ex.Message);
             }
         }
+        /// <summary>
+        /// Contour Detection 파라미터가 변경될 때 실시간으로 이미지에 적용합니다.
+        /// </summary>
+        private void ContourParameterChanged(string retrievalMode, string approximationMethod,
+            double minArea, double maxArea, bool drawOnOriginal, int thickness,
+            string colorMode, Color fixedColor, bool showNumbers)
+        {
+            if (_originalMat == null) return;
 
+            try
+            {
+                using (Mat binaryImage = new Mat())
+                using (Mat outputImage = new Mat())
+                {
+                    // 1. 이진 이미지 준비
+                    if (_originalMat.Channels() >= 3)
+                    {
+                        using (Mat grayImage = new Mat())
+                        {
+                            Cv2.CvtColor(_originalMat, grayImage, ColorConversionCodes.BGR2GRAY);
+                            // 이미 이진화된 이미지인지 확인
+                            Scalar mean = Cv2.Mean(grayImage);
+                            if (mean.Val0 > 50 && mean.Val0 < 200)
+                            {
+                                Cv2.Threshold(grayImage, binaryImage, 127, 255, ThresholdTypes.Binary);
+                            }
+                            else
+                            {
+                                grayImage.CopyTo(binaryImage);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        _originalMat.CopyTo(binaryImage);
+                    }
+
+                    // 2. RetrievalMode 변환
+                    RetrievalModes retrievalModeEnum;
+                    switch (retrievalMode)
+                    {
+                        case "External":
+                            retrievalModeEnum = RetrievalModes.External;
+                            break;
+                        case "List":
+                            retrievalModeEnum = RetrievalModes.List;
+                            break;
+                        case "CComp":
+                            retrievalModeEnum = RetrievalModes.CComp;
+                            break;
+                        case "Tree":
+                            retrievalModeEnum = RetrievalModes.Tree;
+                            break;
+                        default:
+                            retrievalModeEnum = RetrievalModes.External;
+                            break;
+                    }
+                    // 3. ApproximationMethod 변환
+                    ContourApproximationModes approximationModeEnum;
+                    switch (approximationMethod)
+                    {
+                        case "None":
+                            approximationModeEnum = ContourApproximationModes.ApproxNone;
+                            break;
+                        case "Simple":
+                            approximationModeEnum = ContourApproximationModes.ApproxSimple;
+                            break;
+                        case "TC89_L1":
+                            approximationModeEnum = ContourApproximationModes.ApproxTC89L1;
+                            break;
+                        default:
+                            approximationModeEnum = ContourApproximationModes.ApproxSimple;
+                            break;
+                    }
+
+                    // 4. 컨투어 검출
+                    OpenCvSharp.Point[][] contours;
+                    HierarchyIndex[] hierarchy;
+                    Cv2.FindContours(binaryImage, out contours, out hierarchy,
+                                    retrievalModeEnum, approximationModeEnum);
+
+                    // 5. 면적 기준으로 컨투어 필터링
+                    var filteredContours = new List<OpenCvSharp.Point[]>();
+                    for (int i = 0; i < contours.Length; i++)
+                    {
+                        double area = Cv2.ContourArea(contours[i]);
+                        if (area >= minArea && area <= maxArea)
+                        {
+                            filteredContours.Add(contours[i]);
+                        }
+                    }
+
+                    // 6. 출력 이미지 준비
+                    if (drawOnOriginal && _originalMat.Channels() >= 3)
+                    {
+                        _originalMat.CopyTo(outputImage);
+                    }
+                    else
+                    {
+                        // 이진 이미지를 3채널로 변환하여 컬러 컨투어 그리기
+                        Cv2.CvtColor(binaryImage, outputImage, ColorConversionCodes.GRAY2BGR);
+                    }
+
+                    // 7. 컨투어 그리기
+                    Random random = new Random();
+                    for (int i = 0; i < filteredContours.Count; i++)
+                    {
+                        Scalar color;
+
+                        // 색상 모드에 따른 색상 선택
+                        switch (colorMode)
+                        {
+                            case "Random":
+                                color = new Scalar(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                                break;
+                            case "SizeBased":
+                                double area = Cv2.ContourArea(filteredContours[i]);
+                                double normalizedArea = Math.Min(area / 10000.0, 1.0);
+                                color = new Scalar(
+                                    (int)(255 * (1 - normalizedArea)), // Blue
+                                    (int)(255 * normalizedArea),       // Green  
+                                    (int)(128 + 127 * normalizedArea)  // Red
+                                );
+                                break;
+                            case "Fixed":
+                            default:
+                                color = new Scalar(fixedColor.B, fixedColor.G, fixedColor.R); // BGR 순서
+                                break;
+                        }
+
+                        // 컨투어 그리기
+                        Cv2.DrawContours(outputImage, filteredContours, i, color, thickness);
+
+                        // 컨투어 번호 표시
+                        if (showNumbers)
+                        {
+                            var moments = Cv2.Moments(filteredContours[i]);
+                            if (moments.M00 != 0)
+                            {
+                                var centroid = new OpenCvSharp.Point(
+                                    (int)(moments.M10 / moments.M00),
+                                    (int)(moments.M01 / moments.M00)
+                                );
+                                Cv2.PutText(outputImage, i.ToString(), centroid,
+                                           HersheyFonts.HersheySimplex, 0.8,
+                                           new Scalar(255, 255, 255), 2);
+                            }
+                        }
+                    }
+
+                    // 8. 결과 이미지 표시
+                    SetPictureBoxImage(pictureBox_main, OpenCvSharp.Extensions.BitmapConverter.ToBitmap(outputImage));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Contour 적용 실패: " + ex.Message);
+            }
+        }
         /// <summary>
         /// 모든 파라미터 컨트롤에서 공통으로 호출되는 이벤트 핸들러입니다.
         /// </summary>

@@ -2,15 +2,8 @@
 {
     partial class EdgeParameterControl
     {
-        /// <summary> 
-        /// 필수 디자이너 변수입니다.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// 사용 중인 모든 리소스를 정리합니다.
-        /// </summary>
-        /// <param name="disposing">관리되는 리소스를 삭제해야 하면 true이고, 그렇지 않으면 false입니다.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,196 +13,253 @@
             base.Dispose(disposing);
         }
 
-        #region 구성 요소 디자이너에서 생성한 코드
-
-        /// <summary> 
-        /// 디자이너 지원에 필요한 메서드입니다. 
-        /// 이 메서드의 내용을 코드 편집기로 수정하지 마세요.
-        /// </summary>
         private void InitializeComponent()
         {
+            this.panel_Main = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.Threshold2Maximum = new System.Windows.Forms.Label();
-            this.Threshold2minimum = new System.Windows.Forms.Label();
-            this.Threshold1Maximum = new System.Windows.Forms.Label();
-            this.numericUpDown_threshold2 = new System.Windows.Forms.NumericUpDown();
-            this.trackBar_threshold2 = new System.Windows.Forms.TrackBar();
-            this.Threshold2 = new System.Windows.Forms.Label();
-            this.Threshold1 = new System.Windows.Forms.Label();
-            this.trackBar_threshold1 = new System.Windows.Forms.TrackBar();
-            this.numericUpDown_threshold1 = new System.Windows.Forms.NumericUpDown();
-            this.Threshold1minimum = new System.Windows.Forms.Label();
-            this.comboBox_edgeMethod = new System.Windows.Forms.ComboBox();
+            this.label_Method = new System.Windows.Forms.Label();
+            this.comboBox_Method = new System.Windows.Forms.ComboBox();
+            this.label_Threshold1 = new System.Windows.Forms.Label();
+            this.panel_Threshold1 = new System.Windows.Forms.Panel();
+            this.trackBar_Threshold1 = new System.Windows.Forms.TrackBar();
+            this.numericUpDown_Threshold1 = new System.Windows.Forms.NumericUpDown();
+            this.label_Threshold2 = new System.Windows.Forms.Label();
+            this.panel_Threshold2 = new System.Windows.Forms.Panel();
+            this.trackBar_Threshold2 = new System.Windows.Forms.TrackBar();
+            this.numericUpDown_Threshold2 = new System.Windows.Forms.NumericUpDown();
+            this.label_KernelSize = new System.Windows.Forms.Label();
+            this.comboBox_KernelSize = new System.Windows.Forms.ComboBox();
+            this.panel_Main.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_threshold2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_threshold2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_threshold1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_threshold1)).BeginInit();
+            this.panel_Threshold1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Threshold1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Threshold1)).BeginInit();
+            this.panel_Threshold2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Threshold2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Threshold2)).BeginInit();
             this.SuspendLayout();
+            // 
+            // panel_Main
+            // 
+            this.panel_Main.AutoScroll = true;
+            this.panel_Main.Controls.Add(this.tableLayoutPanel1);
+            this.panel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_Main.Location = new System.Drawing.Point(0, 0);
+            this.panel_Main.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel_Main.Name = "panel_Main";
+            this.panel_Main.Size = new System.Drawing.Size(380, 200);
+            this.panel_Main.TabIndex = 0;
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.Controls.Add(this.Threshold2Maximum, 4, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Threshold2minimum, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Threshold1Maximum, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.numericUpDown_threshold2, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.trackBar_threshold2, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Threshold2, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.Threshold1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.trackBar_threshold1, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.numericUpDown_threshold1, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.Threshold1minimum, 2, 0);
-            this.tableLayoutPanel1.Controls.Add(this.comboBox_edgeMethod, 0, 2);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tableLayoutPanel1.Controls.Add(this.label_Method, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox_Method, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label_Threshold1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.panel_Threshold1, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label_Threshold2, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.panel_Threshold2, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.label_KernelSize, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.comboBox_KernelSize, 1, 3);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1379, 724);
-            this.tableLayoutPanel1.TabIndex = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(380, 96);
+            this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // Threshold2Maximum
+            // label_Method
             // 
-            this.Threshold2Maximum.AutoSize = true;
-            this.Threshold2Maximum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Threshold2Maximum.Location = new System.Drawing.Point(1311, 72);
-            this.Threshold2Maximum.Name = "Threshold2Maximum";
-            this.Threshold2Maximum.Size = new System.Drawing.Size(65, 72);
-            this.Threshold2Maximum.TabIndex = 16;
-            this.Threshold2Maximum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_Method.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label_Method.AutoSize = true;
+            this.label_Method.Location = new System.Drawing.Point(3, 6);
+            this.label_Method.Name = "label_Method";
+            this.label_Method.Size = new System.Drawing.Size(61, 12);
+            this.label_Method.TabIndex = 0;
+            this.label_Method.Text = "검출 방법:";
             // 
-            // Threshold2minimum
+            // comboBox_Method
             // 
-            this.Threshold2minimum.AutoSize = true;
-            this.Threshold2minimum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Threshold2minimum.Location = new System.Drawing.Point(347, 72);
-            this.Threshold2minimum.Name = "Threshold2minimum";
-            this.Threshold2minimum.Size = new System.Drawing.Size(62, 72);
-            this.Threshold2minimum.TabIndex = 15;
-            this.Threshold2minimum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.comboBox_Method.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox_Method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_Method.FormattingEnabled = true;
+            this.comboBox_Method.Location = new System.Drawing.Point(155, 2);
+            this.comboBox_Method.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_Method.Name = "comboBox_Method";
+            this.comboBox_Method.Size = new System.Drawing.Size(222, 20);
+            this.comboBox_Method.TabIndex = 1;
             // 
-            // Threshold1Maximum
+            // label_Threshold1
             // 
-            this.Threshold1Maximum.AutoSize = true;
-            this.Threshold1Maximum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Threshold1Maximum.Location = new System.Drawing.Point(1311, 0);
-            this.Threshold1Maximum.Name = "Threshold1Maximum";
-            this.Threshold1Maximum.Size = new System.Drawing.Size(65, 72);
-            this.Threshold1Maximum.TabIndex = 14;
-            this.Threshold1Maximum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label_Threshold1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label_Threshold1.AutoSize = true;
+            this.label_Threshold1.Location = new System.Drawing.Point(3, 30);
+            this.label_Threshold1.Name = "label_Threshold1";
+            this.label_Threshold1.Size = new System.Drawing.Size(73, 12);
+            this.label_Threshold1.TabIndex = 2;
+            this.label_Threshold1.Text = "하위 임계값:";
             // 
-            // numericUpDown_threshold2
+            // panel_Threshold1
             // 
-            this.numericUpDown_threshold2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown_threshold2.Location = new System.Drawing.Point(251, 75);
-            this.numericUpDown_threshold2.Name = "numericUpDown_threshold2";
-            this.numericUpDown_threshold2.Size = new System.Drawing.Size(90, 21);
-            this.numericUpDown_threshold2.TabIndex = 10;
+            this.panel_Threshold1.Controls.Add(this.trackBar_Threshold1);
+            this.panel_Threshold1.Controls.Add(this.numericUpDown_Threshold1);
+            this.panel_Threshold1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_Threshold1.Location = new System.Drawing.Point(155, 26);
+            this.panel_Threshold1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel_Threshold1.Name = "panel_Threshold1";
+            this.panel_Threshold1.Size = new System.Drawing.Size(222, 20);
+            this.panel_Threshold1.TabIndex = 3;
             // 
-            // trackBar_threshold2
+            // trackBar_Threshold1
             // 
-            this.trackBar_threshold2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trackBar_threshold2.Location = new System.Drawing.Point(415, 75);
-            this.trackBar_threshold2.Name = "trackBar_threshold2";
-            this.trackBar_threshold2.Size = new System.Drawing.Size(890, 66);
-            this.trackBar_threshold2.TabIndex = 7;
+            this.trackBar_Threshold1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar_Threshold1.Location = new System.Drawing.Point(0, 0);
+            this.trackBar_Threshold1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.trackBar_Threshold1.Maximum = 500;
+            this.trackBar_Threshold1.Name = "trackBar_Threshold1";
+            this.trackBar_Threshold1.Size = new System.Drawing.Size(162, 20);
+            this.trackBar_Threshold1.TabIndex = 0;
+            this.trackBar_Threshold1.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar_Threshold1.Value = 100;
             // 
-            // Threshold2
+            // numericUpDown_Threshold1
             // 
-            this.Threshold2.AutoSize = true;
-            this.Threshold2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Threshold2.Location = new System.Drawing.Point(3, 72);
-            this.Threshold2.Name = "Threshold2";
-            this.Threshold2.Size = new System.Drawing.Size(242, 72);
-            this.Threshold2.TabIndex = 2;
-            this.Threshold2.Text = "Threshold2";
-            this.Threshold2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.numericUpDown_Threshold1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.numericUpDown_Threshold1.Location = new System.Drawing.Point(162, 0);
+            this.numericUpDown_Threshold1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.numericUpDown_Threshold1.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            this.numericUpDown_Threshold1.Name = "numericUpDown_Threshold1";
+            this.numericUpDown_Threshold1.Size = new System.Drawing.Size(60, 21);
+            this.numericUpDown_Threshold1.TabIndex = 1;
+            this.numericUpDown_Threshold1.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             // 
-            // Threshold1
+            // label_Threshold2
             // 
-            this.Threshold1.AutoSize = true;
-            this.Threshold1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Threshold1.Location = new System.Drawing.Point(3, 0);
-            this.Threshold1.Name = "Threshold1";
-            this.Threshold1.Size = new System.Drawing.Size(242, 72);
-            this.Threshold1.TabIndex = 0;
-            this.Threshold1.Text = "Threshold1";
-            this.Threshold1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_Threshold2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label_Threshold2.AutoSize = true;
+            this.label_Threshold2.Location = new System.Drawing.Point(3, 54);
+            this.label_Threshold2.Name = "label_Threshold2";
+            this.label_Threshold2.Size = new System.Drawing.Size(73, 12);
+            this.label_Threshold2.TabIndex = 4;
+            this.label_Threshold2.Text = "상위 임계값:";
             // 
-            // trackBar_threshold1
+            // panel_Threshold2
             // 
-            this.trackBar_threshold1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trackBar_threshold1.Location = new System.Drawing.Point(415, 3);
-            this.trackBar_threshold1.Name = "trackBar_threshold1";
-            this.trackBar_threshold1.Size = new System.Drawing.Size(890, 66);
-            this.trackBar_threshold1.TabIndex = 6;
+            this.panel_Threshold2.Controls.Add(this.trackBar_Threshold2);
+            this.panel_Threshold2.Controls.Add(this.numericUpDown_Threshold2);
+            this.panel_Threshold2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_Threshold2.Location = new System.Drawing.Point(155, 50);
+            this.panel_Threshold2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel_Threshold2.Name = "panel_Threshold2";
+            this.panel_Threshold2.Size = new System.Drawing.Size(222, 20);
+            this.panel_Threshold2.TabIndex = 5;
             // 
-            // numericUpDown_threshold1
+            // trackBar_Threshold2
             // 
-            this.numericUpDown_threshold1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown_threshold1.Location = new System.Drawing.Point(251, 3);
-            this.numericUpDown_threshold1.Name = "numericUpDown_threshold1";
-            this.numericUpDown_threshold1.Size = new System.Drawing.Size(90, 21);
-            this.numericUpDown_threshold1.TabIndex = 9;
+            this.trackBar_Threshold2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar_Threshold2.Location = new System.Drawing.Point(0, 0);
+            this.trackBar_Threshold2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.trackBar_Threshold2.Maximum = 500;
+            this.trackBar_Threshold2.Name = "trackBar_Threshold2";
+            this.trackBar_Threshold2.Size = new System.Drawing.Size(162, 20);
+            this.trackBar_Threshold2.TabIndex = 0;
+            this.trackBar_Threshold2.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar_Threshold2.Value = 200;
             // 
-            // Threshold1minimum
+            // numericUpDown_Threshold2
             // 
-            this.Threshold1minimum.AutoSize = true;
-            this.Threshold1minimum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Threshold1minimum.Location = new System.Drawing.Point(347, 0);
-            this.Threshold1minimum.Name = "Threshold1minimum";
-            this.Threshold1minimum.Size = new System.Drawing.Size(62, 72);
-            this.Threshold1minimum.TabIndex = 12;
-            this.Threshold1minimum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.numericUpDown_Threshold2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.numericUpDown_Threshold2.Location = new System.Drawing.Point(162, 0);
+            this.numericUpDown_Threshold2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.numericUpDown_Threshold2.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            this.numericUpDown_Threshold2.Name = "numericUpDown_Threshold2";
+            this.numericUpDown_Threshold2.Size = new System.Drawing.Size(60, 21);
+            this.numericUpDown_Threshold2.TabIndex = 1;
+            this.numericUpDown_Threshold2.Value = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
             // 
-            // comboBox_edgeMethod
+            // label_KernelSize
             // 
-            this.comboBox_edgeMethod.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox_edgeMethod.FormattingEnabled = true;
-            this.comboBox_edgeMethod.Location = new System.Drawing.Point(3, 147);
-            this.comboBox_edgeMethod.Name = "comboBox_edgeMethod";
-            this.comboBox_edgeMethod.Size = new System.Drawing.Size(242, 20);
-            this.comboBox_edgeMethod.TabIndex = 17;
+            this.label_KernelSize.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label_KernelSize.AutoSize = true;
+            this.label_KernelSize.Location = new System.Drawing.Point(3, 78);
+            this.label_KernelSize.Name = "label_KernelSize";
+            this.label_KernelSize.Size = new System.Drawing.Size(61, 12);
+            this.label_KernelSize.TabIndex = 6;
+            this.label_KernelSize.Text = "커널 크기:";
+            this.label_KernelSize.Visible = false;
+            // 
+            // comboBox_KernelSize
+            // 
+            this.comboBox_KernelSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBox_KernelSize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox_KernelSize.FormattingEnabled = true;
+            this.comboBox_KernelSize.Location = new System.Drawing.Point(155, 74);
+            this.comboBox_KernelSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBox_KernelSize.Name = "comboBox_KernelSize";
+            this.comboBox_KernelSize.Size = new System.Drawing.Size(222, 20);
+            this.comboBox_KernelSize.TabIndex = 7;
+            this.comboBox_KernelSize.Visible = false;
             // 
             // EdgeParameterControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.panel_Main);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "EdgeParameterControl";
-            this.Size = new System.Drawing.Size(1379, 724);
+            this.Size = new System.Drawing.Size(380, 200);
+            this.Load += new System.EventHandler(this.EdgeParameterControl_Load);
+            this.panel_Main.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_threshold2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_threshold2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_threshold1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_threshold1)).EndInit();
+            this.panel_Threshold1.ResumeLayout(false);
+            this.panel_Threshold1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Threshold1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Threshold1)).EndInit();
+            this.panel_Threshold2.ResumeLayout(false);
+            this.panel_Threshold2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Threshold2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Threshold2)).EndInit();
             this.ResumeLayout(false);
 
         }
 
-        #endregion
-
+        private System.Windows.Forms.Panel panel_Main;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label Threshold2Maximum;
-        private System.Windows.Forms.Label Threshold2minimum;
-        private System.Windows.Forms.Label Threshold1Maximum;
-        private System.Windows.Forms.NumericUpDown numericUpDown_threshold2;
-        private System.Windows.Forms.TrackBar trackBar_threshold2;
-        private System.Windows.Forms.Label Threshold2;
-        private System.Windows.Forms.Label Threshold1;
-        private System.Windows.Forms.TrackBar trackBar_threshold1;
-        private System.Windows.Forms.NumericUpDown numericUpDown_threshold1;
-        private System.Windows.Forms.Label Threshold1minimum;
-        private System.Windows.Forms.ComboBox comboBox_edgeMethod;
+        private System.Windows.Forms.Label label_Method;
+        private System.Windows.Forms.ComboBox comboBox_Method;
+        private System.Windows.Forms.Label label_Threshold1;
+        private System.Windows.Forms.Panel panel_Threshold1;
+        private System.Windows.Forms.TrackBar trackBar_Threshold1;
+        private System.Windows.Forms.NumericUpDown numericUpDown_Threshold1;
+        private System.Windows.Forms.Label label_Threshold2;
+        private System.Windows.Forms.Panel panel_Threshold2;
+        private System.Windows.Forms.TrackBar trackBar_Threshold2;
+        private System.Windows.Forms.NumericUpDown numericUpDown_Threshold2;
+        private System.Windows.Forms.Label label_KernelSize;
+        private System.Windows.Forms.ComboBox comboBox_KernelSize;
     }
 }

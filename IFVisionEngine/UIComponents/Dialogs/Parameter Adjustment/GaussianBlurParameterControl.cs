@@ -5,13 +5,12 @@ using System.Windows.Forms;
 namespace IFVisionEngine.UIComponents.Dialogs
 {
     /// <summary>
-    /// Gaussian Blur(가우시안 블러) 파라미터를 설정하는 사용자 컨트롤
-    /// 커널 크기를 조정하여 블러 강도를 제어할 수 있습니다.
+    /// Gaussian Blur 파라미터를 설정하는 사용자 컨트롤
     /// </summary>
-    public partial class GaussianBlurParameterControl : UserControl, IPreprocessParameterControl
+    public partial class GaussianBlurParameterControl : UserControl, IPreprocessParameterControl, IParameterLoadable
     {
         #region Events
-        public event Action<int> OnParametersChanged; // 커널 크기 변경 이벤트
+        public event Action<int> OnParametersChanged; // KernelSize 변경 이벤트 (단순화된 버전)
         public event Action OnParametersChangedBase; // 기본 파라미터 변경 이벤트
         #endregion
 
@@ -23,7 +22,6 @@ namespace IFVisionEngine.UIComponents.Dialogs
         public GaussianBlurParameterControl()
         {
             InitializeComponent();
-            this.Load += GaussianBlurParameterControl_Load;
         }
         #endregion
 
@@ -40,10 +38,57 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                int kernelSize = ExtractKernelSizeFromParameters(parameters); // 파라미터에서 커널 크기 추출
-                kernelSize = ValidateAndFixKernelSize(kernelSize); // 커널 크기 검증 및 수정
-                ApplyKernelSizeToControls(kernelSize); // UI 컨트롤에 적용
-                LogAdditionalParameters(parameters); // 추가 파라미터 로깅
+                if (parameters.ContainsKey("KernelWidth"))
+                {
+                    if (int.TryParse(parameters["KernelWidth"].ToString(), out int kernelWidth))
+                    {
+                        // 홀수만 허용, 범위 제한 (1 ~ 51)
+                        if (kernelWidth % 2 == 0) kernelWidth++;
+                        kernelWidth = Math.Max(1, Math.Min(51, kernelWidth));
+
+                        trackBar_KernelWidth.Value = kernelWidth;
+                        numericUpDown_KernelWidth.Value = kernelWidth;
+                    }
+                }
+
+                if (parameters.ContainsKey("KernelHeight"))
+                {
+                    if (int.TryParse(parameters["KernelHeight"].ToString(), out int kernelHeight))
+                    {
+                        // 홀수만 허용, 범위 제한 (1 ~ 51)
+                        if (kernelHeight % 2 == 0) kernelHeight++;
+                        kernelHeight = Math.Max(1, Math.Min(51, kernelHeight));
+
+                        trackBar_KernelHeight.Value = kernelHeight;
+                        numericUpDown_KernelHeight.Value = kernelHeight;
+                    }
+                }
+
+                if (parameters.ContainsKey("SigmaX"))
+                {
+                    if (double.TryParse(parameters["SigmaX"].ToString(), out double sigmaX))
+                    {
+                        sigmaX = Math.Max(0.0, Math.Min(10.0, sigmaX)); // 범위 제한 (0.0 ~ 10.0)
+
+                        // TrackBar는 10배 스케일링 (0~100)
+                        int trackBarValue = (int)(sigmaX * 10);
+                        trackBar_SigmaX.Value = Math.Min(trackBar_SigmaX.Maximum, Math.Max(trackBar_SigmaX.Minimum, trackBarValue));
+                        numericUpDown_SigmaX.Value = (decimal)sigmaX;
+                    }
+                }
+
+                if (parameters.ContainsKey("SigmaY"))
+                {
+                    if (double.TryParse(parameters["SigmaY"].ToString(), out double sigmaY))
+                    {
+                        sigmaY = Math.Max(0.0, Math.Min(10.0, sigmaY)); // 범위 제한 (0.0 ~ 10.0)
+
+                        // TrackBar는 10배 스케일링 (0~100)
+                        int trackBarValue = (int)(sigmaY * 10);
+                        trackBar_SigmaY.Value = Math.Min(trackBar_SigmaY.Maximum, Math.Max(trackBar_SigmaY.Minimum, trackBarValue));
+                        numericUpDown_SigmaY.Value = (decimal)sigmaY;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -63,14 +108,12 @@ namespace IFVisionEngine.UIComponents.Dialogs
         /// <returns>파라미터 딕셔너리</returns>
         public Dictionary<string, object> GetParameters()
         {
-            int kernel = EnsureOddKernelSize((int)numericUpDown1.Value); // 홀수 커널 크기 보장
-
             return new Dictionary<string, object>
             {
-                { "KernelWidth", kernel }, // 커널 너비 (홀수 보장)
-                { "KernelHeight", kernel }, // 커널 높이 (홀수 보장)
-                { "SigmaX", (double)0 }, // X축 표준편차 (0이면 자동 계산)
-                { "SigmaY", (double)0 } // Y축 표준편차 (0이면 자동 계산)
+                { "KernelWidth", (int)numericUpDown_KernelWidth.Value },
+                { "KernelHeight", (int)numericUpDown_KernelHeight.Value },
+                { "SigmaX", (double)numericUpDown_SigmaX.Value },
+                { "SigmaY", (double)numericUpDown_SigmaY.Value }
             };
         }
 
@@ -83,8 +126,14 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                trackBar1.Value = 5; // 기본 커널 크기
-                numericUpDown1.Value = 5; // 기본 커널 크기
+                trackBar_KernelWidth.Value = 5;
+                numericUpDown_KernelWidth.Value = 5;
+                trackBar_KernelHeight.Value = 5;
+                numericUpDown_KernelHeight.Value = 5;
+                trackBar_SigmaX.Value = 0; // 0.0
+                numericUpDown_SigmaX.Value = 0.0m;
+                trackBar_SigmaY.Value = 0; // 0.0
+                numericUpDown_SigmaY.Value = 0.0m;
             }
             finally
             {
@@ -105,9 +154,8 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                InitializeControls(); // 컨트롤 초기값 설정
-                SetupControlSynchronization(); // 컨트롤 간 동기화 설정
-                UpdateMinMaxLabels(); // 최소/최대값 라벨 업데이트
+                InitializeControls();
+                SetupEventHandlers();
             }
             finally
             {
@@ -116,149 +164,151 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             RaiseParameterChanged(); // 초기값 이벤트 발생
         }
-        #endregion
 
-        #region Private Helper Methods
-        /// <summary>
-        /// 파라미터 딕셔너리에서 커널 크기를 추출합니다.
-        /// </summary>
-        private int ExtractKernelSizeFromParameters(Dictionary<string, object> parameters)
-        {
-            int kernelSize = 5; // 기본값
-
-            // KernelSize 우선 확인
-            if (parameters.ContainsKey("KernelSize"))
-            {
-                if (int.TryParse(parameters["KernelSize"].ToString(), out int kSize))
-                    kernelSize = kSize;
-            }
-            // 하위 호환성을 위한 KernelWidth 확인
-            else if (parameters.ContainsKey("KernelWidth"))
-            {
-                if (int.TryParse(parameters["KernelWidth"].ToString(), out int kWidth))
-                    kernelSize = kWidth;
-            }
-
-            return kernelSize;
-        }
-
-        /// <summary>
-        /// 커널 크기를 검증하고 유효한 값으로 수정합니다.
-        /// </summary>
-        private int ValidateAndFixKernelSize(int kernelSize)
-        {
-            kernelSize = EnsureOddKernelSize(kernelSize); // 홀수 보장
-            kernelSize = Math.Max(1, Math.Min(31, kernelSize)); // 범위 제한 (1 ~ 31)
-            return kernelSize;
-        }
-
-        /// <summary>
-        /// 커널 크기가 홀수가 되도록 보장합니다.
-        /// </summary>
-        private int EnsureOddKernelSize(int kernelSize)
-        {
-            if (kernelSize % 2 == 0) kernelSize += 1; // 짝수면 +1하여 홀수로 만듦
-            return kernelSize;
-        }
-
-        /// <summary>
-        /// 검증된 커널 크기를 UI 컨트롤에 적용합니다.
-        /// </summary>
-        private void ApplyKernelSizeToControls(int kernelSize)
-        {
-            trackBar1.Value = kernelSize;
-            numericUpDown1.Value = kernelSize;
-        }
-
-        /// <summary>
-        /// 추가 파라미터들을 로깅합니다 (현재는 SigmaX, SigmaY만 로깅).
-        /// </summary>
-        private void LogAdditionalParameters(Dictionary<string, object> parameters)
-        {
-            if (parameters.ContainsKey("SigmaX"))
-            {
-                Console.WriteLine($"SigmaX 값: {parameters["SigmaX"]}");
-            }
-
-            if (parameters.ContainsKey("SigmaY"))
-            {
-                Console.WriteLine($"SigmaY 값: {parameters["SigmaY"]}");
-            }
-        }
-
-        /// <summary>
-        /// 모든 컨트롤의 초기값을 설정합니다.
-        /// </summary>
         private void InitializeControls()
         {
-            // TrackBar 설정 (홀수만 허용)
-            trackBar1.Minimum = 1;
-            trackBar1.Maximum = 31;
-            trackBar1.Value = 5;
-            trackBar1.SmallChange = 2; // 2씩 증가하여 홀수 유지
+            // KernelWidth 컨트롤 설정 (홀수만, 1 ~ 51)
+            trackBar_KernelWidth.Minimum = 1;
+            trackBar_KernelWidth.Maximum = 51;
+            trackBar_KernelWidth.Value = 5;
+            numericUpDown_KernelWidth.Minimum = 1;
+            numericUpDown_KernelWidth.Maximum = 51;
+            numericUpDown_KernelWidth.Value = 5;
 
-            // NumericUpDown 설정 (홀수만 허용)
-            numericUpDown1.Minimum = 1;
-            numericUpDown1.Maximum = 31;
-            numericUpDown1.Value = 5;
-            numericUpDown1.Increment = 2; // 2씩 증가하여 홀수 유지
+            // KernelHeight 컨트롤 설정 (홀수만, 1 ~ 51)
+            trackBar_KernelHeight.Minimum = 1;
+            trackBar_KernelHeight.Maximum = 51;
+            trackBar_KernelHeight.Value = 5;
+            numericUpDown_KernelHeight.Minimum = 1;
+            numericUpDown_KernelHeight.Maximum = 51;
+            numericUpDown_KernelHeight.Value = 5;
+
+            // SigmaX 컨트롤 설정 (0.0 ~ 10.0, TrackBar는 0~100)
+            trackBar_SigmaX.Minimum = 0;
+            trackBar_SigmaX.Maximum = 100; // 10.0 * 10
+            trackBar_SigmaX.Value = 0; // 0.0
+            numericUpDown_SigmaX.Minimum = 0.0m;
+            numericUpDown_SigmaX.Maximum = 10.0m;
+            numericUpDown_SigmaX.DecimalPlaces = 1;
+            numericUpDown_SigmaX.Increment = 0.1m;
+            numericUpDown_SigmaX.Value = 0.0m;
+
+            // SigmaY 컨트롤 설정 (0.0 ~ 10.0, TrackBar는 0~100)
+            trackBar_SigmaY.Minimum = 0;
+            trackBar_SigmaY.Maximum = 100; // 10.0 * 10
+            trackBar_SigmaY.Value = 0; // 0.0
+            numericUpDown_SigmaY.Minimum = 0.0m;
+            numericUpDown_SigmaY.Maximum = 10.0m;
+            numericUpDown_SigmaY.DecimalPlaces = 1;
+            numericUpDown_SigmaY.Increment = 0.1m;
+            numericUpDown_SigmaY.Value = 0.0m;
         }
 
-        /// <summary>
-        /// TrackBar와 NumericUpDown 간의 동기화 이벤트를 설정합니다.
-        /// </summary>
-        private void SetupControlSynchronization()
+        private void SetupEventHandlers()
         {
-            // TrackBar → NumericUpDown 동기화
-            trackBar1.ValueChanged += (s, ev) =>
-            {
-                if (_suppressEvents) return;
-
-                int val = EnsureOddKernelSize(trackBar1.Value); // 홀수 보장
-
-                _suppressEvents = true; // 상호 호출 방지
-                try
+            // KernelWidth 동기화 (홀수 강제)
+            trackBar_KernelWidth.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
                 {
-                    if (numericUpDown1.Value != val)
-                        numericUpDown1.Value = val;
-                }
-                finally
-                {
+                    _suppressEvents = true;
+                    int value = trackBar_KernelWidth.Value;
+                    if (value % 2 == 0) value++; // 홀수로 강제 변환
+                    if (value > trackBar_KernelWidth.Maximum) value = trackBar_KernelWidth.Maximum - (trackBar_KernelWidth.Maximum % 2 == 0 ? 1 : 0);
+                    trackBar_KernelWidth.Value = value;
+                    numericUpDown_KernelWidth.Value = value;
                     _suppressEvents = false;
+                    RaiseParameterChanged();
                 }
-
-                RaiseParameterChanged();
             };
 
-            // NumericUpDown → TrackBar 동기화
-            numericUpDown1.ValueChanged += (s, ev) =>
-            {
-                if (_suppressEvents) return;
-
-                int val = EnsureOddKernelSize((int)numericUpDown1.Value); // 홀수 보장
-
-                _suppressEvents = true; // 상호 호출 방지
-                try
+            numericUpDown_KernelWidth.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
                 {
-                    if (trackBar1.Value != val)
-                        trackBar1.Value = val;
-                }
-                finally
-                {
+                    _suppressEvents = true;
+                    int value = (int)numericUpDown_KernelWidth.Value;
+                    if (value % 2 == 0) value++; // 홀수로 강제 변환
+                    if (value > numericUpDown_KernelWidth.Maximum) value = (int)numericUpDown_KernelWidth.Maximum - ((int)numericUpDown_KernelWidth.Maximum % 2 == 0 ? 1 : 0);
+                    numericUpDown_KernelWidth.Value = value;
+                    trackBar_KernelWidth.Value = value;
                     _suppressEvents = false;
+                    RaiseParameterChanged();
                 }
-
-                RaiseParameterChanged();
             };
-        }
 
-        /// <summary>
-        /// 최소/최대값 표시 라벨을 업데이트합니다.
-        /// </summary>
-        private void UpdateMinMaxLabels()
-        {
-            kernelminimum.Text = trackBar1.Minimum.ToString(); // 커널 최소값
-            kernelMaximum.Text = trackBar1.Maximum.ToString(); // 커널 최대값
+            // KernelHeight 동기화 (홀수 강제)
+            trackBar_KernelHeight.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    int value = trackBar_KernelHeight.Value;
+                    if (value % 2 == 0) value++; // 홀수로 강제 변환
+                    if (value > trackBar_KernelHeight.Maximum) value = trackBar_KernelHeight.Maximum - (trackBar_KernelHeight.Maximum % 2 == 0 ? 1 : 0);
+                    trackBar_KernelHeight.Value = value;
+                    numericUpDown_KernelHeight.Value = value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
+            };
+
+            numericUpDown_KernelHeight.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    int value = (int)numericUpDown_KernelHeight.Value;
+                    if (value % 2 == 0) value++; // 홀수로 강제 변환
+                    if (value > numericUpDown_KernelHeight.Maximum) value = (int)numericUpDown_KernelHeight.Maximum - ((int)numericUpDown_KernelHeight.Maximum % 2 == 0 ? 1 : 0);
+                    numericUpDown_KernelHeight.Value = value;
+                    trackBar_KernelHeight.Value = value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
+            };
+
+            // SigmaX 동기화 (10배 스케일링)
+            trackBar_SigmaX.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    decimal numValue = trackBar_SigmaX.Value / 10.0m;
+                    numericUpDown_SigmaX.Value = numValue;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
+            };
+
+            numericUpDown_SigmaX.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    int trkValue = (int)(numericUpDown_SigmaX.Value * 10);
+                    trackBar_SigmaX.Value = Math.Min(trackBar_SigmaX.Maximum, Math.Max(trackBar_SigmaX.Minimum, trkValue));
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
+            };
+
+            // SigmaY 동기화 (10배 스케일링)
+            trackBar_SigmaY.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    decimal numValue = trackBar_SigmaY.Value / 10.0m;
+                    numericUpDown_SigmaY.Value = numValue;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
+            };
+
+            numericUpDown_SigmaY.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    int trkValue = (int)(numericUpDown_SigmaY.Value * 10);
+                    trackBar_SigmaY.Value = Math.Min(trackBar_SigmaY.Maximum, Math.Max(trackBar_SigmaY.Minimum, trkValue));
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
+            };
         }
 
         /// <summary>
@@ -268,10 +318,11 @@ namespace IFVisionEngine.UIComponents.Dialogs
         {
             if (_suppressEvents) return;
 
-            int ksize = EnsureOddKernelSize(trackBar1.Value); // 홀수 커널 크기 보장
+            // 단순화된 버전: KernelWidth만 전달 (기존 호환성 유지)
+            int kernelSize = (int)numericUpDown_KernelWidth.Value;
 
-            OnParametersChanged?.Invoke(ksize); // 파라미터 변경 이벤트 발생
-            OnParametersChangedBase?.Invoke(); // 기본 이벤트 발생
+            OnParametersChanged?.Invoke(kernelSize);
+            OnParametersChangedBase?.Invoke();
         }
 
         /// <summary>
@@ -296,33 +347,19 @@ namespace IFVisionEngine.UIComponents.Dialogs
         {
             try
             {
-                trackBar1.Value = 5;
-                numericUpDown1.Value = 5;
+                trackBar_KernelWidth.Value = 5;
+                numericUpDown_KernelWidth.Value = 5;
+                trackBar_KernelHeight.Value = 5;
+                numericUpDown_KernelHeight.Value = 5;
+                trackBar_SigmaX.Value = 0;
+                numericUpDown_SigmaX.Value = 0.0m;
+                trackBar_SigmaY.Value = 0;
+                numericUpDown_SigmaY.Value = 0.0m;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ 기본값 설정 실패: {ex.Message}");
             }
-        }
-        #endregion
-
-        #region Debug Methods
-        /// <summary>
-        /// 디버깅용: 현재 설정값을 콘솔에 출력합니다.
-        /// </summary>
-        public void LogCurrentValues()
-        {
-            Console.WriteLine("=== GaussianBlur 현재 설정 ===");
-            Console.WriteLine($"TrackBar Value: {trackBar1.Value}");
-            Console.WriteLine($"NumericUpDown Value: {numericUpDown1.Value}");
-            Console.WriteLine($"GetParameters() 결과:");
-
-            var parameters = GetParameters();
-            foreach (var param in parameters)
-            {
-                Console.WriteLine($"  {param.Key}: {param.Value}");
-            }
-            Console.WriteLine("=============================");
         }
         #endregion
     }

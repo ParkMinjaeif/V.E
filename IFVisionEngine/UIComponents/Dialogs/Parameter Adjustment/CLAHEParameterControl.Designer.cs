@@ -2,15 +2,8 @@
 {
     partial class CLAHEParameterControl
     {
-        /// <summary> 
-        /// 필수 디자이너 변수입니다.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// 사용 중인 모든 리소스를 정리합니다.
-        /// </summary>
-        /// <param name="disposing">관리되는 리소스를 삭제해야 하면 true이고, 그렇지 않으면 false입니다.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,264 +13,289 @@
             base.Dispose(disposing);
         }
 
-        #region 구성 요소 디자이너에서 생성한 코드
-
-        /// <summary> 
-        /// 디자이너 지원에 필요한 메서드입니다. 
-        /// 이 메서드의 내용을 코드 편집기로 수정하지 마세요.
-        /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel_Main = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.TileWidthMaximum = new System.Windows.Forms.Label();
-            this.TileWidthminimum = new System.Windows.Forms.Label();
-            this.TileHeightMaximum = new System.Windows.Forms.Label();
-            this.TileHeightminimum = new System.Windows.Forms.Label();
-            this.ClipMaximum = new System.Windows.Forms.Label();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.trackBar3 = new System.Windows.Forms.TrackBar();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
-            this.label5 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.panel_ClipLimit = new System.Windows.Forms.Panel();
+            this.trackBar_ClipLimit = new System.Windows.Forms.TrackBar();
+            this.numericUpDown_ClipLimit = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.panel_TileHeight = new System.Windows.Forms.Panel();
+            this.trackBar_TileHeight = new System.Windows.Forms.TrackBar();
+            this.numericUpDown_TileHeight = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
-            this.ClipLimit = new System.Windows.Forms.Label();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.CLipminimum = new System.Windows.Forms.Label();
-            this.panel1.SuspendLayout();
+            this.panel_TileWidth = new System.Windows.Forms.Panel();
+            this.trackBar_TileWidth = new System.Windows.Forms.TrackBar();
+            this.numericUpDown_TileWidth = new System.Windows.Forms.NumericUpDown();
+            this.panel_Main.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.panel_ClipLimit.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_ClipLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_ClipLimit)).BeginInit();
+            this.panel_TileHeight.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_TileHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_TileHeight)).BeginInit();
+            this.panel_TileWidth.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_TileWidth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_TileWidth)).BeginInit();
             this.SuspendLayout();
             // 
-            // panel1
+            // panel_Main
             // 
-            this.panel1.Controls.Add(this.tableLayoutPanel1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(919, 564);
-            this.panel1.TabIndex = 0;
+            this.panel_Main.AutoScroll = true;
+            this.panel_Main.Controls.Add(this.tableLayoutPanel1);
+            this.panel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_Main.Location = new System.Drawing.Point(0, 0);
+            this.panel_Main.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel_Main.Name = "panel_Main";
+            this.panel_Main.Size = new System.Drawing.Size(350, 160);
+            this.panel_Main.TabIndex = 0;
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 7F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.tableLayoutPanel1.Controls.Add(this.TileWidthMaximum, 4, 2);
-            this.tableLayoutPanel1.Controls.Add(this.TileWidthminimum, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.TileHeightMaximum, 4, 1);
-            this.tableLayoutPanel1.Controls.Add(this.TileHeightminimum, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.ClipMaximum, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.numericUpDown3, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.numericUpDown2, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.trackBar3, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.trackBar2, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.label5, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.ClipLimit, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.trackBar1, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.numericUpDown1, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.CLipminimum, 2, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.panel_ClipLimit, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.panel_TileHeight, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.panel_TileWidth, 1, 2);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(919, 564);
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(350, 72);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // TileWidthMaximum
+            // label1
             // 
-            this.TileWidthMaximum.AutoSize = true;
-            this.TileWidthMaximum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TileWidthMaximum.Location = new System.Drawing.Point(874, 112);
-            this.TileWidthMaximum.Name = "TileWidthMaximum";
-            this.TileWidthMaximum.Size = new System.Drawing.Size(42, 56);
-            this.TileWidthMaximum.TabIndex = 18;
-            this.TileWidthMaximum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 6);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(58, 12);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "ClipLimit:";
             // 
-            // TileWidthminimum
+            // panel_ClipLimit
             // 
-            this.TileWidthminimum.AutoSize = true;
-            this.TileWidthminimum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TileWidthminimum.Location = new System.Drawing.Point(232, 112);
-            this.TileWidthminimum.Name = "TileWidthminimum";
-            this.TileWidthminimum.Size = new System.Drawing.Size(39, 56);
-            this.TileWidthminimum.TabIndex = 17;
-            this.TileWidthminimum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.panel_ClipLimit.Controls.Add(this.trackBar_ClipLimit);
+            this.panel_ClipLimit.Controls.Add(this.numericUpDown_ClipLimit);
+            this.panel_ClipLimit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_ClipLimit.Location = new System.Drawing.Point(143, 2);
+            this.panel_ClipLimit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel_ClipLimit.Name = "panel_ClipLimit";
+            this.panel_ClipLimit.Size = new System.Drawing.Size(204, 20);
+            this.panel_ClipLimit.TabIndex = 1;
             // 
-            // TileHeightMaximum
+            // trackBar_ClipLimit
             // 
-            this.TileHeightMaximum.AutoSize = true;
-            this.TileHeightMaximum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TileHeightMaximum.Location = new System.Drawing.Point(874, 56);
-            this.TileHeightMaximum.Name = "TileHeightMaximum";
-            this.TileHeightMaximum.Size = new System.Drawing.Size(42, 56);
-            this.TileHeightMaximum.TabIndex = 16;
-            this.TileHeightMaximum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.trackBar_ClipLimit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar_ClipLimit.Location = new System.Drawing.Point(0, 0);
+            this.trackBar_ClipLimit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.trackBar_ClipLimit.Maximum = 80;
+            this.trackBar_ClipLimit.Minimum = 10;
+            this.trackBar_ClipLimit.Name = "trackBar_ClipLimit";
+            this.trackBar_ClipLimit.Size = new System.Drawing.Size(144, 20);
+            this.trackBar_ClipLimit.TabIndex = 0;
+            this.trackBar_ClipLimit.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar_ClipLimit.Value = 20;
             // 
-            // TileHeightminimum
+            // numericUpDown_ClipLimit
             // 
-            this.TileHeightminimum.AutoSize = true;
-            this.TileHeightminimum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TileHeightminimum.Location = new System.Drawing.Point(232, 56);
-            this.TileHeightminimum.Name = "TileHeightminimum";
-            this.TileHeightminimum.Size = new System.Drawing.Size(39, 56);
-            this.TileHeightminimum.TabIndex = 15;
-            this.TileHeightminimum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.numericUpDown_ClipLimit.DecimalPlaces = 1;
+            this.numericUpDown_ClipLimit.Dock = System.Windows.Forms.DockStyle.Right;
+            this.numericUpDown_ClipLimit.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numericUpDown_ClipLimit.Location = new System.Drawing.Point(144, 0);
+            this.numericUpDown_ClipLimit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.numericUpDown_ClipLimit.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.numericUpDown_ClipLimit.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown_ClipLimit.Name = "numericUpDown_ClipLimit";
+            this.numericUpDown_ClipLimit.Size = new System.Drawing.Size(60, 21);
+            this.numericUpDown_ClipLimit.TabIndex = 1;
+            this.numericUpDown_ClipLimit.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
             // 
-            // ClipMaximum
+            // label2
             // 
-            this.ClipMaximum.AutoSize = true;
-            this.ClipMaximum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ClipMaximum.Location = new System.Drawing.Point(874, 0);
-            this.ClipMaximum.Name = "ClipMaximum";
-            this.ClipMaximum.Size = new System.Drawing.Size(42, 56);
-            this.ClipMaximum.TabIndex = 14;
-            this.ClipMaximum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 30);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(69, 12);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Tile Height:";
             // 
-            // numericUpDown3
+            // panel_TileHeight
             // 
-            this.numericUpDown3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown3.Location = new System.Drawing.Point(168, 115);
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(58, 21);
-            this.numericUpDown3.TabIndex = 11;
+            this.panel_TileHeight.Controls.Add(this.trackBar_TileHeight);
+            this.panel_TileHeight.Controls.Add(this.numericUpDown_TileHeight);
+            this.panel_TileHeight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_TileHeight.Location = new System.Drawing.Point(143, 26);
+            this.panel_TileHeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel_TileHeight.Name = "panel_TileHeight";
+            this.panel_TileHeight.Size = new System.Drawing.Size(204, 20);
+            this.panel_TileHeight.TabIndex = 3;
             // 
-            // numericUpDown2
+            // trackBar_TileHeight
             // 
-            this.numericUpDown2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown2.Location = new System.Drawing.Point(168, 59);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(58, 21);
-            this.numericUpDown2.TabIndex = 10;
+            this.trackBar_TileHeight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar_TileHeight.Location = new System.Drawing.Point(0, 0);
+            this.trackBar_TileHeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.trackBar_TileHeight.Maximum = 32;
+            this.trackBar_TileHeight.Minimum = 4;
+            this.trackBar_TileHeight.Name = "trackBar_TileHeight";
+            this.trackBar_TileHeight.Size = new System.Drawing.Size(144, 20);
+            this.trackBar_TileHeight.TabIndex = 0;
+            this.trackBar_TileHeight.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar_TileHeight.Value = 8;
             // 
-            // trackBar3
+            // numericUpDown_TileHeight
             // 
-            this.trackBar3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trackBar3.Location = new System.Drawing.Point(277, 115);
-            this.trackBar3.Name = "trackBar3";
-            this.trackBar3.Size = new System.Drawing.Size(591, 50);
-            this.trackBar3.TabIndex = 8;
-            // 
-            // trackBar2
-            // 
-            this.trackBar2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trackBar2.Location = new System.Drawing.Point(277, 59);
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(591, 50);
-            this.trackBar2.TabIndex = 7;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label5.Location = new System.Drawing.Point(3, 112);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(159, 56);
-            this.label5.TabIndex = 5;
-            this.label5.Text = "TileGridSize_Width";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.numericUpDown_TileHeight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.numericUpDown_TileHeight.Location = new System.Drawing.Point(144, 0);
+            this.numericUpDown_TileHeight.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.numericUpDown_TileHeight.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            this.numericUpDown_TileHeight.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numericUpDown_TileHeight.Name = "numericUpDown_TileHeight";
+            this.numericUpDown_TileHeight.Size = new System.Drawing.Size(60, 21);
+            this.numericUpDown_TileHeight.TabIndex = 1;
+            this.numericUpDown_TileHeight.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
             // 
             // label3
             // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.Location = new System.Drawing.Point(3, 56);
+            this.label3.Location = new System.Drawing.Point(3, 54);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(159, 56);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "TileGridSize_Height";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label3.Size = new System.Drawing.Size(64, 12);
+            this.label3.TabIndex = 4;
+            this.label3.Text = "Tile Width:";
             // 
-            // ClipLimit
+            // panel_TileWidth
             // 
-            this.ClipLimit.AutoSize = true;
-            this.ClipLimit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ClipLimit.Location = new System.Drawing.Point(3, 0);
-            this.ClipLimit.Name = "ClipLimit";
-            this.ClipLimit.Size = new System.Drawing.Size(159, 56);
-            this.ClipLimit.TabIndex = 0;
-            this.ClipLimit.Text = "ClipLimit";
-            this.ClipLimit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.panel_TileWidth.Controls.Add(this.trackBar_TileWidth);
+            this.panel_TileWidth.Controls.Add(this.numericUpDown_TileWidth);
+            this.panel_TileWidth.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_TileWidth.Location = new System.Drawing.Point(143, 50);
+            this.panel_TileWidth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.panel_TileWidth.Name = "panel_TileWidth";
+            this.panel_TileWidth.Size = new System.Drawing.Size(204, 20);
+            this.panel_TileWidth.TabIndex = 5;
             // 
-            // trackBar1
+            // trackBar_TileWidth
             // 
-            this.trackBar1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.trackBar1.Location = new System.Drawing.Point(277, 3);
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(591, 50);
-            this.trackBar1.TabIndex = 6;
+            this.trackBar_TileWidth.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar_TileWidth.Location = new System.Drawing.Point(0, 0);
+            this.trackBar_TileWidth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.trackBar_TileWidth.Maximum = 32;
+            this.trackBar_TileWidth.Minimum = 4;
+            this.trackBar_TileWidth.Name = "trackBar_TileWidth";
+            this.trackBar_TileWidth.Size = new System.Drawing.Size(144, 20);
+            this.trackBar_TileWidth.TabIndex = 0;
+            this.trackBar_TileWidth.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar_TileWidth.Value = 8;
             // 
-            // numericUpDown1
+            // numericUpDown_TileWidth
             // 
-            this.numericUpDown1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown1.Location = new System.Drawing.Point(168, 3);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(58, 21);
-            this.numericUpDown1.TabIndex = 9;
-            // 
-            // CLipminimum
-            // 
-            this.CLipminimum.AutoSize = true;
-            this.CLipminimum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CLipminimum.Location = new System.Drawing.Point(232, 0);
-            this.CLipminimum.Name = "CLipminimum";
-            this.CLipminimum.Size = new System.Drawing.Size(39, 56);
-            this.CLipminimum.TabIndex = 12;
-            this.CLipminimum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.numericUpDown_TileWidth.Dock = System.Windows.Forms.DockStyle.Right;
+            this.numericUpDown_TileWidth.Location = new System.Drawing.Point(144, 0);
+            this.numericUpDown_TileWidth.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.numericUpDown_TileWidth.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            this.numericUpDown_TileWidth.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.numericUpDown_TileWidth.Name = "numericUpDown_TileWidth";
+            this.numericUpDown_TileWidth.Size = new System.Drawing.Size(60, 21);
+            this.numericUpDown_TileWidth.TabIndex = 1;
+            this.numericUpDown_TileWidth.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
             // 
             // CLAHEParameterControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panel_Main);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "CLAHEParameterControl";
-            this.Size = new System.Drawing.Size(919, 564);
-            this.Load += new System.EventHandler(this.CLAHE_Load);
-            this.panel1.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(350, 160);
+            this.Load += new System.EventHandler(this.CLAHEParameterControl_Load);
+            this.panel_Main.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.panel_ClipLimit.ResumeLayout(false);
+            this.panel_ClipLimit.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_ClipLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_ClipLimit)).EndInit();
+            this.panel_TileHeight.ResumeLayout(false);
+            this.panel_TileHeight.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_TileHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_TileHeight)).EndInit();
+            this.panel_TileWidth.ResumeLayout(false);
+            this.panel_TileWidth.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar_TileWidth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_TileWidth)).EndInit();
             this.ResumeLayout(false);
 
         }
 
-        #endregion
-
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel_Main;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TrackBar trackBar3;
-        private System.Windows.Forms.TrackBar trackBar2;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Panel panel_ClipLimit;
+        private System.Windows.Forms.TrackBar trackBar_ClipLimit;
+        private System.Windows.Forms.NumericUpDown numericUpDown_ClipLimit;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Panel panel_TileHeight;
+        private System.Windows.Forms.TrackBar trackBar_TileHeight;
+        private System.Windows.Forms.NumericUpDown numericUpDown_TileHeight;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label ClipLimit;
-        private System.Windows.Forms.TrackBar trackBar1;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Label TileWidthMaximum;
-        private System.Windows.Forms.Label TileWidthminimum;
-        private System.Windows.Forms.Label TileHeightMaximum;
-        private System.Windows.Forms.Label TileHeightminimum;
-        private System.Windows.Forms.Label ClipMaximum;
-        private System.Windows.Forms.Label CLipminimum;
+        private System.Windows.Forms.Panel panel_TileWidth;
+        private System.Windows.Forms.TrackBar trackBar_TileWidth;
+        private System.Windows.Forms.NumericUpDown numericUpDown_TileWidth;
     }
 }

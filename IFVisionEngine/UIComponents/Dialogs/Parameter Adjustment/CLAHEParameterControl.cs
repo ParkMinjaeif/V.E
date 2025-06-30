@@ -38,9 +38,38 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                SetClipLimitParameter(parameters); // ClipLimit 파라미터 설정
-                SetTileGridWidthParameter(parameters); // TileGridWidth 파라미터 설정  
-                SetTileGridHeightParameter(parameters); // TileGridHeight 파라미터 설정
+                if (parameters.ContainsKey("ClipLimit"))
+                {
+                    if (double.TryParse(parameters["ClipLimit"].ToString(), out double clipLimit))
+                    {
+                        clipLimit = Math.Max(1.0, Math.Min(8.0, clipLimit)); // 범위 제한 (1.0 ~ 8.0)
+
+                        // TrackBar는 10배 스케일링 (10~80)
+                        int trackBarValue = (int)(clipLimit * 10);
+                        trackBar_ClipLimit.Value = Math.Min(trackBar_ClipLimit.Maximum, Math.Max(trackBar_ClipLimit.Minimum, trackBarValue));
+                        numericUpDown_ClipLimit.Value = (decimal)clipLimit;
+                    }
+                }
+
+                if (parameters.ContainsKey("TileGridWidth"))
+                {
+                    if (int.TryParse(parameters["TileGridWidth"].ToString(), out int tileWidth))
+                    {
+                        tileWidth = Math.Max(4, Math.Min(32, tileWidth)); // 범위 제한 (4 ~ 32)
+                        trackBar_TileWidth.Value = tileWidth;
+                        numericUpDown_TileWidth.Value = tileWidth;
+                    }
+                }
+
+                if (parameters.ContainsKey("TileGridHeight"))
+                {
+                    if (int.TryParse(parameters["TileGridHeight"].ToString(), out int tileHeight))
+                    {
+                        tileHeight = Math.Max(4, Math.Min(32, tileHeight)); // 범위 제한 (4 ~ 32)
+                        trackBar_TileHeight.Value = tileHeight;
+                        numericUpDown_TileHeight.Value = tileHeight;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -62,9 +91,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
         {
             return new Dictionary<string, object>
             {
-                { "TileGridWidth", (int)numericUpDown3.Value },
-                { "TileGridHeight", (int)numericUpDown2.Value },
-                { "ClipLimit", (double)numericUpDown1.Value }
+                { "TileGridWidth", (int)numericUpDown_TileWidth.Value },
+                { "TileGridHeight", (int)numericUpDown_TileHeight.Value },
+                { "ClipLimit", (double)numericUpDown_ClipLimit.Value }
             };
         }
 
@@ -77,9 +106,12 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             try
             {
-                trackBar1.Value = 20; // ClipLimit: 2.0
-                trackBar2.Value = 8;  // TileHeight: 8
-                trackBar3.Value = 8;  // TileWidth: 8
+                trackBar_ClipLimit.Value = 20; // ClipLimit: 2.0
+                numericUpDown_ClipLimit.Value = 2.0m;
+                trackBar_TileHeight.Value = 8;  // TileHeight: 8
+                numericUpDown_TileHeight.Value = 8;
+                trackBar_TileWidth.Value = 8;  // TileWidth: 8
+                numericUpDown_TileWidth.Value = 8;
             }
             finally
             {
@@ -94,15 +126,14 @@ namespace IFVisionEngine.UIComponents.Dialogs
         /// <summary>
         /// 컨트롤 로드 시 초기화를 수행합니다.
         /// </summary>
-        private void CLAHE_Load(object sender, EventArgs e)
+        private void CLAHEParameterControl_Load(object sender, EventArgs e)
         {
             _suppressEvents = true; // 초기화 중 이벤트 억제
 
             try
             {
-                InitTrackbarsAndNumericUpDowns(); // 컨트롤 초기값 설정
-                SyncTrackbarsWithNumericUpDowns(); // 컨트롤 간 동기화 설정
-                UpdateMinMaxLabels(); // 최소/최대값 라벨 업데이트
+                InitializeControls();
+                SetupEventHandlers();
             }
             finally
             {
@@ -111,161 +142,103 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             RaiseParameterChanged(); // 초기값 이벤트 발생
         }
-        #endregion
 
-        #region Private Helper Methods
-        /// <summary>
-        /// ClipLimit 파라미터를 설정합니다.
-        /// </summary>
-        private void SetClipLimitParameter(Dictionary<string, object> parameters)
+        private void InitializeControls()
         {
-            if (parameters.ContainsKey("ClipLimit"))
-            {
-                if (double.TryParse(parameters["ClipLimit"].ToString(), out double clipLimit))
-                {
-                    clipLimit = Math.Max(1.0, Math.Min(8.0, clipLimit)); // 범위 제한 (1.0 ~ 4.0)
+            // ClipLimit 컨트롤 설정 (1.0 ~ 8.0, TrackBar는 10~80)
+            trackBar_ClipLimit.Minimum = 10;   // 1.0
+            trackBar_ClipLimit.Maximum = 80;   // 8.0  
+            trackBar_ClipLimit.Value = 20;     // 2.0
 
-                    numericUpDown1.Value = (decimal)clipLimit; // NumericUpDown 설정
-
-                    int trackBarValue = Math.Max(10, (int)(clipLimit * 10)); // TrackBar 값 계산 (0으로 나누기 방지)
-                    trackBar1.Value = Math.Min(trackBar1.Maximum, Math.Max(trackBar1.Minimum, trackBarValue)); // TrackBar 설정
-                }
-            }
-        }
-
-        /// <summary>
-        /// TileGridWidth 파라미터를 설정합니다.
-        /// </summary>
-        private void SetTileGridWidthParameter(Dictionary<string, object> parameters)
-        {
-            if (parameters.ContainsKey("TileGridWidth"))
-            {
-                if (int.TryParse(parameters["TileGridWidth"].ToString(), out int tileWidth))
-                {
-                    tileWidth = Math.Max(4, Math.Min(32, tileWidth)); // 범위 제한 (4 ~ 32)
-
-                    numericUpDown3.Value = tileWidth;
-                    trackBar3.Value = tileWidth;
-                }
-            }
-        }
-
-        /// <summary>
-        /// TileGridHeight 파라미터를 설정합니다.
-        /// </summary>
-        private void SetTileGridHeightParameter(Dictionary<string, object> parameters)
-        {
-            if (parameters.ContainsKey("TileGridHeight"))
-            {
-                if (int.TryParse(parameters["TileGridHeight"].ToString(), out int tileHeight))
-                {
-                    tileHeight = Math.Max(4, Math.Min(32, tileHeight)); // 범위 제한 (4 ~ 32)
-
-                    numericUpDown2.Value = tileHeight;
-                    trackBar2.Value = tileHeight;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 모든 컨트롤의 초기값을 설정합니다.
-        /// </summary>
-        private void InitTrackbarsAndNumericUpDowns()
-        {
-            // ClipLimit 컨트롤 설정
-            trackBar1.Minimum = 10;   // 1.0
-            trackBar1.Maximum = 80;   // 4.0  
-            trackBar1.Value = 20;     // 2.0
-
-            numericUpDown1.Minimum = 1.0m;
-            numericUpDown1.Maximum = 8.0m;
-            numericUpDown1.DecimalPlaces = 1;
-            numericUpDown1.Increment = 0.1m;
-            numericUpDown1.Value = 2.0m;
+            numericUpDown_ClipLimit.Minimum = 1.0m;
+            numericUpDown_ClipLimit.Maximum = 8.0m;
+            numericUpDown_ClipLimit.DecimalPlaces = 1;
+            numericUpDown_ClipLimit.Increment = 0.1m;
+            numericUpDown_ClipLimit.Value = 2.0m;
 
             // TileHeight 컨트롤 설정
-            trackBar2.Minimum = 4;
-            trackBar2.Maximum = 32;
-            trackBar2.Value = 8;
-            numericUpDown2.Minimum = 4;
-            numericUpDown2.Maximum = 32;
-            numericUpDown2.Value = 8;
+            trackBar_TileHeight.Minimum = 4;
+            trackBar_TileHeight.Maximum = 32;
+            trackBar_TileHeight.Value = 8;
+            numericUpDown_TileHeight.Minimum = 4;
+            numericUpDown_TileHeight.Maximum = 32;
+            numericUpDown_TileHeight.Value = 8;
 
             // TileWidth 컨트롤 설정
-            trackBar3.Minimum = 4;
-            trackBar3.Maximum = 32;
-            trackBar3.Value = 8;
-            numericUpDown3.Minimum = 4;
-            numericUpDown3.Maximum = 32;
-            numericUpDown3.Value = 8;
+            trackBar_TileWidth.Minimum = 4;
+            trackBar_TileWidth.Maximum = 32;
+            trackBar_TileWidth.Value = 8;
+            numericUpDown_TileWidth.Minimum = 4;
+            numericUpDown_TileWidth.Maximum = 32;
+            numericUpDown_TileWidth.Value = 8;
         }
 
-        /// <summary>
-        /// TrackBar와 NumericUpDown 간의 동기화 이벤트를 설정합니다.
-        /// </summary>
-        private void SyncTrackbarsWithNumericUpDowns()
+        private void SetupEventHandlers()
         {
-            // ClipLimit 동기화
-            trackBar1.ValueChanged += (s, e) => {
-                if (_suppressEvents) return;
-                decimal numValue = trackBar1.Value / 10.0m;
-                if (numericUpDown1.Value != numValue)
-                    numericUpDown1.Value = numValue;
-                RaiseParameterChanged();
+            // ClipLimit 동기화 (10배 스케일링)
+            trackBar_ClipLimit.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    decimal numValue = trackBar_ClipLimit.Value / 10.0m;
+                    numericUpDown_ClipLimit.Value = numValue;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
 
-            numericUpDown1.ValueChanged += (s, e) => {
-                if (_suppressEvents) return;
-                int trkValue = (int)(numericUpDown1.Value * 10);
-                if (trackBar1.Value != trkValue)
-                    trackBar1.Value = trkValue;
-                RaiseParameterChanged();
+            numericUpDown_ClipLimit.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    int trkValue = (int)(numericUpDown_ClipLimit.Value * 10);
+                    trackBar_ClipLimit.Value = Math.Min(trackBar_ClipLimit.Maximum, Math.Max(trackBar_ClipLimit.Minimum, trkValue));
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
 
             // TileHeight 동기화
-            trackBar2.ValueChanged += (s, e) => {
-                if (_suppressEvents) return;
-                if (numericUpDown2.Value != trackBar2.Value)
-                    numericUpDown2.Value = trackBar2.Value;
-                RaiseParameterChanged();
+            trackBar_TileHeight.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    numericUpDown_TileHeight.Value = trackBar_TileHeight.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
 
-            numericUpDown2.ValueChanged += (s, e) => {
-                if (_suppressEvents) return;
-                if (trackBar2.Value != (int)numericUpDown2.Value)
-                    trackBar2.Value = (int)numericUpDown2.Value;
-                RaiseParameterChanged();
+            numericUpDown_TileHeight.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    trackBar_TileHeight.Value = (int)numericUpDown_TileHeight.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
 
             // TileWidth 동기화
-            trackBar3.ValueChanged += (s, e) => {
-                if (_suppressEvents) return;
-                if (numericUpDown3.Value != trackBar3.Value)
-                    numericUpDown3.Value = trackBar3.Value;
-                RaiseParameterChanged();
+            trackBar_TileWidth.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    numericUpDown_TileWidth.Value = trackBar_TileWidth.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
 
-            numericUpDown3.ValueChanged += (s, e) => {
-                if (_suppressEvents) return;
-                if (trackBar3.Value != (int)numericUpDown3.Value)
-                    trackBar3.Value = (int)numericUpDown3.Value;
-                RaiseParameterChanged();
+            numericUpDown_TileWidth.ValueChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    _suppressEvents = true;
+                    trackBar_TileWidth.Value = (int)numericUpDown_TileWidth.Value;
+                    _suppressEvents = false;
+                    RaiseParameterChanged();
+                }
             };
-        }
-
-        /// <summary>
-        /// 최소/최대값 표시 라벨을 업데이트합니다.
-        /// </summary>
-        private void UpdateMinMaxLabels()
-        {
-            CLipminimum.Text = (trackBar1.Minimum / 10.0).ToString("F1"); // ClipLimit 최소값
-            ClipMaximum.Text = (trackBar1.Maximum / 10.0).ToString("F1"); // ClipLimit 최대값
-
-            TileHeightminimum.Text = trackBar2.Minimum.ToString(); // TileHeight 최소값
-            TileHeightMaximum.Text = trackBar2.Maximum.ToString(); // TileHeight 최대값
-
-            TileWidthminimum.Text = trackBar3.Minimum.ToString(); // TileWidth 최소값
-            TileWidthMaximum.Text = trackBar3.Maximum.ToString(); // TileWidth 최대값
         }
 
         /// <summary>
@@ -275,9 +248,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
         {
             if (_suppressEvents) return;
 
-            double clipLimit = Math.Max(1.0, trackBar1.Value / 10.0); // 0으로 나누기 방지
-            int tileHeight = Math.Max(1, trackBar2.Value); // 최소값 보장
-            int tileWidth = Math.Max(1, trackBar3.Value); // 최소값 보장
+            double clipLimit = Math.Max(1.0, (double)numericUpDown_ClipLimit.Value); // 0으로 나누기 방지
+            int tileHeight = Math.Max(1, (int)numericUpDown_TileHeight.Value); // 최소값 보장
+            int tileWidth = Math.Max(1, (int)numericUpDown_TileWidth.Value); // 최소값 보장
 
             OnParametersChanged?.Invoke(clipLimit, tileHeight, tileWidth); // 파라미터 변경 이벤트 발생
             OnParametersChangedBase?.Invoke(); // 기본 이벤트 발생
@@ -305,12 +278,12 @@ namespace IFVisionEngine.UIComponents.Dialogs
         {
             try
             {
-                numericUpDown1.Value = 2.0m;
-                trackBar1.Value = 20;
-                numericUpDown2.Value = 8;
-                trackBar2.Value = 8;
-                numericUpDown3.Value = 8;
-                trackBar3.Value = 8;
+                numericUpDown_ClipLimit.Value = 2.0m;
+                trackBar_ClipLimit.Value = 20;
+                numericUpDown_TileHeight.Value = 8;
+                trackBar_TileHeight.Value = 8;
+                numericUpDown_TileWidth.Value = 8;
+                trackBar_TileWidth.Value = 8;
             }
             catch (Exception ex)
             {

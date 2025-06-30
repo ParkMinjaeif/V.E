@@ -562,6 +562,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                     case "GaussianBlur": return CreateGaussianBlurParameters(dict);
                     case "CLAHE": return CreateClaheParameters(dict);
                     case "Binarization": return CreateBinarizationParameters(dict);
+                    case "Contour": return CreateContourParameters(dict);
                     case "Grayscale": return new GrayscaleParameters();
                     default: return LogAndReturnNull($"알 수 없는 노드 타입: {nodeType}");
                 }
@@ -572,7 +573,15 @@ namespace IFVisionEngine.UIComponents.UserControls
                 return null;
             }
         }
-
+        /// <summary>
+        /// Contour 파라미터 객체를 생성합니다.
+        /// </summary>
+        private ContourParameters CreateContourParameters(IDictionary<string, object> dict)
+        {
+            var param = new ContourParameters();
+            SetPropertiesFromDictionary(param, dict);
+            return param;
+        }
         /// <summary>
         /// Edge Detection 파라미터 객체를 생성합니다.
         /// </summary>

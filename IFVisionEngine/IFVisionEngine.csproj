@@ -144,6 +144,12 @@
     <Compile Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.Designer.cs">
       <DependentUpon>CLAHEParameterControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\ContourParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\ContourParameterControl.Designer.cs">
+      <DependentUpon>ContourParameterControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -155,6 +161,12 @@
     </Compile>
     <Compile Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.Designer.cs">
       <DependentUpon>CLAHEParameterDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\ContourParameterDescription.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\ContourParameterDescription.Designer.cs">
+      <DependentUpon>ContourParameterDescription.cs</DependentUpon>
     </Compile>
     <Compile Include="UIComponents\Dialogs\Parameter Description\EdgeParameterDescription.cs">
       <SubType>UserControl</SubType>
@@ -237,6 +249,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.resx">
       <DependentUpon>CLAHEParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\ContourParameterControl.resx">
+      <DependentUpon>ContourParameterControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.resx">
       <DependentUpon>EdgeParameterControl.cs</DependentUpon>

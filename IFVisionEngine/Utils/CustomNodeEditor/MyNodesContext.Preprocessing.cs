@@ -6,6 +6,7 @@ using IFVisionEngine.Manager; // ImageDataManager를 사용하기 위해 추가
 using IFVisionEngine.UIComponents.Dialogs;
 using System.Windows.Forms;
 using static MyNodesContext;
+using System.Collections.Generic;
 
 public partial class MyNodesContext
 {
@@ -391,5 +392,524 @@ public partial class MyNodesContext
         }
     }
     #endregion
-    
+    #region Contour
+    // --- 컨투어 검출 파라미터 클래스 ---
+    [Serializable]
+    [TypeConverter(typeof(ExpandableObjectConverter))]
+    public class ContourParameters
+    {
+        public enum ContourRetrievalMode
+        {
+            [Description("외부 컨투어만 검출")]
+            External = RetrievalModes.External,
+            [Description("모든 컨투어를 계층 없이 검출")]
+            List = RetrievalModes.List,
+            [Description("외부와 내부 홀(hole) 컨투어만 검출")]
+            CComp = RetrievalModes.CComp,
+            [Description("모든 컨투어를 전체 계층으로 검출")]
+            Tree = RetrievalModes.Tree
+        }
+
+        public enum ContourApproximationMethod
+        {
+            [Description("모든 컨투어 점을 저장 (압축 없음)")]
+            None = ContourApproximationModes.ApproxNone,
+            [Description("수평, 수직, 대각선 세그먼트를 압축하여 끝점만 남김")]
+            Simple = ContourApproximationModes.ApproxSimple,
+            [Description("TC89_L1 알고리즘 적용")]
+            TC89_L1 = ContourApproximationModes.ApproxTC89L1
+        }
+
+        [Description("컨투어 검출 모드를 선택합니다.")]
+        public ContourRetrievalMode RetrievalMode { get; set; } = ContourRetrievalMode.External;
+
+        [Description("컨투어 근사화 방법을 선택합니다.")]
+        public ContourApproximationMethod ApproximationMethod { get; set; } = ContourApproximationMethod.Simple;
+
+        private double _minContourArea = 100.0;
+        [Description("최소 컨투어 면적입니다. 이 값보다 작은 컨투어는 필터링됩니다.")]
+        public double MinContourArea
+        {
+            get => _minContourArea;
+            set => _minContourArea = Math.Max(0, value);
+        }
+
+        private double _maxContourArea = double.MaxValue;
+        [Description("최대 컨투어 면적입니다. 이 값보다 큰 컨투어는 필터링됩니다.")]
+        public double MaxContourArea
+        {
+            get => _maxContourArea;
+            set => _maxContourArea = Math.Max(_minContourArea, value);
+        }
+
+        [Description("컨투어를 원본 이미지에 그릴지 여부를 설정합니다.")]
+        public bool DrawOnOriginal { get; set; } = true;
+
+        [Description("컨투어 선의 두께입니다.")]
+        public int Thickness { get; set; } = 2;
+
+        public enum ContourColorMode
+        {
+            [Description("고정 색상 사용")]
+            Fixed,
+            [Description("각 컨투어마다 랜덤 색상")]
+            Random,
+            [Description("컨투어 크기에 따른 색상")]
+            SizeBased
+        }
+
+        [Description("컨투어 색상 모드를 선택합니다.")]
+        public ContourColorMode ColorMode { get; set; } = ContourColorMode.Fixed;
+
+        [Description("고정 색상 모드일 때 사용할 색상 (BGR 순서)")]
+        public System.Drawing.Color FixedColor { get; set; } = System.Drawing.Color.Green;
+
+        [Description("컨투어 번호를 표시할지 여부를 설정합니다.")]
+        public bool ShowContourNumbers { get; set; } = false;
+
+        public override string ToString()
+        {
+            return $"Mode:{RetrievalMode}, Method:{ApproximationMethod}, Area:{MinContourArea:F0}~{(MaxContourArea == double.MaxValue ? "∞" : MaxContourArea.ToString("F0"))}";
+        }
+    }
+
+    // --- 컨투어 검출 노드 ---
+    [Node(name: "Contour", menu: "분석/검출", description: "이미지에서 컨투어를 검출하고 시각화합니다.")]
+    public void ApplyContourDetection(string input, ContourParameters Contourparameters, out string output)
+    {
+        output = null;
+
+        // 먼저 입력 키가 유효한지 확인합니다.
+        if (string.IsNullOrEmpty(input))
+        {
+            FeedbackInfo?.Invoke("입력으로 전달된 이미지 키가 비어있습니다. 이전 노드의 실행 결과를 확인하세요.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            return;
+        }
+
+        Mat inputImage = ImageDataManager.GetImage(input);
+        if (inputImage == null || inputImage.Empty())
+        {
+            FeedbackInfo?.Invoke($"이미지 키 '{input}'에 해당하는 이미지를 찾을 수 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            return;
+        }
+
+        try
+        {
+            using (Mat binaryImage = new Mat())
+            using (Mat outputImage = new Mat())
+            {
+                // 컨투어 검출을 위해 이진 이미지 준비
+                if (inputImage.Channels() >= 3)
+                {
+                    using (Mat grayImage = new Mat())
+                    {
+                        Cv2.CvtColor(inputImage, grayImage, ColorConversionCodes.BGR2GRAY);
+                        // 이미 이진화된 이미지인지 확인 (대부분의 픽셀이 0 또는 255인지)
+                        Scalar mean = Cv2.Mean(grayImage);
+                        if (mean.Val0 > 50 && mean.Val0 < 200) // 그레이스케일이면 임계값 적용
+                        {
+                            Cv2.Threshold(grayImage, binaryImage, 127, 255, ThresholdTypes.Binary);
+                        }
+                        else
+                        {
+                            grayImage.CopyTo(binaryImage);
+                        }
+                    }
+                }
+                else
+                {
+                    inputImage.CopyTo(binaryImage);
+                }
+
+                // 컨투어 검출
+                Point[][] contours;
+                HierarchyIndex[] hierarchy;
+                Cv2.FindContours(binaryImage, out contours, out hierarchy,
+                                (RetrievalModes)Contourparameters.RetrievalMode,
+                                (ContourApproximationModes)Contourparameters.ApproximationMethod);
+
+                // 면적 기준으로 컨투어 필터링
+                var filteredContours = new List<Point[]>();
+                var filteredIndices = new List<int>();
+
+                for (int i = 0; i < contours.Length; i++)
+                {
+                    double area = Cv2.ContourArea(contours[i]);
+                    if (area >= Contourparameters.MinContourArea && area <= Contourparameters.MaxContourArea)
+                    {
+                        filteredContours.Add(contours[i]);
+                        filteredIndices.Add(i);
+                    }
+                }
+
+                // 출력 이미지 준비
+                if (Contourparameters.DrawOnOriginal && inputImage.Channels() >= 3)
+                {
+                    inputImage.CopyTo(outputImage);
+                }
+                else
+                {
+                    // 이진 이미지를 3채널로 변환하여 컬러 컨투어 그리기
+                    Cv2.CvtColor(binaryImage, outputImage, ColorConversionCodes.GRAY2BGR);
+                }
+
+                // 컨투어 그리기
+                Random random = new Random();
+                for (int i = 0; i < filteredContours.Count; i++)
+                {
+                    Scalar color;
+
+                    switch (Contourparameters.ColorMode)
+                    {
+                        case ContourParameters.ContourColorMode.Random:
+                            color = new Scalar(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                            break;
+                        case ContourParameters.ContourColorMode.SizeBased:
+                            double area = Cv2.ContourArea(filteredContours[i]);
+                            double normalizedArea = Math.Min(area / 10000.0, 1.0); // 10000을 최대값으로 정규화
+                            color = new Scalar(
+                                (int)(255 * (1 - normalizedArea)), // Blue
+                                (int)(255 * normalizedArea),       // Green  
+                                (int)(128 + 127 * normalizedArea)  // Red
+                            );
+                            break;
+                        case ContourParameters.ContourColorMode.Fixed:
+                        default:
+                            var fixedColor = Contourparameters.FixedColor;
+                            color = new Scalar(fixedColor.B, fixedColor.G, fixedColor.R); // BGR 순서
+                            break;
+                    }
+
+                    // 컨투어 그리기
+                    Cv2.DrawContours(outputImage, filteredContours, i, color, Contourparameters.Thickness);
+
+                    // 컨투어 번호 표시
+                    if (Contourparameters.ShowContourNumbers)
+                    {
+                        var moments = Cv2.Moments(filteredContours[i]);
+                        if (moments.M00 != 0)
+                        {
+                            var centroid = new Point(
+                                (int)(moments.M10 / moments.M00),
+                                (int)(moments.M01 / moments.M00)
+                            );
+                            Cv2.PutText(outputImage, i.ToString(), centroid,
+                                       HersheyFonts.HersheySimplex, 0.8,
+                                       new Scalar(255, 255, 255), 2);
+                        }
+                    }
+                }
+
+                output = CurrentProcessingNode.GetHashCode().ToString();
+                ImageDataManager.RegisterImage(output, outputImage);
+                ImageKeySelected?.Invoke(output, CurrentProcessingNode.Name);
+
+                string resultMessage = $"컨투어 검출 완료. 총 {contours.Length}개 검출, {filteredContours.Count}개 표시";
+                FeedbackInfo?.Invoke(resultMessage, CurrentProcessingNode, FeedbackType.Information, outputImage.Clone(), false);
+            }
+        }
+        catch (Exception ex)
+        {
+            FeedbackInfo?.Invoke($"컨투어 검출 처리 중 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
+        }
+    }
+    #endregion
+    #region Moments
+    // --- 모멘트 중심좌표 계산 파라미터 클래스 ---
+    [Serializable]
+    [TypeConverter(typeof(ExpandableObjectConverter))]
+    public class MomentsParameters
+    {
+        public enum AnalysisMode
+        {
+            [Description("전체 이미지의 중심좌표 계산")]
+            WholeImage,
+            [Description("컨투어별 중심좌표 계산")]
+            Contours,
+            [Description("연결된 구성요소별 중심좌표 계산")]
+            ConnectedComponents
+        }
+
+        public enum VisualizationMode
+        {
+            [Description("원본 이미지에 표시")]
+            OnOriginal,
+            [Description("이진 이미지에 표시")]
+            OnBinary,
+            [Description("새로운 검은 배경에 표시")]
+            OnBlack
+        }
+
+        [Description("분석 모드를 선택합니다.")]
+        public AnalysisMode Mode { get; set; } = AnalysisMode.Contours;
+
+        [Description("시각화 모드를 선택합니다.")]
+        public VisualizationMode Visualization { get; set; } = VisualizationMode.OnOriginal;
+
+        private double _minContourArea = 50.0;
+        [Description("최소 컨투어 면적입니다. 이 값보다 작은 객체는 무시됩니다.")]
+        public double MinContourArea
+        {
+            get => _minContourArea;
+            set => _minContourArea = Math.Max(0, value);
+        }
+
+        private double _maxContourArea = double.MaxValue;
+        [Description("최대 컨투어 면적입니다. 이 값보다 큰 객체는 무시됩니다.")]
+        public double MaxContourArea
+        {
+            get => _maxContourArea;
+            set => _maxContourArea = Math.Max(_minContourArea, value);
+        }
+
+        [Description("중심점 마커의 크기입니다.")]
+        public int MarkerSize { get; set; } = 10;
+
+        [Description("중심점 마커의 두께입니다.")]
+        public int MarkerThickness { get; set; } = 2;
+
+        [Description("중심점 마커 색상 (BGR 순서)")]
+        public System.Drawing.Color MarkerColor { get; set; } = System.Drawing.Color.Red;
+
+        [Description("십자가 마커를 사용할지 여부입니다.")]
+        public bool UseCrossMarker { get; set; } = true;
+
+        [Description("원형 마커를 사용할지 여부입니다.")]
+        public bool UseCircleMarker { get; set; } = false;
+
+        [Description("좌표값을 텍스트로 표시할지 여부입니다.")]
+        public bool ShowCoordinates { get; set; } = true;
+
+        [Description("객체 번호를 표시할지 여부입니다.")]
+        public bool ShowObjectNumbers { get; set; } = true;
+
+        [Description("면적 정보를 표시할지 여부입니다.")]
+        public bool ShowArea { get; set; } = false;
+
+        [Description("텍스트 폰트 크기입니다.")]
+        public double FontScale { get; set; } = 0.6;
+
+        [Description("텍스트 색상 (BGR 순서)")]
+        public System.Drawing.Color TextColor { get; set; } = System.Drawing.Color.Yellow;
+
+        public override string ToString()
+        {
+            return $"Mode:{Mode}, Area:{MinContourArea:F0}~{(MaxContourArea == double.MaxValue ? "∞" : MaxContourArea.ToString("F0"))}, Marker:{MarkerSize}px";
+        }
+    }
+
+    // --- 모멘트 중심좌표 계산 노드 ---
+    [Node(name: "Moments", menu: "분석/측정", description: "이미지 모멘트를 계산하여 객체의 중심좌표를 구합니다.")]
+    public void ApplyMomentsAnalysis(string input, MomentsParameters Momentsparameters, out string output)
+    {
+        output = null;
+
+        // 먼저 입력 키가 유효한지 확인합니다.
+        if (string.IsNullOrEmpty(input))
+        {
+            FeedbackInfo?.Invoke("입력으로 전달된 이미지 키가 비어있습니다. 이전 노드의 실행 결과를 확인하세요.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            return;
+        }
+
+        Mat inputImage = ImageDataManager.GetImage(input);
+        if (inputImage == null || inputImage.Empty())
+        {
+            FeedbackInfo?.Invoke($"이미지 키 '{input}'에 해당하는 이미지를 찾을 수 없습니다.", CurrentProcessingNode, FeedbackType.Error, null, true);
+            return;
+        }
+
+        try
+        {
+            using (Mat binaryImage = new Mat())
+            using (Mat outputImage = new Mat())
+            {
+                // 이진 이미지 준비
+                if (inputImage.Channels() >= 3)
+                {
+                    using (Mat grayImage = new Mat())
+                    {
+                        Cv2.CvtColor(inputImage, grayImage, ColorConversionCodes.BGR2GRAY);
+                        // 이미 이진화된 이미지인지 확인
+                        Scalar mean = Cv2.Mean(grayImage);
+                        if (mean.Val0 > 50 && mean.Val0 < 200)
+                        {
+                            Cv2.Threshold(grayImage, binaryImage, 127, 255, ThresholdTypes.Binary);
+                        }
+                        else
+                        {
+                            grayImage.CopyTo(binaryImage);
+                        }
+                    }
+                }
+                else
+                {
+                    inputImage.CopyTo(binaryImage);
+                }
+
+                // 출력 이미지 준비
+                switch (Momentsparameters.Visualization)
+                {
+                    case MomentsParameters.VisualizationMode.OnOriginal:
+                        if (inputImage.Channels() >= 3)
+                            inputImage.CopyTo(outputImage);
+                        else
+                            Cv2.CvtColor(inputImage, outputImage, ColorConversionCodes.GRAY2BGR);
+                        break;
+                    case MomentsParameters.VisualizationMode.OnBinary:
+                        Cv2.CvtColor(binaryImage, outputImage, ColorConversionCodes.GRAY2BGR);
+                        break;
+                    case MomentsParameters.VisualizationMode.OnBlack:
+                        {
+                            using (var blackImage = new Mat(inputImage.Size(), MatType.CV_8UC3, Scalar.All(0)))
+                            {
+                                blackImage.CopyTo(outputImage);
+                            }
+                        }
+                        break;
+                }
+
+                List<Point2f> centroids = new List<Point2f>();
+                List<double> areas = new List<double>();
+                int objectCount = 0;
+
+                // 분석 모드에 따른 처리
+                switch (Momentsparameters.Mode)
+                {
+                    case MomentsParameters.AnalysisMode.WholeImage:
+                        {
+                            // 전체 이미지의 모멘트 계산
+                            var moments = Cv2.Moments(binaryImage, true);
+                            if (moments.M00 != 0)
+                            {
+                                float cx = (float)(moments.M10 / moments.M00);
+                                float cy = (float)(moments.M01 / moments.M00);
+                                centroids.Add(new Point2f(cx, cy));
+                                areas.Add(moments.M00);
+                                objectCount = 1;
+                            }
+                        }
+                        break;
+
+                    case MomentsParameters.AnalysisMode.Contours:
+                        {
+                            // 컨투어별 모멘트 계산
+                            Point[][] contours;
+                            HierarchyIndex[] hierarchy;
+                            Cv2.FindContours(binaryImage, out contours, out hierarchy,
+                                            RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+                            foreach (var contour in contours)
+                            {
+                                double area = Cv2.ContourArea(contour);
+                                if (area >= Momentsparameters.MinContourArea && area <= Momentsparameters.MaxContourArea)
+                                {
+                                    var moments = Cv2.Moments(contour);
+                                    if (moments.M00 != 0)
+                                    {
+                                        float cx = (float)(moments.M10 / moments.M00);
+                                        float cy = (float)(moments.M01 / moments.M00);
+                                        centroids.Add(new Point2f(cx, cy));
+                                        areas.Add(area);
+                                        objectCount++;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+
+                    case MomentsParameters.AnalysisMode.ConnectedComponents:
+                        {
+                            // 연결된 구성요소별 모멘트 계산
+                            using (Mat labels = new Mat())
+                            using (Mat stats = new Mat())
+                            using (Mat centroids_cc = new Mat())
+                            {
+                                int numLabels = Cv2.ConnectedComponentsWithStats(binaryImage, labels, stats, centroids_cc, PixelConnectivity.Connectivity8);
+
+                                for (int i = 1; i < numLabels; i++) // 0은 배경이므로 제외
+                                {
+                                    double area = stats.At<int>(i, (int)ConnectedComponentsTypes.Area);
+                                    if (area >= Momentsparameters.MinContourArea && area <= Momentsparameters.MaxContourArea)
+                                    {
+                                        double cx = centroids_cc.At<double>(i, 0);
+                                        double cy = centroids_cc.At<double>(i, 1);
+                                        centroids.Add(new Point2f((float)cx, (float)cy));
+                                        areas.Add(area);
+                                        objectCount++;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+
+                // 마커 색상 설정
+                var markerColor = Momentsparameters.MarkerColor;
+                Scalar markerScalar = new Scalar(markerColor.B, markerColor.G, markerColor.R);
+                var textColor = Momentsparameters.TextColor;
+                Scalar textScalar = new Scalar(textColor.B, textColor.G, textColor.R);
+
+                // 중심점 그리기 및 정보 표시
+                for (int i = 0; i < centroids.Count; i++)
+                {
+                    Point center = new Point((int)centroids[i].X, (int)centroids[i].Y);
+
+                    // 십자가 마커
+                    if (Momentsparameters.UseCrossMarker)
+                    {
+                        int size = Momentsparameters.MarkerSize;
+                        Cv2.Line(outputImage,
+                                new Point(center.X - size, center.Y),
+                                new Point(center.X + size, center.Y),
+                                markerScalar, Momentsparameters.MarkerThickness);
+                        Cv2.Line(outputImage,
+                                new Point(center.X, center.Y - size),
+                                new Point(center.X, center.Y + size),
+                                markerScalar, Momentsparameters.MarkerThickness);
+                    }
+
+                    // 원형 마커
+                    if (Momentsparameters.UseCircleMarker)
+                    {
+                        Cv2.Circle(outputImage, center, Momentsparameters.MarkerSize / 2,
+                                  markerScalar, Momentsparameters.MarkerThickness);
+                    }
+
+                    // 텍스트 정보 표시
+                    List<string> textLines = new List<string>();
+
+                    if (Momentsparameters.ShowObjectNumbers)
+                        textLines.Add($"#{i + 1}");
+
+                    if (Momentsparameters.ShowCoordinates)
+                        textLines.Add($"({center.X}, {center.Y})");
+
+                    if (Momentsparameters.ShowArea)
+                        textLines.Add($"A:{areas[i]:F0}");
+
+                    // 텍스트 그리기
+                    Point textPos = new Point(center.X + Momentsparameters.MarkerSize + 5, center.Y - 10);
+                    for (int j = 0; j < textLines.Count; j++)
+                    {
+                        Point linePos = new Point(textPos.X, textPos.Y + j * 20);
+                        Cv2.PutText(outputImage, textLines[j], linePos,
+                                   HersheyFonts.HersheySimplex, Momentsparameters.FontScale,
+                                   textScalar, 1);
+                    }
+                }
+
+                output = CurrentProcessingNode.GetHashCode().ToString();
+                ImageDataManager.RegisterImage(output, outputImage);
+                ImageKeySelected?.Invoke(output, CurrentProcessingNode.Name);
+
+                string resultMessage = $"모멘트 분석 완료. {objectCount}개 객체의 중심좌표 계산됨";
+                FeedbackInfo?.Invoke(resultMessage, CurrentProcessingNode, FeedbackType.Information, outputImage.Clone(), false);
+            }
+        }
+        catch (Exception ex)
+        {
+            FeedbackInfo?.Invoke($"모멘트 분석 처리 중 오류: {ex.Message}", CurrentProcessingNode, FeedbackType.Error, null, true);
+        }
+    }
+    #endregion
 }
