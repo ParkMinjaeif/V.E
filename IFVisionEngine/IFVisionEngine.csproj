@@ -156,6 +156,16 @@
     <Compile Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.Designer.cs">
       <DependentUpon>EdgeParameterControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.Designer.cs">
+      <DependentUpon>MomentsParameterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.cs" />
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.Designer.cs">
+      <DependentUpon>RadialLinesParameterControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -179,6 +189,18 @@
     </Compile>
     <Compile Include="UIComponents\Dialogs\Parameter Description\GaussianBlurParameterDescription.Designer.cs">
       <DependentUpon>GaussianBlurParameterDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\MomentsParameterDescription.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\MomentsParameterDescription.Designer.cs">
+      <DependentUpon>MomentsParameterDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\RadialLinesParameterDescription.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Dialogs\Parameter Description\RadialLinesParameterDescription.Designer.cs">
+      <DependentUpon>RadialLinesParameterDescription.cs</DependentUpon>
     </Compile>
     <Compile Include="UIComponents\Forms\FormParameters.cs">
       <SubType>Form</SubType>

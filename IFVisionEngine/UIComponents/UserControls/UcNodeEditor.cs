@@ -42,6 +42,25 @@ namespace IFVisionEngine.UIComponents.UserControls
         // 4. 더블클릭 관련 상수
         private const int DOUBLECLICK_TIMEOUT = 300;    // 더블클릭 허용 시간 (밀리초)
         private const int DOUBLECLICK_RESET_DELAY = 100; // 더블클릭 플래그 리셋 지연시간 (밀리초)
+
+        // 5. 중심좌표 저장 관련
+        private Dictionary<string, CentroidData> _storedCentroids = new Dictionary<string, CentroidData>();
+        private CentroidData _lastCentroid = null;  // 마지막으로 감지된 중심좌표
+
+        /// <summary>
+        /// 중심좌표 데이터를 저장하는 클래스
+        /// </summary>
+        public class CentroidData
+        {
+            public double X { get; set; }
+            public double Y { get; set; }
+
+            public CentroidData(double x, double y)
+            {
+                X = x;
+                Y = y;
+            }
+        }
         #endregion
 
         #region Constructor and Initialization
@@ -81,6 +100,192 @@ namespace IFVisionEngine.UIComponents.UserControls
         /// </summary>
         /// <returns>MyNodesContext 인스턴스</returns>
         public MyNodesContext GetContext() => _nodesContext;
+        #endregion
+
+        #region Centroid Management
+        /// <summary>
+        /// 노드의 컨텍스트에서 중심좌표 정보를 추출합니다.
+        /// </summary>
+        /// <param name="node">대상 노드</param>
+        /// <returns>중심좌표 데이터 또는 null</returns>
+        private CentroidData ExtractCentroidFromNodeContext(NodeVisual node)
+        {
+            try
+            {
+                dynamic ctx = node.GetNodeContext();
+                if (ctx is DynamicNodeContext dynCtx)
+                {
+                    // 노드 컨텍스트의 모든 멤버를 확인
+                    foreach (var memberName in dynCtx.GetDynamicMemberNames())
+                    {
+                        try
+                        {
+                            var memberValue = dynCtx[memberName];
+                            if (memberValue != null)
+                            {
+                                // moments 관련 데이터에서 중심좌표 추출
+                                var centroid = ExtractCentroidFromData(memberValue);
+                                if (centroid != null)
+                                {
+                                    LogDebug($"노드 컨텍스트에서 중심좌표 추출: ({centroid.X:F2}, {centroid.Y:F2})");
+                                    return centroid;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            LogDebug($"멤버 '{memberName}' 확인 중 오류: {ex.Message}");
+                        }
+                    }
+
+                    // 특별히 'input' 또는 'output' 키로 저장된 데이터 확인
+                    try
+                    {
+                        var inputData = dynCtx["input"];
+                        if (inputData != null)
+                        {
+                            var centroid = ExtractCentroidFromData(inputData);
+                            if (centroid != null) return centroid;
+                        }
+                    }
+                    catch { }
+
+                    try
+                    {
+                        var outputData = dynCtx["output"];
+                        if (outputData != null)
+                        {
+                            var centroid = ExtractCentroidFromData(outputData);
+                            if (centroid != null) return centroid;
+                        }
+                    }
+                    catch { }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogDebug($"중심좌표 추출 중 오류: {ex.Message}");
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 데이터 객체에서 중심좌표를 추출합니다.
+        /// </summary>
+        /// <param name="data">입력 데이터</param>
+        /// <returns>중심좌표 데이터 또는 null</returns>
+        private CentroidData ExtractCentroidFromData(object data)
+        {
+            try
+            {
+                // 1. Dictionary 형태의 moments 데이터
+                if (data is Dictionary<string, object> dict)
+                {
+                    if (dict.ContainsKey("CentroidX") && dict.ContainsKey("CentroidY"))
+                    {
+                        if (double.TryParse(dict["CentroidX"].ToString(), out double x) &&
+                            double.TryParse(dict["CentroidY"].ToString(), out double y))
+                        {
+                            return new CentroidData(x, y);
+                        }
+                    }
+
+                    // m10/m00, m01/m00 형태로 저장된 경우
+                    if (dict.ContainsKey("m10") && dict.ContainsKey("m01") && dict.ContainsKey("m00"))
+                    {
+                        if (double.TryParse(dict["m10"].ToString(), out double m10) &&
+                            double.TryParse(dict["m01"].ToString(), out double m01) &&
+                            double.TryParse(dict["m00"].ToString(), out double m00) && m00 != 0)
+                        {
+                            return new CentroidData(m10 / m00, m01 / m00);
+                        }
+                    }
+                }
+
+                // 2. Dynamic 객체
+                if (data is IDynamicMetaObjectProvider dynData)
+                {
+                    dynamic dyn = data;
+                    try
+                    {
+                        if (dyn.CentroidX != null && dyn.CentroidY != null)
+                        {
+                            return new CentroidData((double)dyn.CentroidX, (double)dyn.CentroidY);
+                        }
+                    }
+                    catch { }
+                }
+
+                // 3. 문자열 형태 "x,y"
+                if (data is string str && str.Contains(","))
+                {
+                    var parts = str.Split(',');
+                    if (parts.Length >= 2 &&
+                        double.TryParse(parts[0].Trim(), out double x) &&
+                        double.TryParse(parts[1].Trim(), out double y))
+                    {
+                        return new CentroidData(x, y);
+                    }
+                }
+
+                // 4. OpenCV Moments 객체 (리플렉션 사용)
+                var dataType = data.GetType();
+                if (dataType.Name.Contains("Moments"))
+                {
+                    var m10Prop = dataType.GetProperty("M10");
+                    var m01Prop = dataType.GetProperty("M01");
+                    var m00Prop = dataType.GetProperty("M00");
+
+                    if (m10Prop != null && m01Prop != null && m00Prop != null)
+                    {
+                        double m10 = Convert.ToDouble(m10Prop.GetValue(data));
+                        double m01 = Convert.ToDouble(m01Prop.GetValue(data));
+                        double m00 = Convert.ToDouble(m00Prop.GetValue(data));
+
+                        if (m00 != 0)
+                        {
+                            return new CentroidData(m10 / m00, m01 / m00);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogDebug($"데이터에서 중심좌표 추출 실패: {ex.Message}");
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 노드별로 중심좌표를 저장합니다.
+        /// </summary>
+        /// <param name="nodeId">노드 ID</param>
+        /// <param name="centroid">중심좌표</param>
+        private void StoreCentroidForNode(string nodeId, CentroidData centroid)
+        {
+            _storedCentroids[nodeId] = centroid;
+            _lastCentroid = centroid;
+            LogDebug($"노드 '{nodeId}'의 중심좌표 저장: ({centroid.X:F2}, {centroid.Y:F2})");
+        }
+
+        /// <summary>
+        /// 저장된 중심좌표를 반환합니다.
+        /// </summary>
+        /// <returns>마지막 중심좌표 또는 null</returns>
+        public CentroidData GetLastCentroid()
+        {
+            return _lastCentroid;
+        }
+
+        /// <summary>
+        /// 특정 노드의 저장된 중심좌표를 반환합니다.
+        /// </summary>
+        /// <param name="nodeId">노드 ID</param>
+        /// <returns>중심좌표 또는 null</returns>
+        public CentroidData GetStoredCentroid(string nodeId)
+        {
+            return _storedCentroids.ContainsKey(nodeId) ? _storedCentroids[nodeId] : null;
+        }
         #endregion
 
         #region Toolbar Events
@@ -268,8 +473,61 @@ namespace IFVisionEngine.UIComponents.UserControls
                 HandleDoubleClick(obj);
             }
             else
+            {
                 _nodeWasJustSelected = true;
+
+                // 노드 선택 시 중심좌표 추출 시도
+                TryExtractAndStoreCentroid(obj);
+            }
             SelectedNodeContextChanged?.Invoke(obj);
+        }
+
+        /// <summary>
+        /// 선택된 노드에서 중심좌표를 추출하고 저장을 시도합니다.
+        /// </summary>
+        /// <param name="obj">선택된 노드 객체</param>
+        private void TryExtractAndStoreCentroid(object obj)
+        {
+            try
+            {
+                var nodeInfo = ExtractNodeInfo(obj);
+
+                // RadialLines 노드이거나 중심좌표가 필요한 노드인 경우
+                if (IsNodeTypeThatNeedsCentroid(nodeInfo.NodeName))
+                {
+                    // 해당 노드를 찾아서 중심좌표 추출
+                    string simpleNodeName = ExtractNodeName(nodeInfo.NodeName);
+                    var nodes = nodesControl1.GetNodes(simpleNodeName);
+
+                    if (nodes.Count > 0)
+                    {
+                        var node = nodes[0];
+                        var centroid = ExtractCentroidFromNodeContext(node);
+
+                        if (centroid != null)
+                        {
+                            StoreCentroidForNode(nodeInfo.NodeName, centroid);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogDebug($"중심좌표 추출 시도 중 오류: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 노드가 중심좌표가 필요한 타입인지 확인합니다.
+        /// </summary>
+        /// <param name="nodeName">노드 이름</param>
+        /// <returns>중심좌표가 필요한 노드 여부</returns>
+        private bool IsNodeTypeThatNeedsCentroid(string nodeName)
+        {
+            if (string.IsNullOrEmpty(nodeName)) return false;
+
+            string nodeType = ExtractNodeName(nodeName);
+            return nodeType.Equals("RadialLines", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -346,6 +604,21 @@ namespace IFVisionEngine.UIComponents.UserControls
                                 if (prop.CanRead)
                                     parameters[prop.Name] = prop.GetValue(currentParamObj);
                             }
+                        }
+                    }
+
+                    // 4. RadialLines 노드인 경우 중심좌표 정보 추가
+                    if (IsNodeTypeThatNeedsCentroid(nodeName))
+                    {
+                        var centroid = GetLastCentroid();
+                        if (centroid != null)
+                        {
+                            // moments 형태로도 추가 (기존 코드와의 호환성)
+                            parameters["moments"] = new Dictionary<string, object>
+                            {
+                                ["CentroidX"] = centroid.X,
+                                ["CentroidY"] = centroid.Y
+                            };
                         }
                     }
                 }
@@ -563,6 +836,8 @@ namespace IFVisionEngine.UIComponents.UserControls
                     case "CLAHE": return CreateClaheParameters(dict);
                     case "Binarization": return CreateBinarizationParameters(dict);
                     case "Contour": return CreateContourParameters(dict);
+                    case "Moments": return CreateMomentsParameters(dict);
+                    case "RadialLines": return CreateRadialLinesParameters(dict);
                     case "Grayscale": return new GrayscaleParameters();
                     default: return LogAndReturnNull($"알 수 없는 노드 타입: {nodeType}");
                 }
@@ -574,11 +849,29 @@ namespace IFVisionEngine.UIComponents.UserControls
             }
         }
         /// <summary>
+        /// RadialLines 파라미터 객체를 생성합니다.
+        /// </summary>
+        private RadialLinesParameters CreateRadialLinesParameters(IDictionary<string, object> dict)
+        {
+            var param = new RadialLinesParameters();
+            SetPropertiesFromDictionary(param, dict);
+            return param;
+        }
+        /// <summary>
         /// Contour 파라미터 객체를 생성합니다.
         /// </summary>
         private ContourParameters CreateContourParameters(IDictionary<string, object> dict)
         {
             var param = new ContourParameters();
+            SetPropertiesFromDictionary(param, dict);
+            return param;
+        }
+        /// <summary>
+        /// Moments 파라미터 객체를 생성합니다.
+        /// </summary>
+        private MomentsParameters CreateMomentsParameters(IDictionary<string, object> dict)
+        {
+            var param = new MomentsParameters();
             SetPropertiesFromDictionary(param, dict);
             return param;
         }

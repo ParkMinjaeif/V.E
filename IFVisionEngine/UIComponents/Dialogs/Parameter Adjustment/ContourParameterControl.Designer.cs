@@ -402,6 +402,100 @@
             this.checkBox_ShowNumbers.TabIndex = 17;
             this.checkBox_ShowNumbers.Text = "활성화";
             this.checkBox_ShowNumbers.UseVisualStyleBackColor = true;
+            // === 새로 추가된 컨트롤들 초기화 ===
+            this.label10 = new System.Windows.Forms.Label();
+            this.checkBox_ShowVisualization = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.checkBox_OutputData = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.checkBox_OutputAsJson = new System.Windows.Forms.CheckBox();
+
+            // TableLayoutPanel의 RowCount를 12로 증가
+            this.tableLayoutPanel1.RowCount = 12;
+
+            // 기존 RowStyles는 그대로 두고 새로운 3개 행 추가
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+
+            // === 새로 추가된 컨트롤들을 TableLayoutPanel에 추가 ===
+            this.tableLayoutPanel1.Controls.Add(this.label10, 0, 9);
+            this.tableLayoutPanel1.Controls.Add(this.checkBox_ShowVisualization, 1, 9);
+            this.tableLayoutPanel1.Controls.Add(this.label11, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.checkBox_OutputData, 1, 10);
+            this.tableLayoutPanel1.Controls.Add(this.label12, 0, 11);
+            this.tableLayoutPanel1.Controls.Add(this.checkBox_OutputAsJson, 1, 11);
+
+            // === label10 (시각화 표시) ===
+            this.label10.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(3, 222);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(73, 12);
+            this.label10.TabIndex = 18;
+            this.label10.Text = "시각화 표시:";
+
+            // === checkBox_ShowVisualization ===
+            this.checkBox_ShowVisualization.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBox_ShowVisualization.AutoSize = true;
+            this.checkBox_ShowVisualization.Checked = true;
+            this.checkBox_ShowVisualization.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_ShowVisualization.Location = new System.Drawing.Point(163, 220);
+            this.checkBox_ShowVisualization.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_ShowVisualization.Name = "checkBox_ShowVisualization";
+            this.checkBox_ShowVisualization.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_ShowVisualization.TabIndex = 19;
+            this.checkBox_ShowVisualization.Text = "활성화";
+            this.checkBox_ShowVisualization.UseVisualStyleBackColor = true;
+
+            // === label11 (데이터 출력) ===
+            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(3, 246);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(73, 12);
+            this.label11.TabIndex = 20;
+            this.label11.Text = "데이터 출력:";
+
+            // === checkBox_OutputData ===
+            this.checkBox_OutputData.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBox_OutputData.AutoSize = true;
+            this.checkBox_OutputData.Location = new System.Drawing.Point(163, 244);
+            this.checkBox_OutputData.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_OutputData.Name = "checkBox_OutputData";
+            this.checkBox_OutputData.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_OutputData.TabIndex = 21;
+            this.checkBox_OutputData.Text = "활성화";
+            this.checkBox_OutputData.UseVisualStyleBackColor = true;
+
+            // === label12 (JSON 형태) ===
+            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(3, 270);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(73, 12);
+            this.label12.TabIndex = 22;
+            this.label12.Text = "JSON 형태:";
+
+            // === checkBox_OutputAsJson ===
+            this.checkBox_OutputAsJson.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.checkBox_OutputAsJson.AutoSize = true;
+            this.checkBox_OutputAsJson.Checked = true;
+            this.checkBox_OutputAsJson.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_OutputAsJson.Enabled = false;
+            this.checkBox_OutputAsJson.Location = new System.Drawing.Point(163, 268);
+            this.checkBox_OutputAsJson.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_OutputAsJson.Name = "checkBox_OutputAsJson";
+            this.checkBox_OutputAsJson.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_OutputAsJson.TabIndex = 23;
+            this.checkBox_OutputAsJson.Text = "활성화";
+            this.checkBox_OutputAsJson.UseVisualStyleBackColor = true;
+
+            // TableLayoutPanel의 높이도 조정
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(400, 288); // 216에서 288로 증가
+
+            // ContourParameterControl의 높이도 조정
+            this.Size = new System.Drawing.Size(400, 312);
             // 
             // ContourParameterControl
             // 
@@ -457,5 +551,11 @@
         private System.Windows.Forms.Button button_FixedColor;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox checkBox_ShowNumbers;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox checkBox_ShowVisualization;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox checkBox_OutputData;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.CheckBox checkBox_OutputAsJson;
     }
 }

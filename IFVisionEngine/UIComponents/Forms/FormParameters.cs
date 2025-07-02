@@ -8,6 +8,8 @@ using System.Linq;
 using IFVisionEngine.UIComponents.Dialogs.Parameter_Description;
 using static MyNodesContext;
 using System.Security.Cryptography;
+using System.Text;
+using System.Web.UI.WebControls;
 
 namespace IFVisionEngine.UIComponents.Dialogs
 {
@@ -21,6 +23,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
         private IPreprocessParameterControl _currentParameterControl; // 현재 활성화된 파라미터 컨트롤
         private Mat _originalMat; // 원본 이미지 (OpenCV Mat 형식)
         private IDictionary<string, object> _currentParameters; // 현재 파라미터값들
+        private double _centroidX = 0;
+        private double _centroidY = 0;
+        private bool HasCentroidData = false;
         #endregion
 
         #region Public Properties
@@ -417,53 +422,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
             }
         }
 
-        /// <summary>
-        /// 파라미터를 해당하는 UserControl에 설정합니다.
-        /// </summary>
-        private void SetParametersToUserControl()
-        {
-            if (_currentParameterControl == null) return;
-
-            try
-            {
-                Console.WriteLine($"=== SetParametersToUserControl 시작 ===");
-
-                var parameterDict = _currentParameters.ToDictionary(x => x.Key, x => x.Value);
-
-                // 각 컨트롤 타입별로 SetCurrentParameters 호출
-                if (_currentParameterControl is GaussianBlurParameterControl gaussianControl)
-                {
-                    Console.WriteLine("✅ GaussianBlur 컨트롤에 현재 파라미터 설정");
-                    gaussianControl.SetCurrentParameters(parameterDict);
-                }
-                else if (_currentParameterControl is CLAHEParameterControl claheControl)
-                {
-                    Console.WriteLine("✅ CLAHE 컨트롤에 현재 파라미터 설정");
-                    claheControl.SetCurrentParameters(parameterDict);
-                }
-                else if (_currentParameterControl is EdgeParameterControl edgeControl)
-                {
-                    Console.WriteLine("✅ Edge 컨트롤에 현재 파라미터 설정");
-                    edgeControl.SetCurrentParameters(parameterDict);
-                }
-                else if (_currentParameterControl is ContourParameterControl contourControl) 
-                {
-                    Console.WriteLine("✅ Contour 컨트롤에 현재 파라미터 설정");
-                    contourControl.SetCurrentParameters(parameterDict);
-                }
-                else
-                {
-                    TrySetParametersUsingReflection(parameterDict); // Reflection 사용
-                }
-
-                Console.WriteLine("=== SetParametersToUserControl 완료 ===");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ UserControl 파라미터 설정 실패: {ex.Message}");
-            }
-        }
-
+        
         /// <summary>
         /// Reflection을 사용하여 SetCurrentParameters 메서드를 호출합니다.
         /// </summary>
@@ -554,12 +513,15 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 case "claheparameters":
                     return new CLAHEParameterControl();
                 case "gaussianblurparameters":
-                    Console.WriteLine("GaussianBlurParameterControl 생성됨");
                     return new GaussianBlurParameterControl();
                 case "edgeparameters":
                     return new EdgeParameterControl();
                 case "contourparameters":
                     return new ContourParameterControl();
+                case "momentsparameters":
+                    return new MomentsParameterControl();
+                case "radiallinesparameters":
+                    return new RadialLinesParameterControl();
                 default:
                     Console.WriteLine($"알 수 없는 전처리 타입: {preprocessName}");
                     return null;
@@ -581,6 +543,10 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     return new EdgeParameterDescription();
                 case "contourparameters": 
                     return new ContourParameterDescription();
+                case "momentsparameters":
+                    return new MomentsParameterDescription();
+                case "radiallinesparameters":
+                    return new RadialLinesParameterDescription();
 
                 default:
                     Console.WriteLine($"알 수 없는 전처리 타입(설명): {preprocessName}");
@@ -612,8 +578,172 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 contour.OnParametersChanged += ContourParameterChanged;
                 Console.WriteLine("Contour 이벤트 연결됨");
             }
+            else if (control is MomentsParameterControl moments)
+            {
+                moments.OnParametersChanged += MomentsParameterChanged; // Moments 파라미터 변경 이벤트
+                Console.WriteLine("Moments 이벤트 연결됨");
+            }
+            else if (control is RadialLinesParameterControl radialLines)
+            {
+                radialLines.OnParametersChanged += RadialLinesParameterChanged; // RadialLines 파라미터 변경 이벤트
+                Console.WriteLine("RadialLines 이벤트 연결됨");
+            }
         }
+        /// <summary>
+        /// 파라미터를 해당하는 UserControl에 설정합니다.
+        /// </summary>
+        private void SetParametersToUserControl()
+        {
+            if (_currentParameterControl == null) return;
 
+            try
+            {
+                Console.WriteLine($"=== SetParametersToUserControl 시작 ===");
+
+                var parameterDict = _currentParameters.ToDictionary(x => x.Key, x => x.Value);
+
+                // 각 컨트롤 타입별로 SetCurrentParameters 호출
+                if (_currentParameterControl is GaussianBlurParameterControl gaussianControl)
+                {
+                    Console.WriteLine("✅ GaussianBlur 컨트롤에 현재 파라미터 설정");
+                    gaussianControl.SetCurrentParameters(parameterDict);
+                }
+                else if (_currentParameterControl is CLAHEParameterControl claheControl)
+                {
+                    Console.WriteLine("✅ CLAHE 컨트롤에 현재 파라미터 설정");
+                    claheControl.SetCurrentParameters(parameterDict);
+                }
+                else if (_currentParameterControl is EdgeParameterControl edgeControl)
+                {
+                    Console.WriteLine("✅ Edge 컨트롤에 현재 파라미터 설정");
+                    edgeControl.SetCurrentParameters(parameterDict);
+                }
+                else if (_currentParameterControl is ContourParameterControl contourControl)
+                {
+                    Console.WriteLine("✅ Contour 컨트롤에 현재 파라미터 설정");
+                    contourControl.SetCurrentParameters(parameterDict);
+                }
+                else if (_currentParameterControl is MomentsParameterControl momentsControl)
+                {
+                    Console.WriteLine("✅ Moments 컨트롤에 현재 파라미터 설정");
+                    momentsControl.SetCurrentParameters(parameterDict);
+                }
+                else if (_currentParameterControl is RadialLinesParameterControl radialLinesControl)
+                {
+                    Console.WriteLine("✅ RadialLines 컨트롤에 현재 파라미터 설정");
+
+                    // === 무게중심 데이터 처리 로직 개선 ===
+                    if (parameterDict.ContainsKey("moments"))
+                    {
+                        var moments = parameterDict["moments"];
+                        Console.WriteLine($"[디버그] moments 값: {moments}");
+
+                        if (moments != null)
+                        {
+                            bool centroidExtracted = false;
+
+                            // moments 객체에서 무게중심 좌표 추출
+                            if (moments is Dictionary<string, object> momentsDict)
+                            {
+                                Console.WriteLine("[디버그] moments는 Dictionary 타입");
+                                foreach (var m in momentsDict)
+                                    Console.WriteLine($"  - {m.Key} : {m.Value}");
+
+                                if (momentsDict.ContainsKey("CentroidX") && momentsDict.ContainsKey("CentroidY"))
+                                {
+                                    Console.WriteLine($"[디버그] CentroidX, CentroidY 찾음: {momentsDict["CentroidX"]}, {momentsDict["CentroidY"]}");
+                                    if (double.TryParse(momentsDict["CentroidX"].ToString(), out double centroidX) &&
+                                        double.TryParse(momentsDict["CentroidY"].ToString(), out double centroidY))
+                                    {
+                                        _centroidX = centroidX;
+                                        _centroidY = centroidY;
+                                        HasCentroidData = true;
+                                        centroidExtracted = true;
+                                        Console.WriteLine($"[디버그] 무게중심 파싱 성공: X={_centroidX}, Y={_centroidY}");
+                                    }
+                                }
+
+                                // m10/m00, m01/m00 형태로 저장된 경우
+                                if (!centroidExtracted && momentsDict.ContainsKey("m10") && momentsDict.ContainsKey("m01") && momentsDict.ContainsKey("m00"))
+                                {
+                                    if (double.TryParse(momentsDict["m10"].ToString(), out double m10) &&
+                                        double.TryParse(momentsDict["m01"].ToString(), out double m01) &&
+                                        double.TryParse(momentsDict["m00"].ToString(), out double m00) && m00 != 0)
+                                    {
+                                        _centroidX = m10 / m00;
+                                        _centroidY = m01 / m00;
+                                        HasCentroidData = true;
+                                        centroidExtracted = true;
+                                        Console.WriteLine($"[디버그] moments 계산으로 무게중심 파싱 성공: X={_centroidX}, Y={_centroidY}");
+                                    }
+                                }
+                            }
+                            // 또는 직접 좌표가 전달되는 경우
+                            else if (!centroidExtracted && moments.ToString().Contains(","))
+                            {
+                                Console.WriteLine("[디버그] moments 문자열 좌표 형태: " + moments.ToString());
+                                string[] coords = moments.ToString().Split(',');
+                                if (coords.Length >= 2)
+                                {
+                                    if (double.TryParse(coords[0].Trim(), out double centroidX) &&
+                                        double.TryParse(coords[1].Trim(), out double centroidY))
+                                    {
+                                        _centroidX = centroidX;
+                                        _centroidY = centroidY;
+                                        HasCentroidData = true;
+                                        centroidExtracted = true;
+                                        Console.WriteLine($"[디버그] 무게중심 파싱 성공: X={_centroidX}, Y={_centroidY}");
+                                    }
+                                }
+                            }
+
+                            if (!centroidExtracted)
+                            {
+                                Console.WriteLine("[디버그] moments 타입 미지원 또는 파싱 실패: " + moments.GetType().Name);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("[디버그] moments가 null임");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("[디버그] parameterDict에 'moments' 키 없음");
+                    }
+
+                    // === 무게중심 데이터를 파라미터 딕셔너리에 명시적으로 추가 ===
+                    if (HasCentroidData)
+                    {
+                        parameterDict["CentroidX"] = _centroidX;
+                        parameterDict["CentroidY"] = _centroidY;
+                        parameterDict["HasCentroidData"] = true;
+
+                        Console.WriteLine($"[디버그] 무게중심 데이터를 파라미터에 추가: CentroidX={_centroidX}, CentroidY={_centroidY}");
+                    }
+                    else
+                    {
+                        parameterDict["HasCentroidData"] = false;
+                        Console.WriteLine("[디버그] 무게중심 데이터 없음으로 설정");
+                    }
+
+                    // 컨트롤에 파라미터 설정
+                    radialLinesControl.SetCurrentParameters(parameterDict);
+                }
+                else
+                {
+                    Console.WriteLine("[디버그] 알 수 없는 컨트롤 타입. Reflection 시도");
+                    TrySetParametersUsingReflection(parameterDict); // Reflection 사용
+                }
+
+                Console.WriteLine($"=== SetParametersToUserControl 완료 (HasCentroidData={HasCentroidData}, _centroidX={_centroidX}, _centroidY={_centroidY}) ===");
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ UserControl 파라미터 설정 실패: {ex.Message}");
+            }
+        }
         /// <summary>
         /// 컨트롤을 TableLayoutPanel에 추가합니다.
         /// </summary>
@@ -747,11 +877,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
             }
         }
         /// <summary>
-        /// Contour Detection 파라미터가 변경될 때 실시간으로 이미지에 적용합니다.
+        /// RadialLines 파라미터가 변경될 때 실시간으로 이미지에 적용합니다.
         /// </summary>
-        private void ContourParameterChanged(string retrievalMode, string approximationMethod,
-            double minArea, double maxArea, bool drawOnOriginal, int thickness,
-            string colorMode, Color fixedColor, bool showNumbers)
+        private void RadialLinesParameterChanged(RadialLinesParameters parameters)
         {
             if (_originalMat == null) return;
 
@@ -760,13 +888,701 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 using (Mat binaryImage = new Mat())
                 using (Mat outputImage = new Mat())
                 {
-                    // 1. 이진 이미지 준비
+                    // 1. 이진화 준비
+                    PrepareBinaryImageForPreview(_originalMat, binaryImage, parameters.BinaryThreshold);
+
+                    // 2. 출력 이미지 준비
+                    if (parameters.ShowVisualization)
+                    {
+                        if (_originalMat.Channels() >= 3)
+                        {
+                            _originalMat.CopyTo(outputImage);
+                        }
+                        else
+                        {
+                            Cv2.CvtColor(_originalMat, outputImage, ColorConversionCodes.GRAY2BGR);
+                        }
+                    }
+                    else
+                    {
+                        if (_originalMat.Channels() >= 3)
+                        {
+                            _originalMat.CopyTo(outputImage);
+                        }
+                        else
+                        {
+                            Cv2.CvtColor(_originalMat, outputImage, ColorConversionCodes.GRAY2BGR);
+                        }
+                    }
+
+                    // 3. 중심점 계산
+                    var centers = GetRadialCentersForPreview(_originalMat, parameters.CenterMethod,
+                                                           parameters.ManualX, parameters.ManualY,
+                                                           parameters.BinaryThreshold);
+
+                    if (centers.Count == 0)
+                    {
+                        // 중심점을 찾을 수 없을 때
+                        Cv2.PutText(outputImage, "No center point found",
+                                   new OpenCvSharp.Point(10, 30), HersheyFonts.HersheySimplex, 0.7, new Scalar(0, 0, 255), 2);
+                        SetPictureBoxImage(pictureBox_main, OpenCvSharp.Extensions.BitmapConverter.ToBitmap(outputImage));
+                        return;
+                    }
+
+                    // 4. 각 중심점에 대해 방사선 그리기
+                    var allLengthData = new List<string>();
+
+                    for (int centerIndex = 0; centerIndex < centers.Count; centerIndex++)
+                    {
+                        OpenCvSharp.Point center = centers[centerIndex];
+                        var lengths = new List<double>();
+
+                        // 방사선 그리기 및 길이 측정
+                        for (int i = 0; i < parameters.LineCount; i++)
+                        {
+                            double angle = parameters.StartAngle + (i * 360.0 / parameters.LineCount);
+
+                            // 끝점 계산
+                            OpenCvSharp.Point endPoint = CalculateRadialEndPointForPreview(_originalMat, binaryImage, center,
+                                                                                           angle, parameters.RangeMethod,
+                                                                                           parameters.FixedLength,
+                                                                                           parameters.BrightnessThreshold);
+
+                            // 길이 계산
+                            double length = Math.Sqrt(Math.Pow(endPoint.X - center.X, 2) + Math.Pow(endPoint.Y - center.Y, 2));
+                            lengths.Add(length);
+
+                            // 시각화
+                            if (parameters.ShowVisualization)
+                            {
+                                DrawRadialLineForPreview(outputImage, center, endPoint, angle, length,
+                                                       parameters.LineColor, parameters.LineThickness,
+                                                       parameters.Style, parameters.ShowAngles,
+                                                       parameters.ShowDistances);
+                            }
+                        }
+
+                        // 중심점 표시
+                        if (parameters.ShowVisualization && parameters.ShowCenter)
+                        {
+                            DrawCenterPointForPreview(outputImage, center, centerIndex,
+                                                    parameters.LineColor, parameters.LineThickness);
+                        }
+
+                        // 길이 데이터 저장
+                        allLengthData.Add($"Center{centerIndex}:" + string.Join(",", lengths.Select(l => l.ToString("F2"))));
+                    }
+
+                    // 5. 시각화 꺼져있을 때 정보 표시
+                    if (!parameters.ShowVisualization)
+                    {
+                        Cv2.PutText(outputImage, $"RadialLines: {centers.Count} centers, {parameters.LineCount} lines each",
+                                   new OpenCvSharp.Point(10, 30), HersheyFonts.HersheySimplex, 0.7, new Scalar(0, 255, 0), 2);
+                        Cv2.PutText(outputImage, "(Visualization OFF)",
+                                   new OpenCvSharp.Point(10, 55), HersheyFonts.HersheySimplex, 0.6, new Scalar(0, 255, 0), 2);
+                    }
+
+                    // 6. 추가 정보 표시
+                    if (parameters.OutputLengthData)
+                    {
+                        string lengthDataInfo = $"Length Data: {allLengthData.Count} sets";
+                        Cv2.PutText(outputImage, lengthDataInfo,
+                                   new OpenCvSharp.Point(10, outputImage.Height - 20),
+                                   HersheyFonts.HersheySimplex, 0.5, new Scalar(255, 255, 0), 1);
+                    }
+
+                    // 7. 결과 이미지 표시
+                    SetPictureBoxImage(pictureBox_main, OpenCvSharp.Extensions.BitmapConverter.ToBitmap(outputImage));
+
+                    // 8. 콘솔에 미리보기 데이터 출력
+                    if (parameters.OutputLengthData && allLengthData.Count > 0)
+                    {
+                        Console.WriteLine("=== RadialLines Length Data Preview ===");
+                        foreach (string data in allLengthData.Take(3)) // 최대 3개만 미리보기
+                        {
+                            Console.WriteLine(data);
+                        }
+                        if (allLengthData.Count > 3)
+                        {
+                            Console.WriteLine($"... and {allLengthData.Count - 3} more");
+                        }
+                        Console.WriteLine("=======================================");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("RadialLines 적용 실패: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 이진화 이미지 준비
+        /// </summary>
+        private void PrepareBinaryImageForPreview(Mat inputImage, Mat binaryImage, int threshold)
+        {
+            if (inputImage.Channels() >= 3)
+            {
+                using (Mat grayImage = new Mat())
+                {
+                    Cv2.CvtColor(inputImage, grayImage, ColorConversionCodes.BGR2GRAY);
+                    Cv2.Threshold(grayImage, binaryImage, threshold, 255, ThresholdTypes.Binary);
+                }
+            }
+            else
+            {
+                Cv2.Threshold(inputImage, binaryImage, threshold, 255, ThresholdTypes.Binary);
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 중심점들 계산
+        /// </summary>
+        private List<OpenCvSharp.Point> GetRadialCentersForPreview(Mat image, string centerMethod, int manualX, int manualY, int binaryThreshold)
+        {
+            var centers = new List<OpenCvSharp.Point>();
+
+            switch (centerMethod)
+            {
+                case "ImageCenter":
+                    centers.Add(new OpenCvSharp.Point(image.Width / 2, image.Height / 2));
+                    break;
+
+                case "AutoCentroid":
+                    var centroid = FindAutoCentroidForPreview(image, binaryThreshold);
+                    if (centroid.HasValue)
+                    {
+                        centers.Add(centroid.Value);
+                    }
+                    else
+                    {
+                        centers.Add(new OpenCvSharp.Point(image.Width / 2, image.Height / 2));
+                    }
+                    break;
+
+                case "Manual":
+                    centers.Add(new OpenCvSharp.Point(
+                        Math.Min(manualX, image.Width - 1),
+                        Math.Min(manualY, image.Height - 1)
+                    ));
+                    break;
+
+                case "ExternalCoordinates":
+                    // 이전 노드에서 받아온 무게중심 좌표 사용
+                    if (HasCentroidData)
+                    {
+                        // 무게중심 좌표를 정수로 변환해서 사용
+                        int centroidX = (int)Math.Round(_centroidX);
+                        int centroidY = (int)Math.Round(_centroidY);
+
+                        // 이미지 경계 체크
+                        centroidX = Math.Max(0, Math.Min(image.Width - 1, centroidX));
+                        centroidY = Math.Max(0, Math.Min(image.Height - 1, centroidY));
+
+                        centers.Add(new OpenCvSharp.Point(centroidX, centroidY));
+                        Console.WriteLine($"[디버그] ExternalCoordinates 사용: ({centroidX}, {centroidY})");
+                    }
+                    else
+                    {
+                        // 무게중심 데이터가 없는 경우 이미지 중심 사용 (fallback)
+                        centers.Add(new OpenCvSharp.Point(image.Width / 2, image.Height / 2));
+                        Console.WriteLine("[디버그] ExternalCoordinates 데이터 없음, 이미지 중심 사용");
+                    }
+                    break;
+
+                case "MaxBrightness":
+                    centers.Add(FindMaxBrightnessPointForPreview(image));
+                    break;
+
+                default:
+                    centers.Add(new OpenCvSharp.Point(image.Width / 2, image.Height / 2));
+                    break;
+            }
+
+            return centers;
+        }
+
+        /// <summary>
+        /// 미리보기용 자동 무게중심 찾기
+        /// </summary>
+        private OpenCvSharp.Point? FindAutoCentroidForPreview(Mat image, int threshold)
+        {
+            try
+            {
+                using (Mat binaryImage = new Mat())
+                {
+                    PrepareBinaryImageForPreview(image, binaryImage, threshold);
+
+                    OpenCvSharp.Point[][] contours;
+                    HierarchyIndex[] hierarchy;
+                    Cv2.FindContours(binaryImage, out contours, out hierarchy,
+                                    RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+                    if (contours.Length == 0) return null;
+
+                    double maxArea = 0;
+                    OpenCvSharp.Point? bestCentroid = null;
+
+                    foreach (var contour in contours)
+                    {
+                        if (contour.Length < 5) continue;
+
+                        var moments = Cv2.Moments(contour);
+                        if (moments.M00 == 0) continue;
+
+                        double area = moments.M00;
+                        if (area > maxArea)
+                        {
+                            maxArea = area;
+                            var centroidX = (int)(moments.M10 / moments.M00);
+                            var centroidY = (int)(moments.M01 / moments.M00);
+                            bestCentroid = new OpenCvSharp.Point(centroidX, centroidY);
+                        }
+                    }
+
+                    return bestCentroid;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 최대 밝기 지점 찾기
+        /// </summary>
+        private OpenCvSharp.Point FindMaxBrightnessPointForPreview(Mat image)
+        {
+            using (Mat grayImage = new Mat())
+            {
+                if (image.Channels() >= 3)
+                    Cv2.CvtColor(image, grayImage, ColorConversionCodes.BGR2GRAY);
+                else
+                    image.CopyTo(grayImage);
+
+                OpenCvSharp.Point maxLoc;
+                Cv2.MinMaxLoc(grayImage, out double minVal, out double maxVal, out OpenCvSharp.Point minLoc, out maxLoc);
+                return maxLoc;
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 방사선 끝점 계산
+        /// </summary>
+        private OpenCvSharp.Point CalculateRadialEndPointForPreview(Mat originalImage, Mat binaryImage, OpenCvSharp.Point center,
+                                                                   double angle, string rangeMethod, int fixedLength, int brightnessThreshold)
+        {
+            double radians = angle * Math.PI / 180.0;
+            double dx = Math.Cos(radians);
+            double dy = Math.Sin(radians);
+
+            switch (rangeMethod)
+            {
+                case "FixedLength":
+                    return new OpenCvSharp.Point(
+                        center.X + (int)(fixedLength * dx),
+                        center.Y + (int)(fixedLength * dy)
+                    );
+
+                case "ImageBoundary":
+                    return CalculateImageBoundaryPointForPreview(originalImage, center, dx, dy);
+
+                case "EdgeDetection":
+                    return CalculateEdgeDetectionPointForPreview(binaryImage, center, dx, dy);
+
+                case "BrightnessChange":
+                    return CalculateBrightnessChangePointForPreview(originalImage, center, dx, dy, brightnessThreshold);
+
+                default:
+                    return CalculateImageBoundaryPointForPreview(originalImage, center, dx, dy);
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 이미지 경계 계산
+        /// </summary>
+        private OpenCvSharp.Point CalculateImageBoundaryPointForPreview(Mat image, OpenCvSharp.Point center, double dx, double dy)
+        {
+            double tMax = double.MaxValue;
+
+            if (dx > 0) tMax = Math.Min(tMax, (image.Width - 1 - center.X) / dx);
+            else if (dx < 0) tMax = Math.Min(tMax, -center.X / dx);
+
+            if (dy > 0) tMax = Math.Min(tMax, (image.Height - 1 - center.Y) / dy);
+            else if (dy < 0) tMax = Math.Min(tMax, -center.Y / dy);
+
+            return new OpenCvSharp.Point(
+                center.X + (int)(tMax * dx),
+                center.Y + (int)(tMax * dy)
+            );
+        }
+
+        /// <summary>
+        /// 적응형 미리보기용 경계선 감지 - 중심점 색상 기반
+        /// </summary>
+        private OpenCvSharp.Point CalculateEdgeDetectionPointForPreview(Mat binaryImage, OpenCvSharp.Point center, double dx, double dy, int colorDifferenceThreshold = 50)
+        {
+            try
+            {
+                // 1. 중심점의 픽셀값을 기준값으로 설정
+                byte basePixelValue = binaryImage.At<byte>(center.Y, center.X);
+
+                int maxDistance = Math.Max(binaryImage.Width, binaryImage.Height);
+
+                for (int t = 1; t < maxDistance; t++)
+                {
+                    int x = center.X + (int)(t * dx);
+                    int y = center.Y + (int)(t * dy);
+
+                    // 이미지 경계 검사
+                    if (x < 0 || x >= binaryImage.Width || y < 0 || y >= binaryImage.Height)
+                    {
+                        return new OpenCvSharp.Point(
+                            Math.Max(0, Math.Min(binaryImage.Width - 1, x)),
+                            Math.Max(0, Math.Min(binaryImage.Height - 1, y))
+                        );
+                    }
+
+                    // 현재 위치의 픽셀값 확인
+                    byte currentPixelValue = binaryImage.At<byte>(y, x);
+
+                    // 🔥 핵심 로직: 기준값과 충분히 다른 색상을 만나면 경계로 판단
+                    int colorDifference = Math.Abs(currentPixelValue - basePixelValue);
+                    if (colorDifference >= colorDifferenceThreshold)
+                    {
+                        return new OpenCvSharp.Point(x, y);
+                    }
+                }
+
+                // 최대 거리까지 도달 (색상 변화가 없는 경우)
+                return new OpenCvSharp.Point(
+                    center.X + (int)(maxDistance * dx),
+                    center.Y + (int)(maxDistance * dy)
+                );
+            }
+            catch
+            {
+                return CalculateImageBoundaryPointForPreview(binaryImage, center, dx, dy);
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 밝기 변화 감지
+        /// </summary>
+        private OpenCvSharp.Point CalculateBrightnessChangePointForPreview(Mat image, OpenCvSharp.Point center, double dx, double dy, int threshold)
+        {
+            try
+            {
+                using (Mat grayImage = new Mat())
+                {
+                    if (image.Channels() >= 3)
+                        Cv2.CvtColor(image, grayImage, ColorConversionCodes.BGR2GRAY);
+                    else
+                        image.CopyTo(grayImage);
+
+                    byte centerBrightness = grayImage.At<byte>(center.Y, center.X);
+                    int maxDistance = Math.Max(image.Width, image.Height);
+
+                    for (int t = 1; t < maxDistance; t++)
+                    {
+                        int x = center.X + (int)(t * dx);
+                        int y = center.Y + (int)(t * dy);
+
+                        if (x < 0 || x >= image.Width || y < 0 || y >= image.Height)
+                        {
+                            return new OpenCvSharp.Point(
+                                Math.Max(0, Math.Min(image.Width - 1, x)),
+                                Math.Max(0, Math.Min(image.Height - 1, y))
+                            );
+                        }
+
+                        byte currentBrightness = grayImage.At<byte>(y, x);
+                        int brightnessDiff = Math.Abs(centerBrightness - currentBrightness);
+
+                        if (brightnessDiff > threshold)
+                        {
+                            return new OpenCvSharp.Point(x, y);
+                        }
+                    }
+
+                    return new OpenCvSharp.Point(
+                        center.X + (int)(maxDistance * dx),
+                        center.Y + (int)(maxDistance * dy)
+                    );
+                }
+            }
+            catch
+            {
+                return CalculateImageBoundaryPointForPreview(image, center, dx, dy);
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 방사선 그리기
+        /// </summary>
+        private void DrawRadialLineForPreview(Mat image, OpenCvSharp.Point center, OpenCvSharp.Point endPoint, double angle, double length,
+                                            Color lineColor, int lineThickness, string style, bool showAngles, bool showDistances)
+        {
+            Scalar color = new Scalar(lineColor.B, lineColor.G, lineColor.R);
+
+            // 선 그리기
+            if (style == "Solid")
+            {
+                Cv2.Line(image, center, endPoint, color, lineThickness);
+            }
+            else
+            {
+                DrawStyledLineForPreview(image, center, endPoint, color, lineThickness, style);
+            }
+
+            // 각도 표시
+            if (showAngles)
+            {
+                var textPoint = new OpenCvSharp.Point(
+                    center.X + (int)(30 * Math.Cos(angle * Math.PI / 180)),
+                    center.Y + (int)(30 * Math.Sin(angle * Math.PI / 180))
+                );
+                Cv2.PutText(image, $"{angle:F0}°", textPoint,
+                           HersheyFonts.HersheySimplex, 0.4, color, 1);
+            }
+
+            // 거리 표시
+            if (showDistances)
+            {
+                var textPoint = new OpenCvSharp.Point((center.X + endPoint.X) / 2, (center.Y + endPoint.Y) / 2);
+                Cv2.PutText(image, $"{length:F0}", textPoint,
+                           HersheyFonts.HersheySimplex, 0.4, color, 1);
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 스타일 선 그리기
+        /// </summary>
+        private void DrawStyledLineForPreview(Mat image, OpenCvSharp.Point start, OpenCvSharp.Point end, Scalar color, int thickness, string style)
+        {
+            double distance = Math.Sqrt(Math.Pow(end.X - start.X, 2) + Math.Pow(end.Y - start.Y, 2));
+            int segments = style == "Dotted" ? (int)distance / 10 : (int)distance / 20;
+
+            for (int i = 0; i < segments; i += 2)
+            {
+                double t1 = (double)i / segments;
+                double t2 = Math.Min((double)(i + 1) / segments, 1.0);
+
+                var p1 = new OpenCvSharp.Point(
+                    start.X + (int)(t1 * (end.X - start.X)),
+                    start.Y + (int)(t1 * (end.Y - start.Y))
+                );
+                var p2 = new OpenCvSharp.Point(
+                    start.X + (int)(t2 * (end.X - start.X)),
+                    start.Y + (int)(t2 * (end.Y - start.Y))
+                );
+
+                Cv2.Line(image, p1, p2, color, thickness);
+            }
+        }
+
+        /// <summary>
+        /// 미리보기용 중심점 그리기
+        /// </summary>
+        private void DrawCenterPointForPreview(Mat image, OpenCvSharp.Point center, int centerIndex, Color lineColor, int lineThickness)
+        {
+            Scalar color = new Scalar(lineColor.B, lineColor.G, lineColor.R);
+
+            Cv2.Circle(image, center, 5, color, lineThickness);
+            Cv2.Circle(image, center, 2, new Scalar(255, 255, 255), -1);
+
+            if (centerIndex >= 0)
+            {
+                Cv2.PutText(image, centerIndex.ToString(),
+                           new OpenCvSharp.Point(center.X + 10, center.Y - 10),
+                           HersheyFonts.HersheySimplex, 0.6, color, 2);
+            }
+        }
+        /// <summary>
+        /// Moments 파라미터가 변경될 때 실시간으로 이미지에 적용합니다.
+        /// </summary>
+        private void MomentsParameterChanged(int threshold, bool showCentroid, bool showArea,
+            bool showOrientation, bool showBoundingBox, bool showEccentricity, Color drawColor, int lineThickness)
+        {
+            if (_originalMat == null) return;
+
+            try
+            {
+                using (Mat binaryImage = new Mat())
+                using (Mat outputImage = new Mat())
+                {
+                    // 1. 이진화 처리
                     if (_originalMat.Channels() >= 3)
                     {
                         using (Mat grayImage = new Mat())
                         {
                             Cv2.CvtColor(_originalMat, grayImage, ColorConversionCodes.BGR2GRAY);
-                            // 이미 이진화된 이미지인지 확인
+                            Cv2.Threshold(grayImage, binaryImage, threshold, 255, ThresholdTypes.Binary);
+                        }
+                    }
+                    else
+                    {
+                        Cv2.Threshold(_originalMat, binaryImage, threshold, 255, ThresholdTypes.Binary);
+                    }
+
+                    // 2. 출력 이미지 준비 (원본을 복사하여 컬러로 표시)
+                    if (_originalMat.Channels() >= 3)
+                    {
+                        _originalMat.CopyTo(outputImage);
+                    }
+                    else
+                    {
+                        Cv2.CvtColor(_originalMat, outputImage, ColorConversionCodes.GRAY2BGR);
+                    }
+
+                    // 3. 컨투어 찾기 (모멘트 계산을 위해)
+                    OpenCvSharp.Point[][] contours;
+                    HierarchyIndex[] hierarchy;
+                    Cv2.FindContours(binaryImage, out contours, out hierarchy,
+                                    RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+                    Scalar color = new Scalar(drawColor.B, drawColor.G, drawColor.R); // BGR 순서
+
+                    // 4. 각 컨투어에 대해 모멘트 분석
+                    for (int i = 0; i < contours.Length; i++)
+                    {
+                        if (contours[i].Length < 5) continue; // 너무 작은 컨투어 제외
+
+                        // 모멘트 계산
+                        var moments = Cv2.Moments(contours[i]);
+                        if (moments.M00 == 0) continue; // 면적이 0인 경우 제외
+
+                        // 중심점 계산
+                        var centroidX = (int)(moments.M10 / moments.M00);
+                        var centroidY = (int)(moments.M01 / moments.M00);
+                        var centroid = new OpenCvSharp.Point(centroidX, centroidY);
+
+                        // 중심점 표시
+                        if (showCentroid)
+                        {
+                            Cv2.Circle(outputImage, centroid, 5, color, lineThickness);
+                            Cv2.PutText(outputImage, $"({centroidX},{centroidY})",
+                                       new OpenCvSharp.Point(centroidX + 10, centroidY - 10),
+                                       HersheyFonts.HersheySimplex, 0.5, color, 1);
+                        }
+
+                        // 면적 표시
+                        if (showArea)
+                        {
+                            double area = moments.M00;
+                            Cv2.PutText(outputImage, $"Area: {area:F0}",
+                                       new OpenCvSharp.Point(centroidX + 10, centroidY + 10),
+                                       HersheyFonts.HersheySimplex, 0.5, color, 1);
+                        }
+
+                        // 방향각 계산 및 표시
+                        if (showOrientation)
+                        {
+                            // 중심 모멘트 계산
+                            double mu20 = moments.M20 - (moments.M10 * moments.M10) / moments.M00;
+                            double mu02 = moments.M02 - (moments.M01 * moments.M01) / moments.M00;
+                            double mu11 = moments.M11 - (moments.M10 * moments.M01) / moments.M00;
+
+                            if (Math.Abs(mu20 - mu02) > 1e-6 || Math.Abs(mu11) > 1e-6)
+                            {
+                                double angle = 0.5 * Math.Atan2(2 * mu11, mu20 - mu02) * 180.0 / Math.PI;
+
+                                // 방향선 그리기 (길이 50픽셀)
+                                int lineLength = 50;
+                                double radians = angle * Math.PI / 180.0;
+                                var endPoint = new OpenCvSharp.Point(
+                                    centroidX + (int)(lineLength * Math.Cos(radians)),
+                                    centroidY + (int)(lineLength * Math.Sin(radians))
+                                );
+
+                                Cv2.Line(outputImage, centroid, endPoint, color, lineThickness);
+                                Cv2.PutText(outputImage, $"{angle:F1}°",
+                                           new OpenCvSharp.Point(centroidX + 10, centroidY + 30),
+                                           HersheyFonts.HersheySimplex, 0.5, color, 1);
+                            }
+                        }
+
+                        // 경계박스 표시
+                        if (showBoundingBox)
+                        {
+                            var boundingRect = Cv2.BoundingRect(contours[i]);
+                            Cv2.Rectangle(outputImage, boundingRect, color, lineThickness);
+
+                            double aspectRatio = (double)boundingRect.Width / boundingRect.Height;
+                            Cv2.PutText(outputImage, $"W:{boundingRect.Width} H:{boundingRect.Height}",
+                                       new OpenCvSharp.Point(boundingRect.X, boundingRect.Y - 10),
+                                       HersheyFonts.HersheySimplex, 0.4, color, 1);
+                            Cv2.PutText(outputImage, $"Ratio:{aspectRatio:F2}",
+                                       new OpenCvSharp.Point(boundingRect.X, boundingRect.Y - 25),
+                                       HersheyFonts.HersheySimplex, 0.4, color, 1);
+                        }
+
+                        // 편심률 계산 및 표시
+                        if (showEccentricity)
+                        {
+                            // 중심 모멘트 계산
+                            double mu20 = moments.M20 - (moments.M10 * moments.M10) / moments.M00;
+                            double mu02 = moments.M02 - (moments.M01 * moments.M01) / moments.M00;
+                            double mu11 = moments.M11 - (moments.M10 * moments.M01) / moments.M00;
+
+                            // 공분산 행렬의 고유값 계산
+                            double trace = mu20 + mu02;
+                            double det = mu20 * mu02 - mu11 * mu11;
+
+                            if (det > 0 && trace > 0)
+                            {
+                                double discriminant = trace * trace - 4 * det;
+                                if (discriminant >= 0)
+                                {
+                                    double lambda1 = (trace + Math.Sqrt(discriminant)) / 2.0;
+                                    double lambda2 = (trace - Math.Sqrt(discriminant)) / 2.0;
+
+                                    double lambdaMin = Math.Min(lambda1, lambda2);
+                                    double lambdaMax = Math.Max(lambda1, lambda2);
+
+                                    if (lambdaMax > 0)
+                                    {
+                                        double eccentricity = Math.Sqrt(1.0 - lambdaMin / lambdaMax);
+                                        Cv2.PutText(outputImage, $"Ecc:{eccentricity:F3}",
+                                                   new OpenCvSharp.Point(centroidX + 10, centroidY + 50),
+                                                   HersheyFonts.HersheySimplex, 0.5, color, 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // 5. 결과 이미지 표시
+                    SetPictureBoxImage(pictureBox_main, OpenCvSharp.Extensions.BitmapConverter.ToBitmap(outputImage));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Moments 적용 실패: " + ex.Message);
+            }
+        }
+        /// <summary>
+        /// Contour Detection 파라미터가 변경될 때 실시간으로 이미지에 적용합니다.
+        /// </summary>
+        private void ContourParameterChanged(string retrievalMode, string approximationMethod,
+    double minArea, double maxArea, bool drawOnOriginal, int thickness,
+    string colorMode, Color fixedColor, bool showNumbers,
+    bool showVisualization, bool outputData, bool outputAsJson) // 3개 파라미터 추가
+        {
+            if (_originalMat == null) return;
+
+            try
+            {
+                using (Mat binaryImage = new Mat())
+                using (Mat outputImage = new Mat())
+                {
+                    // 1. 이진 이미지 준비 (기존과 동일)
+                    if (_originalMat.Channels() >= 3)
+                    {
+                        using (Mat grayImage = new Mat())
+                        {
+                            Cv2.CvtColor(_originalMat, grayImage, ColorConversionCodes.BGR2GRAY);
                             Scalar mean = Cv2.Mean(grayImage);
                             if (mean.Val0 > 50 && mean.Val0 < 200)
                             {
@@ -783,51 +1599,31 @@ namespace IFVisionEngine.UIComponents.Dialogs
                         _originalMat.CopyTo(binaryImage);
                     }
 
-                    // 2. RetrievalMode 변환
+                    // 2-4. 컨투어 검출 및 필터링 (기존과 동일)
                     RetrievalModes retrievalModeEnum;
                     switch (retrievalMode)
                     {
-                        case "External":
-                            retrievalModeEnum = RetrievalModes.External;
-                            break;
-                        case "List":
-                            retrievalModeEnum = RetrievalModes.List;
-                            break;
-                        case "CComp":
-                            retrievalModeEnum = RetrievalModes.CComp;
-                            break;
-                        case "Tree":
-                            retrievalModeEnum = RetrievalModes.Tree;
-                            break;
-                        default:
-                            retrievalModeEnum = RetrievalModes.External;
-                            break;
+                        case "External": retrievalModeEnum = RetrievalModes.External; break;
+                        case "List": retrievalModeEnum = RetrievalModes.List; break;
+                        case "CComp": retrievalModeEnum = RetrievalModes.CComp; break;
+                        case "Tree": retrievalModeEnum = RetrievalModes.Tree; break;
+                        default: retrievalModeEnum = RetrievalModes.External; break;
                     }
-                    // 3. ApproximationMethod 변환
+
                     ContourApproximationModes approximationModeEnum;
                     switch (approximationMethod)
                     {
-                        case "None":
-                            approximationModeEnum = ContourApproximationModes.ApproxNone;
-                            break;
-                        case "Simple":
-                            approximationModeEnum = ContourApproximationModes.ApproxSimple;
-                            break;
-                        case "TC89_L1":
-                            approximationModeEnum = ContourApproximationModes.ApproxTC89L1;
-                            break;
-                        default:
-                            approximationModeEnum = ContourApproximationModes.ApproxSimple;
-                            break;
+                        case "None": approximationModeEnum = ContourApproximationModes.ApproxNone; break;
+                        case "Simple": approximationModeEnum = ContourApproximationModes.ApproxSimple; break;
+                        case "TC89_L1": approximationModeEnum = ContourApproximationModes.ApproxTC89L1; break;
+                        default: approximationModeEnum = ContourApproximationModes.ApproxSimple; break;
                     }
 
-                    // 4. 컨투어 검출
                     OpenCvSharp.Point[][] contours;
                     HierarchyIndex[] hierarchy;
                     Cv2.FindContours(binaryImage, out contours, out hierarchy,
                                     retrievalModeEnum, approximationModeEnum);
 
-                    // 5. 면적 기준으로 컨투어 필터링
                     var filteredContours = new List<OpenCvSharp.Point[]>();
                     for (int i = 0; i < contours.Length; i++)
                     {
@@ -838,72 +1634,159 @@ namespace IFVisionEngine.UIComponents.Dialogs
                         }
                     }
 
-                    // 6. 출력 이미지 준비
-                    if (drawOnOriginal && _originalMat.Channels() >= 3)
+                    // === 5. 시각화 처리 (조건부로 변경) ===
+                    if (showVisualization)
                     {
-                        _originalMat.CopyTo(outputImage);
-                    }
-                    else
-                    {
-                        // 이진 이미지를 3채널로 변환하여 컬러 컨투어 그리기
-                        Cv2.CvtColor(binaryImage, outputImage, ColorConversionCodes.GRAY2BGR);
-                    }
-
-                    // 7. 컨투어 그리기
-                    Random random = new Random();
-                    for (int i = 0; i < filteredContours.Count; i++)
-                    {
-                        Scalar color;
-
-                        // 색상 모드에 따른 색상 선택
-                        switch (colorMode)
+                        // 출력 이미지 준비
+                        if (drawOnOriginal && _originalMat.Channels() >= 3)
                         {
-                            case "Random":
-                                color = new Scalar(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
-                                break;
-                            case "SizeBased":
-                                double area = Cv2.ContourArea(filteredContours[i]);
-                                double normalizedArea = Math.Min(area / 10000.0, 1.0);
-                                color = new Scalar(
-                                    (int)(255 * (1 - normalizedArea)), // Blue
-                                    (int)(255 * normalizedArea),       // Green  
-                                    (int)(128 + 127 * normalizedArea)  // Red
-                                );
-                                break;
-                            case "Fixed":
-                            default:
-                                color = new Scalar(fixedColor.B, fixedColor.G, fixedColor.R); // BGR 순서
-                                break;
+                            _originalMat.CopyTo(outputImage);
+                        }
+                        else
+                        {
+                            Cv2.CvtColor(binaryImage, outputImage, ColorConversionCodes.GRAY2BGR);
                         }
 
                         // 컨투어 그리기
-                        Cv2.DrawContours(outputImage, filteredContours, i, color, thickness);
-
-                        // 컨투어 번호 표시
-                        if (showNumbers)
+                        Random random = new Random();
+                        for (int i = 0; i < filteredContours.Count; i++)
                         {
-                            var moments = Cv2.Moments(filteredContours[i]);
-                            if (moments.M00 != 0)
+                            Scalar color;
+
+                            switch (colorMode)
                             {
-                                var centroid = new OpenCvSharp.Point(
-                                    (int)(moments.M10 / moments.M00),
-                                    (int)(moments.M01 / moments.M00)
-                                );
-                                Cv2.PutText(outputImage, i.ToString(), centroid,
-                                           HersheyFonts.HersheySimplex, 0.8,
-                                           new Scalar(255, 255, 255), 2);
+                                case "Random":
+                                    color = new Scalar(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                                    break;
+                                case "SizeBased":
+                                    double area = Cv2.ContourArea(filteredContours[i]);
+                                    double normalizedArea = Math.Min(area / 10000.0, 1.0);
+                                    color = new Scalar(
+                                        (int)(255 * (1 - normalizedArea)),
+                                        (int)(255 * normalizedArea),
+                                        (int)(128 + 127 * normalizedArea)
+                                    );
+                                    break;
+                                case "Fixed":
+                                default:
+                                    color = new Scalar(fixedColor.B, fixedColor.G, fixedColor.R);
+                                    break;
+                            }
+
+                            Cv2.DrawContours(outputImage, filteredContours, i, color, thickness);
+
+                            if (showNumbers)
+                            {
+                                var moments = Cv2.Moments(filteredContours[i]);
+                                if (moments.M00 != 0)
+                                {
+                                    var centroid = new OpenCvSharp.Point(
+                                        (int)(moments.M10 / moments.M00),
+                                        (int)(moments.M01 / moments.M00)
+                                    );
+                                    Cv2.PutText(outputImage, i.ToString(), centroid,
+                                               HersheyFonts.HersheySimplex, 0.8,
+                                               new Scalar(255, 255, 255), 2);
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        // === 시각화가 꺼져있으면 원본 이미지 그대로 표시 ===
+                        if (_originalMat.Channels() >= 3)
+                        {
+                            _originalMat.CopyTo(outputImage);
+                        }
+                        else
+                        {
+                            Cv2.CvtColor(_originalMat, outputImage, ColorConversionCodes.GRAY2BGR);
+                        }
 
-                    // 8. 결과 이미지 표시
+                        // 시각화가 꺼져있어도 정보는 표시
+                        Cv2.PutText(outputImage, $"Contours: {filteredContours.Count} (Visualization OFF)",
+                                   new OpenCvSharp.Point(10, 30),
+                                   HersheyFonts.HersheySimplex, 0.7, new Scalar(0, 255, 0), 2);
+                    }
+
+                    // === 6. 데이터 출력 상태 표시 ===
+                    if (outputData)
+                    {
+                        string dataStatus = $"Data Output: {(outputAsJson ? "JSON" : "Text")}";
+                        Cv2.PutText(outputImage, dataStatus,
+                                   new OpenCvSharp.Point(10, outputImage.Height - 20),
+                                   HersheyFonts.HersheySimplex, 0.6, new Scalar(255, 255, 0), 2);
+                    }
+
+                    // 7. 결과 이미지 표시
                     SetPictureBoxImage(pictureBox_main, OpenCvSharp.Extensions.BitmapConverter.ToBitmap(outputImage));
+
+                    // === 8. 데이터 출력이 활성화되어 있으면 콘솔에 미리보기 출력 ===
+                    if (outputData)
+                    {
+                        string previewData = GenerateContourDataPreview(filteredContours, outputAsJson);
+                        Console.WriteLine("=== Contour Data Preview ===");
+                        Console.WriteLine(previewData);
+                        Console.WriteLine("=============================");
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Contour 적용 실패: " + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// 컨투어 데이터 미리보기 생성 (실시간 피드백용)
+        /// </summary>
+        private string GenerateContourDataPreview(List<OpenCvSharp.Point[]> contours, bool asJson)
+        {
+            if (contours.Count == 0) return "No contours found.";
+
+            var sb = new StringBuilder();
+
+            if (asJson)
+            {
+                sb.AppendLine("{");
+                sb.AppendLine($"  \"ContourCount\": {contours.Count},");
+                sb.AppendLine("  \"Summary\": [");
+
+                for (int i = 0; i < Math.Min(contours.Count, 3); i++) // 최대 3개만 미리보기
+                {
+                    var contour = contours[i];
+                    var area = Cv2.ContourArea(contour);
+                    var perimeter = Cv2.ArcLength(contour, true);
+
+                    sb.AppendLine($"    {{\"Index\": {i}, \"Points\": {contour.Length}, \"Area\": {area:F1}, \"Perimeter\": {perimeter:F1}}}");
+                    if (i < Math.Min(contours.Count, 3) - 1) sb.Append(",");
+                }
+
+                if (contours.Count > 3)
+                    sb.AppendLine($"    ... and {contours.Count - 3} more contours");
+
+                sb.AppendLine("  ]");
+                sb.AppendLine("}");
+            }
+            else
+            {
+                sb.AppendLine($"Total Contours: {contours.Count}");
+                sb.AppendLine("Preview (first 3):");
+
+                for (int i = 0; i < Math.Min(contours.Count, 3); i++)
+                {
+                    var contour = contours[i];
+                    var area = Cv2.ContourArea(contour);
+                    var perimeter = Cv2.ArcLength(contour, true);
+
+                    sb.AppendLine($"  #{i}: {contour.Length} points, Area: {area:F1}, Perimeter: {perimeter:F1}");
+                }
+
+                if (contours.Count > 3)
+                    sb.AppendLine($"  ... and {contours.Count - 3} more contours");
+            }
+
+            return sb.ToString();
         }
         /// <summary>
         /// 모든 파라미터 컨트롤에서 공통으로 호출되는 이벤트 핸들러입니다.
@@ -960,13 +1843,13 @@ namespace IFVisionEngine.UIComponents.Dialogs
         /// </summary>
         /// <param name="target">대상 PictureBox</param>
         /// <param name="src">새로 설정할 이미지</param>
-        private void SetPictureBoxImage(PictureBox target, Image src)
+        private void SetPictureBoxImage(PictureBox target, System.Drawing.Image src)
         {
             target.Image?.Dispose(); // 기존 이미지 메모리 해제
             target.Image = null;
 
             if (src != null)
-                target.Image = (Image)src.Clone(); // 새 이미지 복사본 설정
+                target.Image = (System.Drawing.Image)src.Clone(); // 새 이미지 복사본 설정
         }
 
         /// <summary>

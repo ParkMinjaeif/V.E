@@ -11,7 +11,8 @@ namespace IFVisionEngine.UIComponents.Dialogs
     public partial class ContourParameterControl : UserControl, IPreprocessParameterControl, IParameterLoadable
     {
         #region Events
-        public event Action<string, string, double, double, bool, int, string, Color, bool> OnParametersChanged;
+        public event Action<string, string, double, double, bool, int, string, Color, bool,
+                       bool, bool, bool> OnParametersChanged;
         public event Action OnParametersChangedBase;
         #endregion
 
@@ -103,6 +104,23 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     if (bool.TryParse(parameters["ShowContourNumbers"].ToString(), out bool showNumbers))
                         checkBox_ShowNumbers.Checked = showNumbers;
                 }
+                if (parameters.ContainsKey("ShowVisualization"))
+                {
+                    if (bool.TryParse(parameters["ShowVisualization"].ToString(), out bool showVisualization))
+                        checkBox_ShowVisualization.Checked = showVisualization;
+                }
+
+                if (parameters.ContainsKey("OutputContourData"))
+                {
+                    if (bool.TryParse(parameters["OutputContourData"].ToString(), out bool outputData))
+                        checkBox_OutputData.Checked = outputData;
+                }
+
+                if (parameters.ContainsKey("OutputAsJson"))
+                {
+                    if (bool.TryParse(parameters["OutputAsJson"].ToString(), out bool outputAsJson))
+                        checkBox_OutputAsJson.Checked = outputAsJson;
+                }
             }
             finally
             {
@@ -123,7 +141,10 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 { "Thickness", (int)numericUpDown_Thickness.Value },
                 { "ColorMode", comboBox_ColorMode.SelectedItem?.ToString() ?? "Fixed" },
                 { "FixedColor", button_FixedColor.BackColor },
-                { "ShowContourNumbers", checkBox_ShowNumbers.Checked }
+                { "ShowContourNumbers", checkBox_ShowNumbers.Checked },
+                           { "ShowVisualization", checkBox_ShowVisualization.Checked },
+            { "OutputContourData", checkBox_OutputData.Checked },
+            { "OutputAsJson", checkBox_OutputAsJson.Checked }
             };
         }
 
@@ -144,6 +165,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 comboBox_ColorMode.SelectedIndex = 0;
                 button_FixedColor.BackColor = Color.Green;
                 checkBox_ShowNumbers.Checked = false;
+                checkBox_ShowVisualization.Checked = true;
+                checkBox_OutputData.Checked = false;
+                checkBox_OutputAsJson.Checked = true;
             }
             finally
             {
@@ -207,6 +231,10 @@ namespace IFVisionEngine.UIComponents.Dialogs
             checkBox_DrawOnOriginal.Checked = true;
             button_FixedColor.BackColor = Color.Green;
             checkBox_ShowNumbers.Checked = false;
+            checkBox_ShowVisualization.Checked = true;
+            checkBox_OutputData.Checked = false;
+            checkBox_OutputAsJson.Checked = true;
+            checkBox_OutputAsJson.Enabled = false;
         }
 
         private void SetupEventHandlers()
@@ -289,6 +317,22 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     }
                 }
             };
+            checkBox_ShowVisualization.CheckedChanged += (s, e) => {
+                if (!_suppressEvents) RaiseParameterChanged();
+            };
+
+            checkBox_OutputData.CheckedChanged += (s, e) => {
+                if (!_suppressEvents)
+                {
+                    // OutputData가 체크되었을 때만 OutputAsJson 활성화
+                    checkBox_OutputAsJson.Enabled = checkBox_OutputData.Checked;
+                    RaiseParameterChanged();
+                }
+            };
+
+            checkBox_OutputAsJson.CheckedChanged += (s, e) => {
+                if (!_suppressEvents) RaiseParameterChanged();
+            };
         }
 
         private void RaiseParameterChanged()
@@ -305,8 +349,13 @@ namespace IFVisionEngine.UIComponents.Dialogs
             Color fixedColor = button_FixedColor.BackColor;
             bool showNumbers = checkBox_ShowNumbers.Checked;
 
+            bool showVisualization = checkBox_ShowVisualization.Checked;
+            bool outputData = checkBox_OutputData.Checked;
+            bool outputAsJson = checkBox_OutputAsJson.Checked;
+
             OnParametersChanged?.Invoke(retrievalMode, approximationMethod, minArea, maxArea,
-                                      drawOnOriginal, thickness, colorMode, fixedColor, showNumbers);
+                                      drawOnOriginal, thickness, colorMode, fixedColor, showNumbers,
+                                      showVisualization, outputData, outputAsJson);
             OnParametersChangedBase?.Invoke();
         }
         #endregion

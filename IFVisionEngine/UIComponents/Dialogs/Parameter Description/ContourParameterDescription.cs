@@ -106,6 +106,60 @@ namespace IFVisionEngine.UIComponents.Dialogs.Parameter_Description
             richTextBox1.AppendText(indent + "활성화: 컨투어 구별 및 분석에 유용\n");
             richTextBox1.AppendText(indent + "비활성화: 깔끔한 시각화, 번호가 겹치는 문제 방지\n");
             richTextBox1.AppendText(indent + "참고: 컨투어가 많을 때는 비활성화 권장\n");
+            // 10. 시각화 표시
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 11F, FontStyle.Bold);
+            richTextBox1.SelectionColor = Color.Black;
+            richTextBox1.AppendText("10. 시각화 표시 (ShowVisualization)\n");
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 10F);
+            richTextBox1.AppendText(indent + "컨투어를 이미지에 시각적으로 표시할지 여부를 결정합니다.\n");
+            richTextBox1.AppendText(indent + "활성화: 컨투어가 선으로 그려져서 시각적으로 확인 가능\n");
+            richTextBox1.AppendText(indent + "비활성화: 원본 이미지만 표시, 컨투어는 감지되지만 보이지 않음\n");
+            richTextBox1.AppendText(indent + "용도: 시각화 없이 순수한 분석만 원할 때 유용\n");
+            richTextBox1.AppendText(indent + "참고: 비활성화해도 컨투어 검출과 데이터 출력은 정상 작동\n\n");
+
+            // 11. 데이터 출력
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 11F, FontStyle.Bold);
+            richTextBox1.AppendText("11. 데이터 출력 (OutputContourData)\n");
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 10F);
+            richTextBox1.AppendText(indent + "검출된 컨투어의 좌표 데이터를 텍스트 형태로 출력할지 결정합니다.\n");
+            richTextBox1.AppendText(indent + "활성화: 컨투어의 모든 좌표점, 면적, 둘레 등의 정보를 문자열로 출력\n");
+            richTextBox1.AppendText(indent + "비활성화: 이미지 결과만 출력\n");
+            richTextBox1.AppendText(indent + "용도: 후속 노드에서 컨투어 좌표를 직접 활용하고 싶을 때\n");
+            richTextBox1.AppendText(indent + "활용 예시: 좌표 기반 분석, 외부 시스템 연동, 데이터 로깅\n\n");
+
+            // 12. JSON 형태
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 11F, FontStyle.Bold);
+            richTextBox1.AppendText("12. JSON 형태 (OutputAsJson)\n");
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 10F);
+            richTextBox1.AppendText(indent + "데이터 출력이 활성화되었을 때 출력 형식을 결정합니다.\n");
+            richTextBox1.AppendText(indent + "활성화 (JSON): 구조화된 JSON 형태로 출력\n");
+            richTextBox1.AppendText(indent + "  - 프로그래밍 친화적, 파싱 용이, 다른 시스템과의 연동 편리\n");
+            richTextBox1.AppendText(indent + "  - 예시: {\"ContourCount\": 3, \"Contours\": [{\"Index\": 0, \"Points\": [...]}]}\n");
+            richTextBox1.AppendText(indent + "비활성화 (텍스트): 사람이 읽기 쉬운 텍스트 형태로 출력\n");
+            richTextBox1.AppendText(indent + "  - 직관적 이해 용이, 디버깅 편리, 보고서 작성 적합\n");
+            richTextBox1.AppendText(indent + "  - 예시: \"Contour #0: 150 points, Area: 2500.5\"\n");
+            richTextBox1.AppendText(indent + "참고: 데이터 출력이 비활성화되면 이 설정은 무시됨\n\n");
+
+            // === 사용 팁과 활용 예시 ===
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 11F, FontStyle.Bold);
+            richTextBox1.SelectionColor = Color.DarkBlue;
+            richTextBox1.AppendText("💡 활용 팁\n");
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 10F);
+            richTextBox1.SelectionColor = Color.Black;
+            richTextBox1.AppendText(indent + "• 성능 최적화: 시각화 OFF + 데이터 출력 ON = 빠른 분석\n");
+            richTextBox1.AppendText(indent + "• 디버깅: 시각화 ON + 텍스트 출력 = 직관적 확인\n");
+            richTextBox1.AppendText(indent + "• 자동화: 시각화 OFF + JSON 출력 = 시스템 연동\n");
+            richTextBox1.AppendText(indent + "• 보고서: 시각화 ON + 텍스트 출력 = 문서화\n\n");
+
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 11F, FontStyle.Bold);
+            richTextBox1.SelectionColor = Color.DarkGreen;
+            richTextBox1.AppendText("🔧 권장 설정\n");
+            richTextBox1.SelectionFont = new Font("맑은 고딕", 10F);
+            richTextBox1.SelectionColor = Color.Black;
+            richTextBox1.AppendText(indent + "• 일반 분석: 시각화 ON, 데이터 출력 OFF\n");
+            richTextBox1.AppendText(indent + "• 정밀 분석: 시각화 ON, JSON 출력 ON\n");
+            richTextBox1.AppendText(indent + "• 배치 처리: 시각화 OFF, JSON 출력 ON\n");
+            richTextBox1.AppendText(indent + "• 결과 확인: 시각화 ON, 텍스트 출력 ON\n");
         }
     }
 }
