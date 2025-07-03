@@ -33,8 +33,6 @@ namespace IFVisionEngine.UIComponents.UserControls
         private PointF _dragEnd;                         // 드래그 확대 시 끝 좌표(PictureBox 기준)
         private bool _isDragging = false;                // 드래그 확대 동작 중 여부
 
-        // 4. 임시 사각형/오버레이 변수 (추후 오버레이 확장 대비)
-        private Rectangle _zoomRect;                     // 드래그 사각형 등 임시 영역 보관
 
         // 5. 측정 상태 변수 (치수 측정 기능 관련)
         private bool _isMeasuring = false;               // 치수 측정 진행 중 여부

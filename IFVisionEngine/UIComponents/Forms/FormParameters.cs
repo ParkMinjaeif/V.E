@@ -10,7 +10,7 @@ using static MyNodesContext;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web.UI.WebControls;
-
+using IFVisionEngine.UIComponents.Data;
 namespace IFVisionEngine.UIComponents.Dialogs
 {
     /// <summary>
@@ -422,7 +422,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
             }
         }
 
-        
+
         /// <summary>
         /// Reflection을 사용하여 SetCurrentParameters 메서드를 호출합니다.
         /// </summary>
@@ -541,7 +541,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     return new GaussianBlurParameterDescription();
                 case "edgeparameters":
                     return new EdgeParameterDescription();
-                case "contourparameters": 
+                case "contourparameters":
                     return new ContourParameterDescription();
                 case "momentsparameters":
                     return new MomentsParameterDescription();
@@ -573,7 +573,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 edge.OnParametersChanged += EdgeParameterChanged; // Edge 파라미터 변경 이벤트
                 Console.WriteLine("Edge 이벤트 연결됨");
             }
-            else if (control is ContourParameterControl contour) 
+            else if (control is ContourParameterControl contour)
             {
                 contour.OnParametersChanged += ContourParameterChanged;
                 Console.WriteLine("Contour 이벤트 연결됨");
@@ -838,7 +838,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
         /// <summary>
         /// Edge Detection 파라미터가 변경될 때 실시간으로 이미지에 적용합니다.
         /// </summary>
-        private void EdgeParameterChanged(double threshold1, double threshold2,string method)
+        private void EdgeParameterChanged(double threshold1, double threshold2, string method)
         {
             if (_originalMat == null) return;
 
@@ -879,7 +879,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
         /// <summary>
         /// RadialLines 파라미터가 변경될 때 실시간으로 이미지에 적용합니다.
         /// </summary>
-        private void RadialLinesParameterChanged(RadialLinesParameters parameters)
+        private void RadialLinesParameterChanged(RadialLinesParameter parameters)
         {
             if (_originalMat == null) return;
 

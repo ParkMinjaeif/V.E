@@ -128,6 +128,7 @@
     </Compile>
     <Compile Include="Manager\AppUIManager.cs" />
     <Compile Include="Manager\ImageDataManager.cs" />
+    <Compile Include="Manager\ResultsManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -138,6 +139,8 @@
     <Compile Include="UIComponents\CustomControls\InputBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UIComponents\Data\RadiaLinesParamter.cs" />
+    <Compile Include="UIComponents\Data\ResultData.cs" />
     <Compile Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -162,7 +165,9 @@
     <Compile Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.Designer.cs">
       <DependentUpon>MomentsParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.cs" />
+    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.Designer.cs">
       <DependentUpon>RadialLinesParameterControl.cs</DependentUpon>
     </Compile>
@@ -214,7 +219,14 @@
     <Compile Include="UIComponents\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.Designer.cs">
       <DependentUpon>GaussianBlurParameterControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIComponents\Forms\FormResult\FormResults.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Forms\FormResult\FormResults.Designer.cs">
+      <DependentUpon>FormResults.cs</DependentUpon>
+    </Compile>
     <Compile Include="UIComponents\Interface\IPreprocessParameterControl.cs" />
+    <Compile Include="UIComponents\Interface\IResultNode.cs" />
     <Compile Include="UIComponents\UserControls\UcNodeExecutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -258,9 +270,11 @@
       <DependentUpon>UcTitleBar.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Core.cs" />
+    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Detection.cs" />
     <Compile Include="Utils\CustomNodeEditor\MyNodesContext.ImageIO.cs" />
     <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Inputs.cs" />
     <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Preprocessing.cs" />
+    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Result.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -277,6 +291,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.resx">
       <DependentUpon>EdgeParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.resx">
+      <DependentUpon>MomentsParameterControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.resx">
       <DependentUpon>CLAHEParameterDescription.cs</DependentUpon>
@@ -329,7 +346,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UIComponents\Dialogs\Result\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="OpenCvSharpExtern.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
