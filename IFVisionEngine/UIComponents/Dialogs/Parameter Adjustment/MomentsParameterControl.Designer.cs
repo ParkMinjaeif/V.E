@@ -32,32 +32,28 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.panel_Threshold = new System.Windows.Forms.Panel();
-            this.trackBar_Threshold = new System.Windows.Forms.TrackBar();
-            this.numericUpDown_Threshold = new System.Windows.Forms.NumericUpDown();
+            this.trackBar_Threshold = new Sunny.UI.UITrackBar();
+            this.numericUpDown_Threshold = new Sunny.UI.UIIntegerUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.checkBox_ShowCentroid = new System.Windows.Forms.CheckBox();
+            this.checkBox_ShowCentroid = new Sunny.UI.UICheckBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBox_ShowArea = new System.Windows.Forms.CheckBox();
+            this.checkBox_ShowArea = new Sunny.UI.UICheckBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.checkBox_ShowOrientation = new System.Windows.Forms.CheckBox();
+            this.checkBox_ShowOrientation = new Sunny.UI.UICheckBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.checkBox_ShowBoundingBox = new System.Windows.Forms.CheckBox();
+            this.checkBox_ShowBoundingBox = new Sunny.UI.UICheckBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.checkBox_ShowEccentricity = new System.Windows.Forms.CheckBox();
+            this.checkBox_ShowEccentricity = new Sunny.UI.UICheckBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button_DrawColor = new System.Windows.Forms.Button();
+            this.button_DrawColor = new Sunny.UI.UIButton();
             this.label8 = new System.Windows.Forms.Label();
             this.panel_LineThickness = new System.Windows.Forms.Panel();
-            this.trackBar_LineThickness = new System.Windows.Forms.TrackBar();
-            this.numericUpDown_LineThickness = new System.Windows.Forms.NumericUpDown();
+            this.trackBar_LineThickness = new Sunny.UI.UITrackBar();
+            this.numericUpDown_LineThickness = new Sunny.UI.UIIntegerUpDown();
             this.panel_Main.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel_Threshold.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Threshold)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Threshold)).BeginInit();
             this.panel_LineThickness.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_LineThickness)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_LineThickness)).BeginInit();
             this.SuspendLayout();
             // 
             // panel_Main
@@ -74,8 +70,8 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.panel_Threshold, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 1);
@@ -112,9 +108,9 @@
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 6);
+            this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 12);
+            this.label1.Size = new System.Drawing.Size(69, 24);
             this.label1.TabIndex = 0;
             this.label1.Text = "이진화 임계값:";
             // 
@@ -123,42 +119,42 @@
             this.panel_Threshold.Controls.Add(this.trackBar_Threshold);
             this.panel_Threshold.Controls.Add(this.numericUpDown_Threshold);
             this.panel_Threshold.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_Threshold.Location = new System.Drawing.Point(163, 2);
+            this.panel_Threshold.Location = new System.Drawing.Point(83, 2);
             this.panel_Threshold.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel_Threshold.Name = "panel_Threshold";
-            this.panel_Threshold.Size = new System.Drawing.Size(234, 20);
+            this.panel_Threshold.Size = new System.Drawing.Size(314, 20);
             this.panel_Threshold.TabIndex = 1;
             // 
             // trackBar_Threshold
             // 
             this.trackBar_Threshold.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar_Threshold.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.trackBar_Threshold.Location = new System.Drawing.Point(0, 0);
             this.trackBar_Threshold.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.trackBar_Threshold.Maximum = 255;
+            this.trackBar_Threshold.MinimumSize = new System.Drawing.Size(1, 1);
             this.trackBar_Threshold.Name = "trackBar_Threshold";
-            this.trackBar_Threshold.Size = new System.Drawing.Size(174, 20);
+            this.trackBar_Threshold.Size = new System.Drawing.Size(213, 20);
             this.trackBar_Threshold.TabIndex = 0;
-            this.trackBar_Threshold.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar_Threshold.Text = "uiTrackBar1";
             this.trackBar_Threshold.Value = 127;
             // 
             // numericUpDown_Threshold
             // 
             this.numericUpDown_Threshold.Dock = System.Windows.Forms.DockStyle.Right;
-            this.numericUpDown_Threshold.Location = new System.Drawing.Point(174, 0);
+            this.numericUpDown_Threshold.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.numericUpDown_Threshold.Location = new System.Drawing.Point(213, 0);
             this.numericUpDown_Threshold.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.numericUpDown_Threshold.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
+            this.numericUpDown_Threshold.Maximum = 255;
+            this.numericUpDown_Threshold.Minimum = 0;
+            this.numericUpDown_Threshold.MinimumSize = new System.Drawing.Size(1, 1);
             this.numericUpDown_Threshold.Name = "numericUpDown_Threshold";
-            this.numericUpDown_Threshold.Size = new System.Drawing.Size(60, 21);
+            this.numericUpDown_Threshold.ShowText = false;
+            this.numericUpDown_Threshold.Size = new System.Drawing.Size(101, 20);
             this.numericUpDown_Threshold.TabIndex = 1;
-            this.numericUpDown_Threshold.Value = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
+            this.numericUpDown_Threshold.Text = "uiIntegerUpDown1";
+            this.numericUpDown_Threshold.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.numericUpDown_Threshold.Value = 127;
             // 
             // label2
             // 
@@ -173,16 +169,18 @@
             // checkBox_ShowCentroid
             // 
             this.checkBox_ShowCentroid.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox_ShowCentroid.AutoSize = true;
             this.checkBox_ShowCentroid.Checked = true;
-            this.checkBox_ShowCentroid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_ShowCentroid.Location = new System.Drawing.Point(163, 28);
+            this.checkBox_ShowCentroid.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBox_ShowCentroid.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.checkBox_ShowCentroid.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.checkBox_ShowCentroid.Location = new System.Drawing.Point(83, 28);
             this.checkBox_ShowCentroid.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_ShowCentroid.MinimumSize = new System.Drawing.Size(1, 1);
             this.checkBox_ShowCentroid.Name = "checkBox_ShowCentroid";
-            this.checkBox_ShowCentroid.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_ShowCentroid.Padding = new System.Windows.Forms.Padding(22, 0, 0, 0);
+            this.checkBox_ShowCentroid.Size = new System.Drawing.Size(73, 16);
             this.checkBox_ShowCentroid.TabIndex = 3;
             this.checkBox_ShowCentroid.Text = "활성화";
-            this.checkBox_ShowCentroid.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -197,16 +195,18 @@
             // checkBox_ShowArea
             // 
             this.checkBox_ShowArea.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox_ShowArea.AutoSize = true;
             this.checkBox_ShowArea.Checked = true;
-            this.checkBox_ShowArea.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_ShowArea.Location = new System.Drawing.Point(163, 52);
+            this.checkBox_ShowArea.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBox_ShowArea.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.checkBox_ShowArea.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.checkBox_ShowArea.Location = new System.Drawing.Point(83, 52);
             this.checkBox_ShowArea.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_ShowArea.MinimumSize = new System.Drawing.Size(1, 1);
             this.checkBox_ShowArea.Name = "checkBox_ShowArea";
-            this.checkBox_ShowArea.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_ShowArea.Padding = new System.Windows.Forms.Padding(22, 0, 0, 0);
+            this.checkBox_ShowArea.Size = new System.Drawing.Size(73, 16);
             this.checkBox_ShowArea.TabIndex = 5;
             this.checkBox_ShowArea.Text = "활성화";
-            this.checkBox_ShowArea.UseVisualStyleBackColor = true;
             // 
             // label4
             // 
@@ -221,38 +221,43 @@
             // checkBox_ShowOrientation
             // 
             this.checkBox_ShowOrientation.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox_ShowOrientation.AutoSize = true;
-            this.checkBox_ShowOrientation.Location = new System.Drawing.Point(163, 76);
+            this.checkBox_ShowOrientation.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBox_ShowOrientation.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.checkBox_ShowOrientation.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.checkBox_ShowOrientation.Location = new System.Drawing.Point(83, 76);
             this.checkBox_ShowOrientation.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_ShowOrientation.MinimumSize = new System.Drawing.Size(1, 1);
             this.checkBox_ShowOrientation.Name = "checkBox_ShowOrientation";
-            this.checkBox_ShowOrientation.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_ShowOrientation.Padding = new System.Windows.Forms.Padding(22, 0, 0, 0);
+            this.checkBox_ShowOrientation.Size = new System.Drawing.Size(73, 16);
             this.checkBox_ShowOrientation.TabIndex = 7;
             this.checkBox_ShowOrientation.Text = "활성화";
-            this.checkBox_ShowOrientation.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 102);
+            this.label5.Location = new System.Drawing.Point(3, 96);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(85, 12);
+            this.label5.Size = new System.Drawing.Size(69, 24);
             this.label5.TabIndex = 8;
             this.label5.Text = "경계박스 표시:";
             // 
             // checkBox_ShowBoundingBox
             // 
             this.checkBox_ShowBoundingBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox_ShowBoundingBox.AutoSize = true;
             this.checkBox_ShowBoundingBox.Checked = true;
-            this.checkBox_ShowBoundingBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_ShowBoundingBox.Location = new System.Drawing.Point(163, 100);
+            this.checkBox_ShowBoundingBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBox_ShowBoundingBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.checkBox_ShowBoundingBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.checkBox_ShowBoundingBox.Location = new System.Drawing.Point(83, 100);
             this.checkBox_ShowBoundingBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_ShowBoundingBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.checkBox_ShowBoundingBox.Name = "checkBox_ShowBoundingBox";
-            this.checkBox_ShowBoundingBox.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_ShowBoundingBox.Padding = new System.Windows.Forms.Padding(22, 0, 0, 0);
+            this.checkBox_ShowBoundingBox.Size = new System.Drawing.Size(73, 16);
             this.checkBox_ShowBoundingBox.TabIndex = 9;
             this.checkBox_ShowBoundingBox.Text = "활성화";
-            this.checkBox_ShowBoundingBox.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -267,14 +272,17 @@
             // checkBox_ShowEccentricity
             // 
             this.checkBox_ShowEccentricity.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.checkBox_ShowEccentricity.AutoSize = true;
-            this.checkBox_ShowEccentricity.Location = new System.Drawing.Point(163, 124);
+            this.checkBox_ShowEccentricity.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.checkBox_ShowEccentricity.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.checkBox_ShowEccentricity.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+            this.checkBox_ShowEccentricity.Location = new System.Drawing.Point(83, 124);
             this.checkBox_ShowEccentricity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.checkBox_ShowEccentricity.MinimumSize = new System.Drawing.Size(1, 1);
             this.checkBox_ShowEccentricity.Name = "checkBox_ShowEccentricity";
-            this.checkBox_ShowEccentricity.Size = new System.Drawing.Size(60, 16);
+            this.checkBox_ShowEccentricity.Padding = new System.Windows.Forms.Padding(22, 0, 0, 0);
+            this.checkBox_ShowEccentricity.Size = new System.Drawing.Size(73, 16);
             this.checkBox_ShowEccentricity.TabIndex = 11;
             this.checkBox_ShowEccentricity.Text = "활성화";
-            this.checkBox_ShowEccentricity.UseVisualStyleBackColor = true;
             // 
             // label7
             // 
@@ -289,14 +297,17 @@
             // button_DrawColor
             // 
             this.button_DrawColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_DrawColor.BackColor = System.Drawing.Color.Red;
-            this.button_DrawColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_DrawColor.Location = new System.Drawing.Point(163, 147);
+            this.button_DrawColor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_DrawColor.FillColor = System.Drawing.Color.Red;
+            this.button_DrawColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.button_DrawColor.Location = new System.Drawing.Point(83, 147);
             this.button_DrawColor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.button_DrawColor.MinimumSize = new System.Drawing.Size(1, 1);
             this.button_DrawColor.Name = "button_DrawColor";
-            this.button_DrawColor.Size = new System.Drawing.Size(234, 18);
+            this.button_DrawColor.RectColor = System.Drawing.Color.Red;
+            this.button_DrawColor.Size = new System.Drawing.Size(314, 18);
             this.button_DrawColor.TabIndex = 13;
-            this.button_DrawColor.UseVisualStyleBackColor = false;
+            this.button_DrawColor.TipsFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             // 
             // label8
             // 
@@ -313,47 +324,43 @@
             this.panel_LineThickness.Controls.Add(this.trackBar_LineThickness);
             this.panel_LineThickness.Controls.Add(this.numericUpDown_LineThickness);
             this.panel_LineThickness.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_LineThickness.Location = new System.Drawing.Point(163, 170);
+            this.panel_LineThickness.Location = new System.Drawing.Point(83, 170);
             this.panel_LineThickness.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel_LineThickness.Name = "panel_LineThickness";
-            this.panel_LineThickness.Size = new System.Drawing.Size(234, 20);
+            this.panel_LineThickness.Size = new System.Drawing.Size(314, 20);
             this.panel_LineThickness.TabIndex = 15;
             // 
             // trackBar_LineThickness
             // 
             this.trackBar_LineThickness.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar_LineThickness.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.trackBar_LineThickness.Location = new System.Drawing.Point(0, 0);
             this.trackBar_LineThickness.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.trackBar_LineThickness.Maximum = 10;
             this.trackBar_LineThickness.Minimum = 1;
+            this.trackBar_LineThickness.MinimumSize = new System.Drawing.Size(1, 1);
             this.trackBar_LineThickness.Name = "trackBar_LineThickness";
-            this.trackBar_LineThickness.Size = new System.Drawing.Size(174, 20);
+            this.trackBar_LineThickness.Size = new System.Drawing.Size(213, 20);
             this.trackBar_LineThickness.TabIndex = 0;
-            this.trackBar_LineThickness.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar_LineThickness.Text = "uiTrackBar2";
             this.trackBar_LineThickness.Value = 2;
             // 
             // numericUpDown_LineThickness
             // 
             this.numericUpDown_LineThickness.Dock = System.Windows.Forms.DockStyle.Right;
-            this.numericUpDown_LineThickness.Location = new System.Drawing.Point(174, 0);
+            this.numericUpDown_LineThickness.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.numericUpDown_LineThickness.Location = new System.Drawing.Point(213, 0);
             this.numericUpDown_LineThickness.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.numericUpDown_LineThickness.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.numericUpDown_LineThickness.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.numericUpDown_LineThickness.Maximum = 10;
+            this.numericUpDown_LineThickness.Minimum = 1;
+            this.numericUpDown_LineThickness.MinimumSize = new System.Drawing.Size(1, 1);
             this.numericUpDown_LineThickness.Name = "numericUpDown_LineThickness";
-            this.numericUpDown_LineThickness.Size = new System.Drawing.Size(60, 21);
+            this.numericUpDown_LineThickness.ShowText = false;
+            this.numericUpDown_LineThickness.Size = new System.Drawing.Size(101, 20);
             this.numericUpDown_LineThickness.TabIndex = 1;
-            this.numericUpDown_LineThickness.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
+            this.numericUpDown_LineThickness.Text = "uiIntegerUpDown2";
+            this.numericUpDown_LineThickness.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.numericUpDown_LineThickness.Value = 2;
             // 
             // MomentsParameterControl
             // 
@@ -368,13 +375,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.panel_Threshold.ResumeLayout(false);
-            this.panel_Threshold.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_Threshold)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Threshold)).EndInit();
             this.panel_LineThickness.ResumeLayout(false);
-            this.panel_LineThickness.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_LineThickness)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_LineThickness)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -385,23 +386,23 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel_Threshold;
-        private System.Windows.Forms.TrackBar trackBar_Threshold;
-        private System.Windows.Forms.NumericUpDown numericUpDown_Threshold;
+        private Sunny.UI.UITrackBar trackBar_Threshold;
+        private Sunny.UI.UIIntegerUpDown numericUpDown_Threshold;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.CheckBox checkBox_ShowCentroid;
+        private Sunny.UI.UICheckBox checkBox_ShowCentroid;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBox_ShowArea;
+        private Sunny.UI.UICheckBox checkBox_ShowArea;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.CheckBox checkBox_ShowOrientation;
+        private Sunny.UI.UICheckBox checkBox_ShowOrientation;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.CheckBox checkBox_ShowBoundingBox;
+        private Sunny.UI.UICheckBox checkBox_ShowBoundingBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox checkBox_ShowEccentricity;
+        private Sunny.UI.UICheckBox checkBox_ShowEccentricity;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button_DrawColor;
+        private Sunny.UI.UIButton button_DrawColor;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Panel panel_LineThickness;
-        private System.Windows.Forms.TrackBar trackBar_LineThickness;
-        private System.Windows.Forms.NumericUpDown numericUpDown_LineThickness;
+        private Sunny.UI.UITrackBar trackBar_LineThickness;
+        private Sunny.UI.UIIntegerUpDown numericUpDown_LineThickness;
     }
 }

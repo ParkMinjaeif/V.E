@@ -136,8 +136,21 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Theme\IThemable.cs" />
+    <Compile Include="Theme\Scrollbar.cs" />
+    <Compile Include="Theme\Theme.cs" />
+    <Compile Include="Theme\ThemeManager.cs" />
+    <Compile Include="UIComponents\CustomControls\CustomTitleBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UIComponents\CustomControls\InputBoxControl.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\CustomControls\WindowWrapper.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\CustomControls\WindowWrapper.Designer.cs">
+      <DependentUpon>WindowWrapper.cs</DependentUpon>
     </Compile>
     <Compile Include="UIComponents\Data\RadiaLinesParamter.cs" />
     <Compile Include="UIComponents\Data\ResultData.cs" />
@@ -295,6 +308,9 @@
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.resx">
       <DependentUpon>MomentsParameterControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.resx">
+      <DependentUpon>RadialLinesParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.resx">
       <DependentUpon>CLAHEParameterDescription.cs</DependentUpon>
     </EmbeddedResource>
@@ -353,8 +369,13 @@
     <Content Include="OpenCvSharpExtern.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\Play.png" />
+    <None Include="Resources\Save.png" />
+    <None Include="Resources\Load.png" />
+    <None Include="Resources\Hand.png" />
+    <None Include="Resources\IF.png" />
+    <None Include="Resources\darkgrid.png" />
     <Content Include="Resources\grid.png" />
-    <None Include="Resources\Panning.png" />
     <None Include="Resources\Zoom.png" />
     <None Include="Resources\Reset.png" />
     <None Include="Resources\Delete.png" />

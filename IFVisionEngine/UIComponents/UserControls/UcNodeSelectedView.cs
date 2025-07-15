@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using IFVisionEngine.UIComponents.Dialogs;
 using static MyNodesContext;
 using IFVisionEngine.Manager;
+using IFVisionEngine.Themes;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -18,8 +19,8 @@ namespace IFVisionEngine.UIComponents.UserControls
         public UcNodeSelectedView()
         {
             InitializeComponent();
-
-            this.Dock = DockStyle.Fill;
+            ThemeManager.ApplyThemeToControl(this);
+            //this.Dock = DockStyle.Fill;
         }
         public void DisplayNowData(object dataObject)
         {
@@ -45,12 +46,14 @@ namespace IFVisionEngine.UIComponents.UserControls
                 this.propertyGrid1.Invoke(new MethodInvoker(() =>
                 {
                     propertyGrid1.SelectedObject = dataObject;
+                    ScrollbarTheme.DarkPropertyGrid(this.propertyGrid1);
                 }));
             }
             else
             {
                 // 이미 UI 스레드라면 직접 업데이트합니다.
                 propertyGrid1.SelectedObject = dataObject;
+                ScrollbarTheme.DarkPropertyGrid(this.propertyGrid1);
             }
         }
     }

@@ -55,7 +55,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     {
                         minArea = Math.Max(0, Math.Min(10000, minArea));
                         trackBar_MinArea.Value = (int)minArea;
-                        numericUpDown_MinArea.Value = (decimal)minArea;
+                        numericUpDown_MinArea.Value = (int)minArea;
                     }
                 }
 
@@ -66,7 +66,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                         maxArea = Math.Max(1000, Math.Min(10000000, maxArea));
                         int trackBarValue = (int)(maxArea / 1000);
                         trackBar_MaxArea.Value = Math.Min(trackBar_MaxArea.Maximum, trackBarValue);
-                        numericUpDown_MaxArea.Value = (decimal)maxArea;
+                        numericUpDown_MaxArea.Value = (int)maxArea;
                     }
                 }
 
@@ -96,7 +96,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 if (parameters.ContainsKey("FixedColor"))
                 {
                     if (parameters["FixedColor"] is Color color)
-                        button_FixedColor.BackColor = color;
+                        button_FixedColor.FillColor = color;
                 }
 
                 if (parameters.ContainsKey("ShowContourNumbers"))
@@ -140,7 +140,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 { "DrawOnOriginal", checkBox_DrawOnOriginal.Checked },
                 { "Thickness", (int)numericUpDown_Thickness.Value },
                 { "ColorMode", comboBox_ColorMode.SelectedItem?.ToString() ?? "Fixed" },
-                { "FixedColor", button_FixedColor.BackColor },
+                { "FixedColor", button_FixedColor.FillColor },
                 { "ShowContourNumbers", checkBox_ShowNumbers.Checked },
                            { "ShowVisualization", checkBox_ShowVisualization.Checked },
             { "OutputContourData", checkBox_OutputData.Checked },
@@ -163,7 +163,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 trackBar_Thickness.Value = 2;
                 numericUpDown_Thickness.Value = 2;
                 comboBox_ColorMode.SelectedIndex = 0;
-                button_FixedColor.BackColor = Color.Green;
+                button_FixedColor.FillColor = Color.Green;
                 checkBox_ShowNumbers.Checked = false;
                 checkBox_ShowVisualization.Checked = true;
                 checkBox_OutputData.Checked = false;
@@ -229,7 +229,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
             // 기타
             checkBox_DrawOnOriginal.Checked = true;
-            button_FixedColor.BackColor = Color.Green;
+            button_FixedColor.FillColor = Color.Green;
             checkBox_ShowNumbers.Checked = false;
             checkBox_ShowVisualization.Checked = true;
             checkBox_OutputData.Checked = false;
@@ -309,10 +309,10 @@ namespace IFVisionEngine.UIComponents.Dialogs
             button_FixedColor.Click += (s, e) => {
                 using (var colorDialog = new ColorDialog())
                 {
-                    colorDialog.Color = button_FixedColor.BackColor;
+                    colorDialog.Color = button_FixedColor.FillColor;
                     if (colorDialog.ShowDialog() == DialogResult.OK)
                     {
-                        button_FixedColor.BackColor = colorDialog.Color;
+                        button_FixedColor.FillColor = colorDialog.Color;
                         if (!_suppressEvents) RaiseParameterChanged();
                     }
                 }
@@ -346,7 +346,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
             bool drawOnOriginal = checkBox_DrawOnOriginal.Checked;
             int thickness = (int)numericUpDown_Thickness.Value;
             string colorMode = comboBox_ColorMode.SelectedItem?.ToString() ?? "Fixed";
-            Color fixedColor = button_FixedColor.BackColor;
+            Color fixedColor = button_FixedColor.FillColor;
             bool showNumbers = checkBox_ShowNumbers.Checked;
 
             bool showVisualization = checkBox_ShowVisualization.Checked;

@@ -47,7 +47,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                         // TrackBar는 10배 스케일링 (10~80)
                         int trackBarValue = (int)(clipLimit * 10);
                         trackBar_ClipLimit.Value = Math.Min(trackBar_ClipLimit.Maximum, Math.Max(trackBar_ClipLimit.Minimum, trackBarValue));
-                        numericUpDown_ClipLimit.Value = (decimal)clipLimit;
+                        numericUpDown_ClipLimit.Value = (int)clipLimit;
                     }
                 }
 
@@ -107,7 +107,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
             try
             {
                 trackBar_ClipLimit.Value = 20; // ClipLimit: 2.0
-                numericUpDown_ClipLimit.Value = 2.0m;
+                numericUpDown_ClipLimit.Value = (double)2.0m;
                 trackBar_TileHeight.Value = 8;  // TileHeight: 8
                 numericUpDown_TileHeight.Value = 8;
                 trackBar_TileWidth.Value = 8;  // TileWidth: 8
@@ -150,11 +150,10 @@ namespace IFVisionEngine.UIComponents.Dialogs
             trackBar_ClipLimit.Maximum = 80;   // 8.0  
             trackBar_ClipLimit.Value = 20;     // 2.0
 
-            numericUpDown_ClipLimit.Minimum = 1.0m;
-            numericUpDown_ClipLimit.Maximum = 8.0m;
+            numericUpDown_ClipLimit.Minimum = (double)1.0m;
+            numericUpDown_ClipLimit.Maximum = (double)8.0m;
             numericUpDown_ClipLimit.DecimalPlaces = 1;
-            numericUpDown_ClipLimit.Increment = 0.1m;
-            numericUpDown_ClipLimit.Value = 2.0m;
+            numericUpDown_ClipLimit.Value = (double)2.0m;
 
             // TileHeight 컨트롤 설정
             trackBar_TileHeight.Minimum = 4;
@@ -181,7 +180,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 {
                     _suppressEvents = true;
                     decimal numValue = trackBar_ClipLimit.Value / 10.0m;
-                    numericUpDown_ClipLimit.Value = numValue;
+                    numericUpDown_ClipLimit.Value = (double)numValue;
                     _suppressEvents = false;
                     RaiseParameterChanged();
                 }
@@ -278,7 +277,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
         {
             try
             {
-                numericUpDown_ClipLimit.Value = 2.0m;
+                numericUpDown_ClipLimit.Value = (double)2.0m;
                 trackBar_ClipLimit.Value = 20;
                 numericUpDown_TileHeight.Value = 8;
                 trackBar_TileHeight.Value = 8;

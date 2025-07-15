@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web.UI.WebControls;
 using IFVisionEngine.UIComponents.Data;
+using IFVisionEngine.Themes;
 namespace IFVisionEngine.UIComponents.Dialogs
 {
     /// <summary>
@@ -43,6 +44,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
             ShowPreprocessParameterControl(name); // 파라미터 컨트롤 생성
             SetupPictureBoxEvents(); // PictureBox 마우스 이벤트 설정
             SetupFormEvents(); // Form 이벤트 설정
+            ThemeManager.ApplyThemeToControl(this);
         }
         #endregion
 
@@ -61,7 +63,14 @@ namespace IFVisionEngine.UIComponents.Dialogs
         /// </summary>
         private void FormParameters_Load(object sender, EventArgs e)
         {
-            Console.WriteLine("=== FormParameters_Load 이벤트 ===");
+            // 기본 타이틀바 제거
+            this.FormBorderStyle = FormBorderStyle.None;
+
+            // 커스텀 타이틀바 추가
+            CustomTitleBar titleBar = new CustomTitleBar();
+            titleBar.ParentForm = this;
+            titleBar.SetFileInfo("IF Vision Engine Parameter", Properties.Resources.IF);
+            this.Controls.Add(titleBar);
         }
 
         /// <summary>

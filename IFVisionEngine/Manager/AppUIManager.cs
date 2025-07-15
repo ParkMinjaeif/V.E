@@ -81,7 +81,7 @@ namespace IFVisionEngine.Manager
                 // 독립적인 컨트롤들을 먼저 생성
                 ucNodeSelectedView = new UcNodeSelectedView();
                 ucNodeExecutionView = new UcNodeExecutionView();
-                ucLogView = new UcLogView(_mainFormInstance);
+                ucLogView = new UcLogView();
 
                 // 메인 폼에 의존하는 컨트롤들 생성
                 ucNodeEditor = new UcNodeEditor(_mainFormInstance);

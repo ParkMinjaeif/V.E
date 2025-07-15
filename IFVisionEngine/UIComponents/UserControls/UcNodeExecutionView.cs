@@ -10,6 +10,7 @@ using IFVisionEngine.Manager;
 using OpenCvSharp;
 using IFVisionEngine.UIComponents.Data;
 using IFVisionEngine.UIComponents.Managers;
+using IFVisionEngine.Themes;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -228,11 +229,11 @@ namespace IFVisionEngine.UIComponents.UserControls
         public UcNodeExecutionView()
         {
             InitializeComponent();
-            this.Dock = DockStyle.Fill;
+            //this.Dock = DockStyle.Fill;
             SetupEventHandlers();
             ConnectToResultsManager();
-
             Console.WriteLine("[UcNodeExecutionView] 초기화 완료");
+            ThemeManager.ApplyThemeToControl(this);
         }
 
         private void SetupEventHandlers()
@@ -255,23 +256,6 @@ namespace IFVisionEngine.UIComponents.UserControls
                 catch (Exception ex)
                 {
                     Console.WriteLine($"[UcNodeExecutionView] ResultsManager 연결 실패: {ex.Message}");
-                }
-            }
-        }
-
-        private void DisconnectFromResultsManager()
-        {
-            if (_eventHandlersConnected && !_disposed)
-            {
-                try
-                {
-                    ResultsManager.Instance.OnResultAdded -= OnResultAdded;
-                    _eventHandlersConnected = false;
-                    Console.WriteLine("[UcNodeExecutionView] ResultsManager 이벤트 해제됨");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[UcNodeExecutionView] 이벤트 해제 중 오류: {ex.Message}");
                 }
             }
         }
@@ -299,14 +283,12 @@ namespace IFVisionEngine.UIComponents.UserControls
 
             TreeNode treeNode = new TreeNode(node.Name);
             treeNode.Tag = node.GetNodeContext();
-
             // 결과값 노드인지 확인하고 아이콘 추가 (색상은 기본 유지)
             if (IsResultNode(node.Name))
             {
                 treeNode.Text = $"📊 {node.Name}";
                 Console.WriteLine($"[UcNodeExecutionView] 결과 노드 추가: {node.Name}");
             }
-
             this.treeView1.Nodes.Add(treeNode);
         }
 
@@ -364,7 +346,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                         DisplayResultInPropertyGrid(result);
                     }
                 }
-
+                 
                 // TreeView에서 해당 노드 찾아서 아이콘 업데이트 (색상은 변경하지 않음)
                 UpdateTreeNodeAppearance(result);
             }
@@ -416,10 +398,9 @@ namespace IFVisionEngine.UIComponents.UserControls
             else
             {
                 Console.WriteLine($"[UcNodeExecutionView] 일반 노드 표시: {nodeName}");
-                this.propertyGrid1.SelectedObject = e.Node.Tag;
-                // PropertyGrid 색상을 기본값으로 유지
-                ResetPropertyGridAppearance();
+                this.propertyGrid1.SetSelectedObjectWithDarkTheme(e.Node.Tag);
             }
+
         }
 
         private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -443,7 +424,6 @@ namespace IFVisionEngine.UIComponents.UserControls
 
                 // 일반 노드인 경우 원래 기능 (이미지 표시)
                 DisplayNodeImage(nodeText);
-                ResetPropertyGridAppearance();
             }
         }
 
@@ -484,10 +464,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                 Console.WriteLine($"[UcNodeExecutionView] PropertyGrid에 결과 표시 시작: {result.NodeName}");
 
                 var wrapper = new ResultDisplayWrapper(result.ResultContent);
-                this.propertyGrid1.SelectedObject = wrapper;
-
-                // PropertyGrid 색상을 흰색으로 유지 (기본값)
-                ResetPropertyGridAppearance();
+                this.propertyGrid1.SetSelectedObjectWithDarkTheme(wrapper);
 
                 Console.WriteLine($"[UcNodeExecutionView] PropertyGrid 결과 표시 완료: {result.NodeName} - {result.Status}");
             }
@@ -497,16 +474,8 @@ namespace IFVisionEngine.UIComponents.UserControls
 
                 // 오류 발생 시 원본 데이터라도 표시
                 var errorWrapper = new ResultDisplayWrapper($"ERROR: {ex.Message}\n{result.ResultContent}");
-                this.propertyGrid1.SelectedObject = errorWrapper;
-                ResetPropertyGridAppearance();
+                this.propertyGrid1.SetSelectedObjectWithDarkTheme(errorWrapper);
             }
-        }
-
-        private void ResetPropertyGridAppearance()
-        {
-            // PropertyGrid를 기본 흰색 배경으로 유지
-            this.propertyGrid1.LineColor = SystemColors.InactiveBorder;
-            this.propertyGrid1.BackColor = Color.White;
         }
 
         private bool IsResultNode(string nodeName)
@@ -530,130 +499,6 @@ namespace IFVisionEngine.UIComponents.UserControls
 
             // 아이콘 제거
             return nodeText.Replace("📊 ", "").Trim();
-        }
-        #endregion
-
-        #region Public Methods
-        /// <summary>
-        /// 외부에서 결과값을 직접 추가
-        /// </summary>
-        public void AddResultData(string nodeName, string resultContent, bool isValid)
-        {
-            try
-            {
-                Console.WriteLine($"[UcNodeExecutionView] 외부에서 결과 추가: {nodeName}");
-                var result = new ResultData(nodeName, "ManualResult", resultContent, isValid);
-                ResultsManager.Instance.AddResult(result);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[UcNodeExecutionView] 외부 결과 추가 오류: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// 특정 노드의 결과값을 강제로 표시
-        /// </summary>
-        public void ShowNodeResult(string nodeName)
-        {
-            try
-            {
-                Console.WriteLine($"[UcNodeExecutionView] 노드 결과 강제 표시: {nodeName}");
-
-                if (resultNodeHistory.ContainsKey(nodeName))
-                {
-                    DisplayResultInPropertyGrid(resultNodeHistory[nodeName]);
-
-                    // TreeView에서 해당 노드 선택
-                    foreach (TreeNode node in treeView1.Nodes)
-                    {
-                        if (GetCleanNodeName(node.Text) == nodeName)
-                        {
-                            treeView1.SelectedNode = node;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"[UcNodeExecutionView] 결과를 찾을 수 없음: {nodeName}");
-
-                    // ResultsManager에서 다시 찾기 시도
-                    var result = ResultsManager.Instance.GetLatestResult(nodeName);
-                    if (result != null)
-                    {
-                        Console.WriteLine($"[UcNodeExecutionView] ResultsManager에서 결과 찾음: {nodeName}");
-                        resultNodeHistory[nodeName] = result;
-                        DisplayResultInPropertyGrid(result);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[UcNodeExecutionView] ShowNodeResult 오류: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// 현재 표시된 결과값의 요약 정보를 반환
-        /// </summary>
-        public string GetCurrentResultSummary()
-        {
-            if (propertyGrid1.SelectedObject is ResultDisplayWrapper wrapper)
-            {
-                return $"상태: {wrapper.Status}, 오차: {wrapper.ErrorValue}";
-            }
-            return "결과 없음";
-        }
-
-        /// <summary>
-        /// 현재 저장된 결과값 개수를 반환
-        /// </summary>
-        public int GetResultCount()
-        {
-            return resultNodeHistory.Count;
-        }
-
-        /// <summary>
-        /// 모든 결과값 목록을 반환
-        /// </summary>
-        public Dictionary<string, ResultData> GetAllResults()
-        {
-            return new Dictionary<string, ResultData>(resultNodeHistory);
-        }
-
-        /// <summary>
-        /// 결과값 히스토리를 텍스트로 내보내기
-        /// </summary>
-        public string ExportResultsToText()
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine("=== 노드 실행 결과 요약 ===");
-            sb.AppendLine($"생성 시간: {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-            sb.AppendLine($"총 결과 수: {resultNodeHistory.Count}");
-            sb.AppendLine();
-
-            foreach (var kvp in resultNodeHistory)
-            {
-                sb.AppendLine($"노드: {kvp.Key}");
-                sb.AppendLine($"상태: {kvp.Value.Status}");
-                sb.AppendLine($"시간: {kvp.Value.Timestamp:yyyy-MM-dd HH:mm:ss}");
-                sb.AppendLine("결과:");
-                sb.AppendLine(kvp.Value.ResultContent);
-                sb.AppendLine(new string('-', 50));
-            }
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// 강제로 결과 매니저와 다시 연결
-        /// </summary>
-        public void ReconnectToResultsManager()
-        {
-            DisconnectFromResultsManager();
-            ConnectToResultsManager();
-            Console.WriteLine("[UcNodeExecutionView] ResultsManager 재연결 완료");
         }
         #endregion
     }

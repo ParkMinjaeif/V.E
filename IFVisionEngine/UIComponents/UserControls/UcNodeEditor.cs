@@ -14,6 +14,8 @@ using IFVisionEngine.UIComponents.Dialogs;
 using IFVisionEngine.UIComponents.Managers;
 using static MyNodesContext;
 using System.Dynamic;
+using System.Drawing.Imaging;
+using IFVisionEngine.Themes;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -25,7 +27,6 @@ namespace IFVisionEngine.UIComponents.UserControls
         #region Fields and Properties
         public MyNodesContext _nodesContext;
         private Form1 _formMainInstance;
-
         // 이벤트
         public event Action<object> SelectedNodeContextChanged;
 
@@ -65,8 +66,12 @@ namespace IFVisionEngine.UIComponents.UserControls
         {
             InitializeComponent();
             _formMainInstance = mainForm;
-            this.Dock = DockStyle.Fill;
+            //this.Dock = DockStyle.Fill;
             InitializeNodeContext();
+            ThemeManager.ApplyThemeToControl(this);
+            this.toolStripButton_Load.Image = Properties.Resources.Load;
+            this.toolStripButton_Run.Image = Properties.Resources.Play;
+            this.toolStripButton_Save.Image = Properties.Resources.Save;
         }
 
         private void InitializeNodeContext()
@@ -75,7 +80,6 @@ namespace IFVisionEngine.UIComponents.UserControls
             _nodesContext.Invoker = this;
             nodesControl1.Context = _nodesContext;
         }
-
         private void UcNodeEditor_Load(object sender, EventArgs e)
         {
             nodesControl1.Execute();
@@ -244,6 +248,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         #region Toolbar Events
         private void toolStripButton_Save_Click(object sender, EventArgs e)
         {
+            Console.WriteLine("=== PropertyGrid 진단 시작 ===");
             using (var saveDialog = new SaveFileDialog
             {
                 Filter = "JSON 파일 (*.json)|*.json|모든 파일 (*.*)|*.*",
@@ -274,10 +279,6 @@ namespace IFVisionEngine.UIComponents.UserControls
             }
         }
 
-        private void toolStripButton_toggleSize_Click(object sender, EventArgs e)
-        {
-            _formMainInstance.togglePnlLeft();
-        }
 
         private void toolStripButton_Run_Click(object sender, EventArgs e)
         {
@@ -524,51 +525,6 @@ namespace IFVisionEngine.UIComponents.UserControls
                 var currentParameters = GetCurrentNodeParameters(nodeInfo.NodeName, obj);
                 ShowParameterDialog(nodeInfo, currentParameters);
                 ForceResetAllStates();
-            }
-        }
-
-        /// <summary>
-        /// 결과 노드의 FormResults 창을 표시합니다.
-        /// </summary>
-        private void ShowResultInExecutionView((string InputKey, string NodeName, string OutputKey, bool HasParameters) nodeInfo)
-        {
-            try
-            {
-                Console.WriteLine($"[NodeEditor] 결과 노드 다이얼로그 표시: {nodeInfo.NodeName}");
-
-                // 결과 데이터 추출
-                var resultData = ExtractNodeResultData(nodeInfo.NodeName);
-                if (resultData != null)
-                {
-                    // ResultsManager에 추가
-                    ResultsManager.Instance.AddResult(resultData);
-
-                    // FormResults 창을 특정 노드에 포커스하여 표시
-                    using (var resultsForm = new FormResults())
-                    {
-                        resultsForm.ShowDialog(this);
-                    }
-
-                    // 실행 뷰에도 결과 표시
-                    IFVisionEngine.Manager.AppUIManager.ucNodeExecutionView?.ShowNodeResult(resultData.NodeName);
-
-                    var statusMessage = resultData.IsValid
-                        ? $"✅ {resultData.NodeName} 결과를 확인했습니다."
-                        : $"⚠️ {resultData.NodeName} 검증 실패 결과를 확인했습니다.";
-
-                    Console.WriteLine($"[NodeEditor] {statusMessage}");
-                }
-                else
-                {
-                    MessageBox.Show($"'{nodeInfo.NodeName}'의 결과 데이터를 찾을 수 없습니다.",
-                                  "데이터 없음", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[NodeEditor] 결과 다이얼로그 표시 오류: {ex.Message}");
-                MessageBox.Show($"결과 표시 중 오류 발생: {ex.Message}", "오류",
-                               MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

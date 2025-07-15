@@ -8,19 +8,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NodeEditor;
+using IFVisionEngine.Themes;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
     public partial class UcLogView: UserControl
     {
-        private Form1 _formMainInstance;
-
-        public UcLogView(Form1 mainForm)
+        public UcLogView()
         {
             InitializeComponent();
-            _formMainInstance = mainForm;
-
-            this.Dock = DockStyle.Fill;
+            ThemeManager.ApplyThemeToControl(this);
+            //this.Dock = DockStyle.Fill;
         }
 
         /// <summary>
@@ -64,11 +62,6 @@ namespace IFVisionEngine.UIComponents.UserControls
 
             // ListView의 맨 위에 새 로그를 추가합니다.
             this.lvwLog.Items.Insert(0, item);
-        }
-
-        private void uiSymbolButton_toggle_Click(object sender, EventArgs e)
-        {
-            _formMainInstance.togglePnlBottom();
         }
     }
 }

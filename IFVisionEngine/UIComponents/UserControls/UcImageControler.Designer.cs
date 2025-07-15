@@ -28,9 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pnlBot = new System.Windows.Forms.Panel();
-            this.pnlTitle = new System.Windows.Forms.Panel();
-            this.uiLabel1 = new Sunny.UI.UILabel();
             this.pnlMain = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -46,7 +43,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbl_ordinate = new System.Windows.Forms.ToolStripStatusLabel();
             this.lbl_PixelValue = new System.Windows.Forms.ToolStripStatusLabel();
-            this.pnlTitle.SuspendLayout();
             this.pnlMain.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -57,46 +53,15 @@
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // pnlBot
-            // 
-            this.pnlBot.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlBot.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlBot.Location = new System.Drawing.Point(0, 805);
-            this.pnlBot.Name = "pnlBot";
-            this.pnlBot.Size = new System.Drawing.Size(984, 186);
-            this.pnlBot.TabIndex = 0;
-            // 
-            // pnlTitle
-            // 
-            this.pnlTitle.Controls.Add(this.uiLabel1);
-            this.pnlTitle.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTitle.Location = new System.Drawing.Point(0, 0);
-            this.pnlTitle.Name = "pnlTitle";
-            this.pnlTitle.Size = new System.Drawing.Size(984, 36);
-            this.pnlTitle.TabIndex = 2;
-            // 
-            // uiLabel1
-            // 
-            this.uiLabel1.BackColor = System.Drawing.Color.White;
-            this.uiLabel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.uiLabel1.Font = new System.Drawing.Font("맑은 고딕", 12F, System.Drawing.FontStyle.Bold);
-            this.uiLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-            this.uiLabel1.Location = new System.Drawing.Point(0, 0);
-            this.uiLabel1.Name = "uiLabel1";
-            this.uiLabel1.Size = new System.Drawing.Size(984, 36);
-            this.uiLabel1.TabIndex = 2;
-            this.uiLabel1.Text = "Image Viewer";
-            this.uiLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // pnlMain
             // 
             this.pnlMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlMain.Controls.Add(this.panel2);
             this.pnlMain.Controls.Add(this.tLP_StatusBar);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMain.Location = new System.Drawing.Point(0, 36);
+            this.pnlMain.Location = new System.Drawing.Point(0, 0);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(984, 769);
+            this.pnlMain.Size = new System.Drawing.Size(984, 991);
             this.pnlMain.TabIndex = 3;
             // 
             // panel2
@@ -106,7 +71,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(982, 734);
+            this.panel2.Size = new System.Drawing.Size(982, 956);
             this.panel2.TabIndex = 1;
             // 
             // panel1
@@ -115,7 +80,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 33);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(982, 701);
+            this.panel1.Size = new System.Drawing.Size(982, 923);
             this.panel1.TabIndex = 2;
             // 
             // pBMain
@@ -123,7 +88,7 @@
             this.pBMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pBMain.Location = new System.Drawing.Point(0, 0);
             this.pBMain.Name = "pBMain";
-            this.pBMain.Size = new System.Drawing.Size(982, 701);
+            this.pBMain.Size = new System.Drawing.Size(982, 923);
             this.pBMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pBMain.TabIndex = 0;
             this.pBMain.TabStop = false;
@@ -160,7 +125,7 @@
             this.toolStripButton_Drag_to_Zoom.Font = new System.Drawing.Font("맑은 고딕", 12F);
             this.toolStripButton_Drag_to_Zoom.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton_Drag_to_Zoom.Name = "toolStripButton_Drag_to_Zoom";
-            this.toolStripButton_Drag_to_Zoom.Size = new System.Drawing.Size(23, 28);
+            this.toolStripButton_Drag_to_Zoom.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton_Drag_to_Zoom.Text = "Zoom";
             this.toolStripButton_Drag_to_Zoom.Click += new System.EventHandler(this.toolStripButton_Drag_to_Zoom_Click);
             // 
@@ -202,14 +167,12 @@
             // 
             // tLP_StatusBar
             // 
-            this.tLP_StatusBar.ColumnCount = 2;
-            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tLP_StatusBar.ColumnCount = 1;
+            this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tLP_StatusBar.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tLP_StatusBar.Controls.Add(this.statusStrip1, 0, 0);
             this.tLP_StatusBar.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tLP_StatusBar.Location = new System.Drawing.Point(0, 734);
+            this.tLP_StatusBar.Location = new System.Drawing.Point(0, 956);
             this.tLP_StatusBar.Name = "tLP_StatusBar";
             this.tLP_StatusBar.RowCount = 1;
             this.tLP_StatusBar.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -224,7 +187,7 @@
             this.lbl_PixelValue});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(491, 33);
+            this.statusStrip1.Size = new System.Drawing.Size(982, 33);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -245,11 +208,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.pnlMain);
-            this.Controls.Add(this.pnlTitle);
-            this.Controls.Add(this.pnlBot);
             this.Name = "UcImageControler";
             this.Size = new System.Drawing.Size(984, 991);
-            this.pnlTitle.ResumeLayout(false);
             this.pnlMain.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
@@ -267,10 +227,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel pnlBot;
-        private System.Windows.Forms.Panel pnlTitle;
-        private Sunny.UI.UILabel uiLabel1;
         private System.Windows.Forms.Panel pnlMain;
         private System.Windows.Forms.PictureBox pBMain;
         private System.Windows.Forms.Panel panel1;

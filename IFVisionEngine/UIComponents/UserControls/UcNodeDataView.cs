@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NodeEditor;
 using IFVisionEngine.Manager;
+using IFVisionEngine.Themes;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -20,10 +21,10 @@ namespace IFVisionEngine.UIComponents.UserControls
         {
             InitializeComponent();
             _formMainInstance = formMainInstance;
-
-            this.Dock = DockStyle.Fill;
-            this.pnlTop.Controls.Add(AppUIManager.ucNodeExecutionView);
-            this.pnlBot.Controls.Add(AppUIManager.ucNodeSelectedView);
+            ThemeManager.ApplyThemeToControl(this);
+            //this.Dock = DockStyle.Fill;
+            //this.pnlTop.Controls.Add(AppUIManager.ucNodeExecutionView);
+            //this.pnlBot.Controls.Add(AppUIManager.ucNodeSelectedView);
         }
     }
 }

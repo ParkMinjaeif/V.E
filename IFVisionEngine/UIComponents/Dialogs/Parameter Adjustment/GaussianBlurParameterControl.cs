@@ -73,7 +73,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                         // TrackBar는 10배 스케일링 (0~100)
                         int trackBarValue = (int)(sigmaX * 10);
                         trackBar_SigmaX.Value = Math.Min(trackBar_SigmaX.Maximum, Math.Max(trackBar_SigmaX.Minimum, trackBarValue));
-                        numericUpDown_SigmaX.Value = (decimal)sigmaX;
+                        numericUpDown_SigmaX.Value = sigmaX;
                     }
                 }
 
@@ -86,7 +86,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                         // TrackBar는 10배 스케일링 (0~100)
                         int trackBarValue = (int)(sigmaY * 10);
                         trackBar_SigmaY.Value = Math.Min(trackBar_SigmaY.Maximum, Math.Max(trackBar_SigmaY.Minimum, trackBarValue));
-                        numericUpDown_SigmaY.Value = (decimal)sigmaY;
+                        numericUpDown_SigmaY.Value = sigmaY;
                     }
                 }
             }
@@ -131,9 +131,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 trackBar_KernelHeight.Value = 5;
                 numericUpDown_KernelHeight.Value = 5;
                 trackBar_SigmaX.Value = 0; // 0.0
-                numericUpDown_SigmaX.Value = 0.0m;
+                numericUpDown_SigmaX.Value = (double)0.0m;
                 trackBar_SigmaY.Value = 0; // 0.0
-                numericUpDown_SigmaY.Value = 0.0m;
+                numericUpDown_SigmaY.Value = (double)0.0m;
             }
             finally
             {
@@ -187,21 +187,19 @@ namespace IFVisionEngine.UIComponents.Dialogs
             trackBar_SigmaX.Minimum = 0;
             trackBar_SigmaX.Maximum = 100; // 10.0 * 10
             trackBar_SigmaX.Value = 0; // 0.0
-            numericUpDown_SigmaX.Minimum = 0.0m;
-            numericUpDown_SigmaX.Maximum = 10.0m;
+            numericUpDown_SigmaX.Minimum = (double)0.0m;
+            numericUpDown_SigmaX.Maximum = (double)10.0m;
             numericUpDown_SigmaX.DecimalPlaces = 1;
-            numericUpDown_SigmaX.Increment = 0.1m;
-            numericUpDown_SigmaX.Value = 0.0m;
+            numericUpDown_SigmaX.Value = (double)0.0m;
 
             // SigmaY 컨트롤 설정 (0.0 ~ 10.0, TrackBar는 0~100)
             trackBar_SigmaY.Minimum = 0;
             trackBar_SigmaY.Maximum = 100; // 10.0 * 10
             trackBar_SigmaY.Value = 0; // 0.0
-            numericUpDown_SigmaY.Minimum = 0.0m;
-            numericUpDown_SigmaY.Maximum = 10.0m;
+            numericUpDown_SigmaY.Minimum = (double)0.0m;
+            numericUpDown_SigmaY.Maximum = (double)10.0m;
             numericUpDown_SigmaY.DecimalPlaces = 1;
-            numericUpDown_SigmaY.Increment = 0.1m;
-            numericUpDown_SigmaY.Value = 0.0m;
+            numericUpDown_SigmaY.Value = (double)0.0m;
         }
 
         private void SetupEventHandlers()
@@ -270,7 +268,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 {
                     _suppressEvents = true;
                     decimal numValue = trackBar_SigmaX.Value / 10.0m;
-                    numericUpDown_SigmaX.Value = numValue;
+                    numericUpDown_SigmaX.Value = (double)numValue;
                     _suppressEvents = false;
                     RaiseParameterChanged();
                 }
@@ -293,7 +291,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 {
                     _suppressEvents = true;
                     decimal numValue = trackBar_SigmaY.Value / 10.0m;
-                    numericUpDown_SigmaY.Value = numValue;
+                    numericUpDown_SigmaY.Value = (double)numValue;
                     _suppressEvents = false;
                     RaiseParameterChanged();
                 }
@@ -352,9 +350,9 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 trackBar_KernelHeight.Value = 5;
                 numericUpDown_KernelHeight.Value = 5;
                 trackBar_SigmaX.Value = 0;
-                numericUpDown_SigmaX.Value = 0.0m;
+                numericUpDown_SigmaX.Value = (double)0.0m;
                 trackBar_SigmaY.Value = 0;
-                numericUpDown_SigmaY.Value = 0.0m;
+                numericUpDown_SigmaY.Value = (double)0.0m;
             }
             catch (Exception ex)
             {

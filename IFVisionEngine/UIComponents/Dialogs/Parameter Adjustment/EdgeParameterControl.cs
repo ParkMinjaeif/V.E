@@ -55,7 +55,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     {
                         threshold1 = Math.Max(0, Math.Min(500, threshold1)); // 범위 제한 (0 ~ 500)
                         trackBar_Threshold1.Value = (int)threshold1;
-                        numericUpDown_Threshold1.Value = (decimal)threshold1;
+                        numericUpDown_Threshold1.Value = (int)threshold1;
                     }
                 }
 
@@ -65,7 +65,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                     {
                         threshold2 = Math.Max(0, Math.Min(500, threshold2)); // 범위 제한 (0 ~ 500)
                         trackBar_Threshold2.Value = (int)threshold2;
-                        numericUpDown_Threshold2.Value = (decimal)threshold2;
+                        numericUpDown_Threshold2.Value = (int)threshold2;
                     }
                 }
 
@@ -298,7 +298,6 @@ namespace IFVisionEngine.UIComponents.Dialogs
             double threshold1 = (double)numericUpDown_Threshold1.Value;
             double threshold2 = (double)numericUpDown_Threshold2.Value;
             string method = comboBox_Method.SelectedItem?.ToString() ?? "Canny";
-
             OnParametersChanged?.Invoke(threshold1, threshold2, method);
             OnParametersChangedBase?.Invoke();
         }

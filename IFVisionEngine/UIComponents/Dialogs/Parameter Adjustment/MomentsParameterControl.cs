@@ -77,7 +77,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 if (parameters.ContainsKey("DrawColor"))
                 {
                     if (parameters["DrawColor"] is Color color)
-                        button_DrawColor.BackColor = color;
+                        button_DrawColor.FillColor = color;
                 }
 
                 if (parameters.ContainsKey("LineThickness"))
@@ -107,7 +107,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 { "ShowOrientation", checkBox_ShowOrientation.Checked },
                 { "ShowBoundingBox", checkBox_ShowBoundingBox.Checked },
                 { "ShowEccentricity", checkBox_ShowEccentricity.Checked },
-                { "DrawColor", button_DrawColor.BackColor },
+                { "DrawColor", button_DrawColor.FillColor },
                 { "LineThickness", (int)numericUpDown_LineThickness.Value }
             };
         }
@@ -124,7 +124,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 checkBox_ShowOrientation.Checked = false;
                 checkBox_ShowBoundingBox.Checked = true;
                 checkBox_ShowEccentricity.Checked = false;
-                button_DrawColor.BackColor = Color.Red;
+                button_DrawColor.FillColor = Color.Red;
                 trackBar_LineThickness.Value = 2;
                 numericUpDown_LineThickness.Value = 2;
             }
@@ -178,7 +178,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
             checkBox_ShowEccentricity.Checked = false;
 
             // 색상 버튼 초기화
-            button_DrawColor.BackColor = Color.Red;
+            button_DrawColor.FillColor = Color.Red;
         }
 
         private void SetupEventHandlers()
@@ -234,10 +234,10 @@ namespace IFVisionEngine.UIComponents.Dialogs
             button_DrawColor.Click += (s, e) => {
                 using (var colorDialog = new ColorDialog())
                 {
-                    colorDialog.Color = button_DrawColor.BackColor;
+                    colorDialog.Color = button_DrawColor.FillColor;
                     if (colorDialog.ShowDialog() == DialogResult.OK)
                     {
-                        button_DrawColor.BackColor = colorDialog.Color;
+                        button_DrawColor.FillColor = colorDialog.Color;
                         if (!_suppressEvents) RaiseParameterChanged();
                     }
                 }
@@ -254,7 +254,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
             bool showOrientation = checkBox_ShowOrientation.Checked;
             bool showBoundingBox = checkBox_ShowBoundingBox.Checked;
             bool showEccentricity = checkBox_ShowEccentricity.Checked;
-            Color drawColor = button_DrawColor.BackColor;
+            Color drawColor = button_DrawColor.FillColor;
             int lineThickness = (int)numericUpDown_LineThickness.Value;
 
             OnParametersChanged?.Invoke(threshold, showCentroid, showArea, showOrientation,

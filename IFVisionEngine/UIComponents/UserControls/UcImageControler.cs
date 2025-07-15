@@ -12,6 +12,7 @@ using OpenCvSharp;
 using IFVisionEngine.Manager;
 using System.Drawing.Drawing2D;
 using System.IO;
+using IFVisionEngine.Themes;
 
 namespace IFVisionEngine.UIComponents.UserControls
 {
@@ -48,10 +49,10 @@ namespace IFVisionEngine.UIComponents.UserControls
         {
             InitializeComponent();
             _formMainInstance = mainForm;
-            this.Dock = DockStyle.Fill;
+            //this.Dock = DockStyle.Fill;
 
             // pnlBot에 ucLogView를 추가하는 로직은 Form1이나 AppUIManager에서 처리하는 것이 더 적합할 수 있습니다.
-            this.pnlBot.Controls.Add(AppUIManager.ucLogView);
+            //this.pnlBot.Controls.Add(AppUIManager.ucLogView);
 
             // 부드러운 이미지 리사이징과 드래그를 위한 설정
             this.DoubleBuffered = true;
@@ -64,9 +65,10 @@ namespace IFVisionEngine.UIComponents.UserControls
             this.pBMain.MouseUp += pBMain_MouseUp;
             this.toolStripButton_Drag_to_Zoom.Image = Properties.Resources.Zoom;
             this.toolStripButton_Delete.Image = Properties.Resources.Delete;
-            this.toolStripButton_Panning.Image = Properties.Resources.Panning;
+            this.toolStripButton_Panning.Image = Properties.Resources.Hand;
             this.toolStripButton_Reset.Image = Properties.Resources.Reset;
             this.toolStripButton_ruler.Image = Properties.Resources.Ruler;
+            ThemeManager.ApplyThemeToControl(this);
         }
 
 

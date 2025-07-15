@@ -170,7 +170,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 if (parameters.ContainsKey("LineColor"))
                 {
                     if (parameters["LineColor"] is Color lineColor)
-                        button_LineColor.BackColor = lineColor;
+                        button_LineColor.FillColor = lineColor;
                 }
 
                 if (parameters.ContainsKey("LineThickness"))
@@ -259,7 +259,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 { "FixedLength", (int)numericUpDown_FixedLength.Value },
                 { "LineCount", (int)numericUpDown_LineCount.Value },
                 { "StartAngle", (int)numericUpDown_StartAngle.Value },
-                { "LineColor", button_LineColor.BackColor },
+                { "LineColor", button_LineColor.FillColor },
                 { "LineThickness", (int)numericUpDown_LineThickness.Value },
                 { "Style", comboBox_Style.SelectedItem?.ToString() ?? "Solid" },
                 { "ShowCenter", checkBox_ShowCenter.Checked },
@@ -287,7 +287,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 numericUpDown_LineCount.Value = 8;
                 trackBar_StartAngle.Value = 0;
                 numericUpDown_StartAngle.Value = 0;
-                button_LineColor.BackColor = Color.Red;
+                button_LineColor.FillColor = Color.Red;
                 trackBar_LineThickness.Value = 2;
                 numericUpDown_LineThickness.Value = 2;
                 comboBox_Style.SelectedIndex = 0; // Solid
@@ -368,15 +368,14 @@ namespace IFVisionEngine.UIComponents.Dialogs
             checkBox_ShowAngles.Checked = false;
             checkBox_ShowDistances.Checked = false;
             checkBox_OutputLengthData.Checked = true;
-            button_LineColor.BackColor = Color.Red;
+            button_LineColor.FillColor = Color.Red;
         }
 
-        private void SetupTrackBarNumericPair(TrackBar trackBar, NumericUpDown numericUpDown, int min, int max, int defaultValue)
+        private void SetupTrackBarNumericPair(Sunny.UI.UITrackBar trackBar, Sunny.UI.UIIntegerUpDown numericUpDown, int min, int max, int defaultValue)
         {
             trackBar.Minimum = min;
             trackBar.Maximum = max;
             trackBar.Value = defaultValue;
-
             numericUpDown.Minimum = min;
             numericUpDown.Maximum = max;
             numericUpDown.Value = defaultValue;
@@ -425,17 +424,17 @@ namespace IFVisionEngine.UIComponents.Dialogs
             button_LineColor.Click += (s, e) => {
                 using (var colorDialog = new ColorDialog())
                 {
-                    colorDialog.Color = button_LineColor.BackColor;
+                    colorDialog.Color = button_LineColor.FillColor;
                     if (colorDialog.ShowDialog() == DialogResult.OK)
                     {
-                        button_LineColor.BackColor = colorDialog.Color;
+                        button_LineColor.FillColor = colorDialog.Color;
                         if (!_suppressEvents) RaiseParameterChanged();
                     }
                 }
             };
         }
 
-        private void SetupTrackBarNumericEvents(TrackBar trackBar, NumericUpDown numericUpDown)
+        private void SetupTrackBarNumericEvents(Sunny.UI.UITrackBar trackBar, Sunny.UI.UIIntegerUpDown numericUpDown)
         {
             trackBar.ValueChanged += (s, e) => {
                 if (!_suppressEvents)
@@ -460,30 +459,30 @@ namespace IFVisionEngine.UIComponents.Dialogs
 
         private void UpdateControlVisibility()
         {
-            // CenterMethod에 따른 Manual 좌표 컨트롤 활성화/비활성화
-            bool isManualMode = comboBox_CenterMethod.SelectedItem?.ToString() == "Manual";
-            label_ManualX.Enabled = isManualMode;
-            numericUpDown_ManualX.Enabled = isManualMode;
-            label_ManualY.Enabled = isManualMode;
-            numericUpDown_ManualY.Enabled = isManualMode;
+            //// CenterMethod에 따른 Manual 좌표 컨트롤 활성화/비활성화
+            //bool isManualMode = comboBox_CenterMethod.SelectedItem?.ToString() == "Manual";
+            //label_ManualX.Enabled = isManualMode;
+            //numericUpDown_ManualX.Enabled = isManualMode;
+            //label_ManualY.Enabled = isManualMode;
+            //numericUpDown_ManualY.Enabled = isManualMode;
 
-            // RangeMethod에 따른 컨트롤 활성화/비활성화
-            string rangeMethod = comboBox_RangeMethod.SelectedItem?.ToString();
+            //// RangeMethod에 따른 컨트롤 활성화/비활성화
+            //string rangeMethod = comboBox_RangeMethod.SelectedItem?.ToString();
 
-            bool isFixedLength = rangeMethod == "FixedLength";
-            label_FixedLength.Enabled = isFixedLength;
-            trackBar_FixedLength.Enabled = isFixedLength;
-            numericUpDown_FixedLength.Enabled = isFixedLength;
+            //bool isFixedLength = rangeMethod == "FixedLength";
+            //label_FixedLength.Enabled = isFixedLength;
+            //trackBar_FixedLength.Enabled = isFixedLength;
+            //numericUpDown_FixedLength.Enabled = isFixedLength;
 
-            bool isEdgeDetection = rangeMethod == "EdgeDetection";
-            label_BinaryThreshold.Enabled = isEdgeDetection;
-            trackBar_BinaryThreshold.Enabled = isEdgeDetection;
-            numericUpDown_BinaryThreshold.Enabled = isEdgeDetection;
+            //bool isEdgeDetection = rangeMethod == "EdgeDetection";
+            //label_BinaryThreshold.Enabled = isEdgeDetection;
+            //trackBar_BinaryThreshold.Enabled = isEdgeDetection;
+            //numericUpDown_BinaryThreshold.Enabled = isEdgeDetection;
 
-            bool isBrightnessChange = rangeMethod == "BrightnessChange";
-            label_BrightnessThreshold.Enabled = isBrightnessChange;
-            trackBar_BrightnessThreshold.Enabled = isBrightnessChange;
-            numericUpDown_BrightnessThreshold.Enabled = isBrightnessChange;
+            //bool isBrightnessChange = rangeMethod == "BrightnessChange";
+            //label_BrightnessThreshold.Enabled = isBrightnessChange;
+            //trackBar_BrightnessThreshold.Enabled = isBrightnessChange;
+            //numericUpDown_BrightnessThreshold.Enabled = isBrightnessChange;
         }
 
         private void UpdateCentroidDisplay()
@@ -509,7 +508,7 @@ namespace IFVisionEngine.UIComponents.Dialogs
                 FixedLength = (int)numericUpDown_FixedLength.Value,
                 LineCount = (int)numericUpDown_LineCount.Value,
                 StartAngle = (int)numericUpDown_StartAngle.Value,
-                LineColor = button_LineColor.BackColor,
+                LineColor = button_LineColor.FillColor,
                 LineThickness = (int)numericUpDown_LineThickness.Value,
                 Style = comboBox_Style.SelectedItem?.ToString() ?? "Solid",
                 ShowCenter = checkBox_ShowCenter.Checked,
