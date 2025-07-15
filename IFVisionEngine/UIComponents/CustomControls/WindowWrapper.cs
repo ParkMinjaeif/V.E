@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-
+using IFVisionEngine.UIComponents.Common;
+using IFVisionEngine.UIComponents.Enums;
 namespace IFVisionEngine.UIComponents.CustomControls
 {
     /// <summary>
@@ -18,9 +20,6 @@ namespace IFVisionEngine.UIComponents.CustomControls
     public partial class WindowWrapper : UserControl
     {
         #region Constants
-
-        /// <summary>크기 조절 감지 영역의 픽셀 두께</summary>
-        private const int RESIZE_BORDER_WIDTH = 8;
         /// <summary>창의 최소 너비</summary>
         private const int MIN_WINDOW_WIDTH = 200;
         /// <summary>창의 최소 높이</summary>
@@ -29,37 +28,6 @@ namespace IFVisionEngine.UIComponents.CustomControls
         private const int TITLEBAR_HEIGHT = 30;
         /// <summary>기본 복원 크기</summary>
         private static readonly Size DEFAULT_RESTORE_SIZE = new Size(400, 300);
-
-        #endregion
-
-
-        #region Enums
-
-        /// <summary>
-        /// 크기 조절 방향을 정의하는 열거형
-        /// 8방향 크기 조절을 지원 (4개 모서리 + 4개 가장자리)
-        /// </summary>
-        private enum ResizeDirection
-        {
-            /// <summary>크기 조절 불가 영역</summary>
-            None,
-            /// <summary>상단 가장자리 - 세로 크기만 조절</summary>
-            Top,
-            /// <summary>하단 가장자리 - 세로 크기만 조절</summary>
-            Bottom,
-            /// <summary>좌측 가장자리 - 가로 크기만 조절</summary>
-            Left,
-            /// <summary>우측 가장자리 - 가로 크기만 조절</summary>
-            Right,
-            /// <summary>좌상단 모서리 - 가로+세로 동시 조절, 위치 이동</summary>
-            TopLeft,
-            /// <summary>우상단 모서리 - 가로+세로 동시 조절, Y 위치 이동</summary>
-            TopRight,
-            /// <summary>좌하단 모서리 - 가로+세로 동시 조절, X 위치 이동</summary>
-            BottomLeft,
-            /// <summary>우하단 모서리 - 가로+세로 동시 조절, 위치 고정</summary>
-            BottomRight
-        }
 
         #endregion
 
@@ -157,7 +125,7 @@ namespace IFVisionEngine.UIComponents.CustomControls
         public event EventHandler WindowRestored;
 
         #endregion
-
+        
         #region Constructor
 
         /// <summary>
@@ -180,7 +148,6 @@ namespace IFVisionEngine.UIComponents.CustomControls
             SetupInnerControl();
             CreateTitleBar();
             SetupEvents();
-
             WindowTitle = title;
         }
 
@@ -218,8 +185,10 @@ namespace IFVisionEngine.UIComponents.CustomControls
         private void InitializeWrapper(Size initialSize)
         {
             this.Size = initialSize;
-            this.BackColor = Color.FromArgb(45, 45, 48);
             this.BorderStyle = BorderStyle.FixedSingle;
+
+            // 다크 테마 적용
+            ThemeHelper.ApplyDarkTheme(this);
 
             // 초기 복원 경계 설정
             _restoreBounds = new Rectangle(this.Location, this.Size);
@@ -253,9 +222,11 @@ namespace IFVisionEngine.UIComponents.CustomControls
             _titleBarPanel = new Panel
             {
                 Height = TITLEBAR_HEIGHT,
-                Dock = DockStyle.Top,
-                BackColor = Color.FromArgb(60, 60, 60)
+                Dock = DockStyle.Top
             };
+
+            // 다크 테마 적용 (타이틀바 스타일)
+            ThemeHelper.ApplyDarkTheme(_titleBarPanel, false);
         }
 
         /// <summary>
@@ -268,10 +239,11 @@ namespace IFVisionEngine.UIComponents.CustomControls
                 Text = _windowTitle,
                 Location = new Point(8, 6),
                 AutoSize = true,
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9F),
-                BackColor = Color.Transparent
+                Font = ThemeHelper.GetTitleBarFont()
             };
+
+            // 다크 테마 적용
+            ThemeHelper.ApplyDarkTheme(_titleLabel);
         }
 
         /// <summary>
@@ -294,16 +266,17 @@ namespace IFVisionEngine.UIComponents.CustomControls
         /// <returns>생성된 버튼</returns>
         private Button CreateTitleBarButton(string text, int rightOffset)
         {
-            return new Button
+            var button = new Button
             {
                 Text = text,
-                Size = new Size(25, 20),
+                Size = new Size(25, 25),
                 Location = new Point(_titleBarPanel.Width - rightOffset, 5),
-                FlatStyle = FlatStyle.Flat,
-                BackColor = Color.Transparent,
-                ForeColor = Color.White,
+                Font = ThemeHelper.GetButtonFont(),
+                TextAlign = ContentAlignment.MiddleCenter,
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
+
+            return button;
         }
 
         /// <summary>
@@ -311,14 +284,9 @@ namespace IFVisionEngine.UIComponents.CustomControls
         /// </summary>
         private void ApplyButtonThemes()
         {
-            foreach (Button button in new[] { _minimizeButton, _maximizeButton, _closeButton })
-            {
-                button.FlatAppearance.BorderSize = 0;
-                button.FlatAppearance.MouseOverBackColor =
-                    button == _closeButton ? Color.FromArgb(232, 17, 35) : Color.FromArgb(70, 70, 70);
-                button.FlatAppearance.MouseDownBackColor =
-                    button == _closeButton ? Color.FromArgb(200, 15, 30) : Color.FromArgb(50, 50, 50);
-            }
+            ThemeHelper.ApplyDarkTheme(_minimizeButton);
+            ThemeHelper.ApplyDarkTheme(_maximizeButton);
+            ThemeHelper.ApplyDarkTheme(_closeButton, true); // 닫기 버튼은 빨간색 호버
         }
 
         /// <summary>
@@ -341,9 +309,11 @@ namespace IFVisionEngine.UIComponents.CustomControls
             _contentPanel = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.FromArgb(50, 50, 50),
                 Padding = new Padding(2)
             };
+
+            // 다크 테마 적용 (내용 영역 스타일)
+            ThemeHelper.ApplyDarkTheme(_contentPanel, true);
 
             this.Controls.Add(_contentPanel);
         }
@@ -643,7 +613,7 @@ namespace IFVisionEngine.UIComponents.CustomControls
                 return;
             }
 
-            Cursor newCursor = GetCursorForDirection(direction);
+            Cursor newCursor = ResizeHelper.GetCursorForDirection(direction);
 
             if (this.Cursor != newCursor)
             {
@@ -651,31 +621,6 @@ namespace IFVisionEngine.UIComponents.CustomControls
             }
         }
 
-        /// <summary>
-        /// 크기 조절 방향에 맞는 커서를 반환합니다.
-        /// </summary>
-        /// <param name="direction">크기 조절 방향</param>
-        /// <returns>해당 방향의 커서</returns>
-        private static Cursor GetCursorForDirection(ResizeDirection direction)
-        {
-            switch (direction)
-            {
-                case ResizeDirection.Top:
-                case ResizeDirection.Bottom:
-                    return Cursors.SizeNS;
-                case ResizeDirection.Left:
-                case ResizeDirection.Right:
-                    return Cursors.SizeWE;
-                case ResizeDirection.TopLeft:
-                case ResizeDirection.BottomRight:
-                    return Cursors.SizeNWSE;
-                case ResizeDirection.TopRight:
-                case ResizeDirection.BottomLeft:
-                    return Cursors.SizeNESW;
-                default:
-                    return Cursors.Default;
-            }
-        }
 
         /// <summary>
         /// 마우스 위치에 따른 크기 조절 방향을 결정합니다.
@@ -686,31 +631,9 @@ namespace IFVisionEngine.UIComponents.CustomControls
         {
             if (_isMaximized) return ResizeDirection.None;
 
-            bool left = mousePos.X <= RESIZE_BORDER_WIDTH;
-            bool right = mousePos.X >= this.Width - RESIZE_BORDER_WIDTH;
-            bool top = mousePos.Y <= RESIZE_BORDER_WIDTH;
-            bool bottom = mousePos.Y >= this.Height - RESIZE_BORDER_WIDTH;
-
-            // 타이틀바 영역은 제외 (드래그 이동과 충돌 방지)
-            if (mousePos.Y <= TITLEBAR_HEIGHT && !top)
-            {
-                return ResizeDirection.None;
-            }
-
-            // 코너 우선 체크 (대각선 크기 조절)
-            if (top && left) return ResizeDirection.TopLeft;
-            if (top && right) return ResizeDirection.TopRight;
-            if (bottom && left) return ResizeDirection.BottomLeft;
-            if (bottom && right) return ResizeDirection.BottomRight;
-
-            // 가장자리 체크 (단방향 크기 조절)
-            if (top) return ResizeDirection.Top;
-            if (bottom) return ResizeDirection.Bottom;
-            if (left) return ResizeDirection.Left;
-            if (right) return ResizeDirection.Right;
-
-            return ResizeDirection.None;
+            return ResizeHelper.GetResizeDirection(mousePos, this.Size, TITLEBAR_HEIGHT);
         }
+
 
         /// <summary>
         /// 실제 크기 조절을 수행합니다.
@@ -737,91 +660,68 @@ namespace IFVisionEngine.UIComponents.CustomControls
         /// <returns>새로운 경계 Rectangle</returns>
         private Rectangle CalculateNewBounds(int deltaX, int deltaY)
         {
-            int newX = _resizeStartLocation.X;
-            int newY = _resizeStartLocation.Y;
-            int newWidth = _resizeStartSize.Width;
-            int newHeight = _resizeStartSize.Height;
+            return ResizeHelper.CalculateNewBounds(
+                _resizeDirection,
+                deltaX, deltaY,
+                _resizeStartLocation, _resizeStartSize,
+                MIN_WINDOW_WIDTH, MIN_WINDOW_HEIGHT);
+        }
 
-            switch (_resizeDirection)
+
+        public void ApplyInnerControlScale(float scaleFactor)
+        {
+            //if (_innerControl != null)
+            //{
+            //    ScaleControlRecursively(_innerControl, scaleFactor);
+            //}
+        }
+
+        private Dictionary<Control, Font> _originalFonts = new Dictionary<Control, Font>();
+
+        private void ScaleControlRecursively(Control control, float scaleFactor)
+        {
+            // 원본 폰트 저장 (처음 한 번만)
+            if (!_originalFonts.ContainsKey(control) && control.Font != null)
             {
-                case ResizeDirection.Right:
-                    newWidth = Math.Max(MIN_WINDOW_WIDTH, _resizeStartSize.Width + deltaX);
-                    break;
-
-                case ResizeDirection.Left:
-                    var leftResize = CalculateLeftResize(deltaX);
-                    newWidth = leftResize.newWidth;
-                    newX = leftResize.newX;
-                    break;
-
-                case ResizeDirection.Bottom:
-                    newHeight = Math.Max(MIN_WINDOW_HEIGHT, _resizeStartSize.Height + deltaY);
-                    break;
-
-                case ResizeDirection.Top:
-                    var topResize = CalculateTopResize(deltaY);
-                    newHeight = topResize.newHeight;
-                    newY = topResize.newY;
-                    break;
-
-                case ResizeDirection.BottomRight:
-                    newWidth = Math.Max(MIN_WINDOW_WIDTH, _resizeStartSize.Width + deltaX);
-                    newHeight = Math.Max(MIN_WINDOW_HEIGHT, _resizeStartSize.Height + deltaY);
-                    break;
-
-                case ResizeDirection.BottomLeft:
-                    var bottomLeftResize = CalculateLeftResize(deltaX);
-                    newWidth = bottomLeftResize.newWidth;
-                    newX = bottomLeftResize.newX;
-                    newHeight = Math.Max(MIN_WINDOW_HEIGHT, _resizeStartSize.Height + deltaY);
-                    break;
-
-                case ResizeDirection.TopRight:
-                    newWidth = Math.Max(MIN_WINDOW_WIDTH, _resizeStartSize.Width + deltaX);
-                    var topRightResize = CalculateTopResize(deltaY);
-                    newHeight = topRightResize.newHeight;
-                    newY = topRightResize.newY;
-                    break;
-
-                case ResizeDirection.TopLeft:
-                    var topLeftResizeWidth = CalculateLeftResize(deltaX);
-                    var topLeftResizeHeight = CalculateTopResize(deltaY);
-                    newWidth = topLeftResizeWidth.newWidth;
-                    newHeight = topLeftResizeHeight.newHeight;
-                    newX = topLeftResizeWidth.newX;
-                    newY = topLeftResizeHeight.newY;
-                    break;
+                _originalFonts[control] = (Font)control.Font.Clone();
             }
 
-            return new Rectangle(newX, newY, newWidth, newHeight);
+            // 폰트 스케일링
+            if (_originalFonts.ContainsKey(control))
+            {
+                var originalFont = _originalFonts[control];
+                float newSize = Math.Max(6f, originalFont.Size * scaleFactor);
+                control.Font = new Font(originalFont.FontFamily, newSize, originalFont.Style);
+            }
+
+            // 자식 컨트롤들 재귀적으로 처리
+            foreach (Control child in control.Controls)
+            {
+                ScaleControlRecursively(child, scaleFactor);
+            }
         }
 
-        /// <summary>
-        /// 왼쪽 크기 조절 계산을 수행합니다.
-        /// </summary>
-        /// <param name="deltaX">X축 이동 거리</param>
-        /// <returns>새로운 너비와 X 위치</returns>
-        private (int newWidth, int newX) CalculateLeftResize(int deltaX)
+        public void ResetInnerControlScale()
         {
-            int widthChange = Math.Max(MIN_WINDOW_WIDTH - _resizeStartSize.Width, -deltaX);
-            int newWidth = _resizeStartSize.Width + widthChange;
-            int newX = _resizeStartLocation.X - widthChange;
-            return (newWidth, newX);
+            if (_innerControl != null)
+            {
+                ResetControlFontsRecursively(_innerControl);
+            }
+            _originalFonts.Clear();
         }
 
-        /// <summary>
-        /// 상단 크기 조절 계산을 수행합니다.
-        /// </summary>
-        /// <param name="deltaY">Y축 이동 거리</param>
-        /// <returns>새로운 높이와 Y 위치</returns>
-        private (int newHeight, int newY) CalculateTopResize(int deltaY)
+        private void ResetControlFontsRecursively(Control control)
         {
-            int heightChange = Math.Max(MIN_WINDOW_HEIGHT - _resizeStartSize.Height, -deltaY);
-            int newHeight = _resizeStartSize.Height + heightChange;
-            int newY = _resizeStartLocation.Y - heightChange;
-            return (newHeight, newY);
-        }
+            if (_originalFonts.ContainsKey(control))
+            {
+                control.Font = (Font)_originalFonts[control].Clone();
+            }
 
+            foreach (Control child in control.Controls)
+            {
+                ResetControlFontsRecursively(child);
+            }
+        }
         #endregion
 
         #region Maximize/Restore Logic

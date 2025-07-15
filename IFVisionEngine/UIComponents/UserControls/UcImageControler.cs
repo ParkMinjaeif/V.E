@@ -401,7 +401,6 @@ namespace IFVisionEngine.UIComponents.UserControls
         #endregion
 
         #region 유틸리티 함수(사각형, 확대, 비율계산 등)
-
         /// <summary>
         /// 두 좌표로 사각형(Rectangle) 생성(PictureBox 좌표계)
         /// </summary>

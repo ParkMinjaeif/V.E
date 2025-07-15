@@ -1,5 +1,6 @@
 ﻿using IFVisionEngine.Manager;
 using IFVisionEngine.Themes;
+using IFVisionEngine.UIComponents.Common;
 using IFVisionEngine.UIComponents.UserControls;
 using NodeEditor;
 using OpenCvSharp;
@@ -20,9 +21,12 @@ namespace IFVisionEngine
 {
     public partial class Form1:Form
     {
+        private ZoomPanController _zoomController;
+
         public Form1()
         {
             InitializeComponent();
+            InitializeZoomController();
             AppUIManager.Initialize(this);
             SetupWindowSystem();
         }
@@ -35,12 +39,16 @@ namespace IFVisionEngine
         {
             // 기본 타이틀바 제거
             this.FormBorderStyle = FormBorderStyle.None;
-
-            // 커스텀 타이틀바 추가
             CustomTitleBar titleBar = new CustomTitleBar();
             titleBar.ParentForm = this;
             titleBar.SetFileInfo("IF Vision Engine", Properties.Resources.IF);
+            titleBar.BringToFront();
             this.Controls.Add(titleBar);
+        }
+
+        private void InitializeZoomController()
+        {
+            _zoomController = new ZoomPanController(this);
         }
     }
 }

@@ -140,6 +140,13 @@
     <Compile Include="Theme\Scrollbar.cs" />
     <Compile Include="Theme\Theme.cs" />
     <Compile Include="Theme\ThemeManager.cs" />
+    <Compile Include="UIComponents\Common\BaseTitleBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UIComponents\Common\ResizeHelper.cs" />
+    <Compile Include="UIComponents\Common\ThemeHelper.cs" />
+    <Compile Include="UIComponents\Common\WindowManager.cs" />
+    <Compile Include="UIComponents\Common\ZoomPanController.cs" />
     <Compile Include="UIComponents\CustomControls\CustomTitleBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -220,6 +227,7 @@
     <Compile Include="UIComponents\Dialogs\Parameter Description\RadialLinesParameterDescription.Designer.cs">
       <DependentUpon>RadialLinesParameterDescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="UIComponents\Enums\ResizeDirection.cs" />
     <Compile Include="UIComponents\Forms\FormParameters.cs">
       <SubType>Form</SubType>
     </Compile>
