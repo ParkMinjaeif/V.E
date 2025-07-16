@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,13 +7,10 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using NodeEditor;
-using IFVisionEngine.Manager;
 using IFVisionEngine.UIComponents.Data;
-using IFVisionEngine.UIComponents.Dialogs;
 using IFVisionEngine.UIComponents.Managers;
 using static MyNodesContext;
 using System.Dynamic;
-using System.Drawing.Imaging;
 using IFVisionEngine.Themes;
 
 namespace IFVisionEngine.UIComponents.UserControls
@@ -72,6 +68,7 @@ namespace IFVisionEngine.UIComponents.UserControls
             this.toolStripButton_Load.Image = Properties.Resources.Load;
             this.toolStripButton_Run.Image = Properties.Resources.Play;
             this.toolStripButton_Save.Image = Properties.Resources.Save;
+            this.nodesControl1.BackgroundImage = Properties.Resources.Grid;
         }
 
         private void InitializeNodeContext()
@@ -353,12 +350,10 @@ namespace IFVisionEngine.UIComponents.UserControls
         {
             if (!_isDoubleClick) _isDragging = true;
         }
-
         private void nodesControl1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isDoubleClick || !_isDragging) return;
-        }
 
+        }
         private void nodesControl1_MouseUp(object sender, MouseEventArgs e)
         {
             _isDragging = false;
@@ -367,7 +362,7 @@ namespace IFVisionEngine.UIComponents.UserControls
             _nodeWasJustSelected = false;
         }
         #endregion
-
+        
         #region Node Selection and Parameter Handling
         private void nodesControl1_OnNodeContextSelected(object obj)
         {

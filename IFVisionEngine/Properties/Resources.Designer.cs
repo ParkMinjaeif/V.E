@@ -63,16 +63,6 @@ namespace IFVisionEngine.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap darkgrid {
-            get {
-                object obj = ResourceManager.GetObject("darkgrid", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
-        /// </summary>
         internal static System.Drawing.Bitmap Delete {
             get {
                 object obj = ResourceManager.GetObject("Delete", resourceCulture);
@@ -83,9 +73,9 @@ namespace IFVisionEngine.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
-        internal static System.Drawing.Bitmap grid {
+        internal static System.Drawing.Bitmap Grid {
             get {
-                object obj = ResourceManager.GetObject("grid", resourceCulture);
+                object obj = ResourceManager.GetObject("Grid", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

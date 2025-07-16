@@ -59,7 +59,8 @@
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.5\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="NodeEditor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NodeEditor.1.0.0\lib\net40\NodeEditor.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\NodeEditorWinforms-master\NodeEditor\bin\Debug\NodeEditor.dll</HintPath>
     </Reference>
     <Reference Include="OpenCvSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp4.4.11.0.20250507\lib\net48\OpenCvSharp.dll</HintPath>
@@ -306,6 +307,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.resx">
       <DependentUpon>CLAHEParameterControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\ContourParameterControl.resx">
       <DependentUpon>ContourParameterControl.cs</DependentUpon>
@@ -377,13 +379,12 @@
     <Content Include="OpenCvSharpExtern.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\Grid.png" />
     <None Include="Resources\Play.png" />
     <None Include="Resources\Save.png" />
     <None Include="Resources\Load.png" />
     <None Include="Resources\Hand.png" />
     <None Include="Resources\IF.png" />
-    <None Include="Resources\darkgrid.png" />
-    <Content Include="Resources\grid.png" />
     <None Include="Resources\Zoom.png" />
     <None Include="Resources\Reset.png" />
     <None Include="Resources\Delete.png" />

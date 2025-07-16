@@ -30,14 +30,16 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UcNodeEditor));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripButton_Save = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButton_Load = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButton_Run = new System.Windows.Forms.ToolStripButton();
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.nodesControl1 = new NodeEditor.NodesControl();
+            this.toolStripButton_Save = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_Load = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton_Run = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -57,6 +59,51 @@
             this.toolStrip1.TabIndex = 5;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(31, 28);
+            this.toolStripLabel1.Text = "저장";
+            // 
+            // toolStripLabel2
+            // 
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(31, 28);
+            this.toolStripLabel2.Text = "로드";
+            // 
+            // toolStripLabel4
+            // 
+            this.toolStripLabel4.Name = "toolStripLabel4";
+            this.toolStripLabel4.Size = new System.Drawing.Size(31, 28);
+            this.toolStripLabel4.Text = "실행";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.nodesControl1);
+            this.panel1.Controls.Add(this.toolStrip1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1904, 991);
+            this.panel1.TabIndex = 6;
+            // 
+            // nodesControl1
+            // 
+            this.nodesControl1.BackColor = System.Drawing.Color.Black;
+            this.nodesControl1.Context = null;
+            this.nodesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nodesControl1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.nodesControl1.Location = new System.Drawing.Point(0, 31);
+            this.nodesControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.nodesControl1.Name = "nodesControl1";
+            this.nodesControl1.Size = new System.Drawing.Size(1904, 960);
+            this.nodesControl1.TabIndex = 0;
+            this.nodesControl1.OnNodeContextSelected += new System.Action<object>(this.nodesControl1_OnNodeContextSelected);
+            this.nodesControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.nodesControl1_MouseDown);
+            this.nodesControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.nodesControl1_MouseMove);
+            this.nodesControl1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.nodesControl1_MouseUp);
+            // 
+            // toolStripButton_Save
             // 
             this.toolStripButton_Save.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButton_Save.Font = new System.Drawing.Font("맑은 고딕", 12F);
@@ -66,12 +113,6 @@
             this.toolStripButton_Save.Size = new System.Drawing.Size(28, 28);
             this.toolStripButton_Save.Text = "toolStripButton1";
             this.toolStripButton_Save.Click += new System.EventHandler(this.toolStripButton_Save_Click);
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(31, 28);
-            this.toolStripLabel1.Text = "저장";
             // 
             // toolStripButton_Load
             // 
@@ -83,12 +124,6 @@
             this.toolStripButton_Load.Text = "toolStripButton2";
             this.toolStripButton_Load.Click += new System.EventHandler(this.toolStripButton_Load_Click);
             // 
-            // toolStripLabel2
-            // 
-            this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(31, 28);
-            this.toolStripLabel2.Text = "로드";
-            // 
             // toolStripButton_Run
             // 
             this.toolStripButton_Run.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -99,42 +134,19 @@
             this.toolStripButton_Run.Text = "toolStripButton1";
             this.toolStripButton_Run.Click += new System.EventHandler(this.toolStripButton_Run_Click);
             // 
-            // toolStripLabel4
-            // 
-            this.toolStripLabel4.Name = "toolStripLabel4";
-            this.toolStripLabel4.Size = new System.Drawing.Size(31, 28);
-            this.toolStripLabel4.Text = "실행";
-            // 
-            // nodesControl1
-            // 
-            this.nodesControl1.BackColor = System.Drawing.Color.Black;
-            this.nodesControl1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("nodesControl1.BackgroundImage")));
-            this.nodesControl1.Context = null;
-            this.nodesControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nodesControl1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.nodesControl1.Location = new System.Drawing.Point(0, 0);
-            this.nodesControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.nodesControl1.Name = "nodesControl1";
-            this.nodesControl1.Size = new System.Drawing.Size(1904, 991);
-            this.nodesControl1.TabIndex = 0;
-            this.nodesControl1.OnNodeContextSelected += new System.Action<object>(this.nodesControl1_OnNodeContextSelected);
-            this.nodesControl1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.nodesControl1_MouseDown);
-            this.nodesControl1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.nodesControl1_MouseMove);
-            this.nodesControl1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.nodesControl1_MouseUp);
-            // 
             // UcNodeEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.nodesControl1);
+            this.Controls.Add(this.panel1);
             this.Name = "UcNodeEditor";
             this.Size = new System.Drawing.Size(1904, 991);
             this.Load += new System.EventHandler(this.UcNodeEditor_Load);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -148,5 +160,6 @@
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
         private System.Windows.Forms.ToolStripButton toolStripButton_Run;
         private System.Windows.Forms.ToolStripLabel toolStripLabel4;
+        private System.Windows.Forms.Panel panel1;
     }
 }

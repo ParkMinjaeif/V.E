@@ -183,7 +183,7 @@ public class CustomTitleBar : BaseTitleBar
     /// 창 제어 버튼들의 위치를 업데이트합니다.
     /// 오른쪽부터 역순으로 배치합니다.
     /// </summary>
-    protected virtual void UpdateButtonPositions()
+    protected new virtual void UpdateButtonPositions()
     {
         const int buttonSpacing = 40;
         const int rightMargin = 5;
@@ -387,7 +387,7 @@ public class CustomTitleBar : BaseTitleBar
     /// <summary>
     /// 모든 이벤트 핸들러를 설정합니다.
     /// </summary>
-    private void SetupEvents()
+    protected override void SetupEvents()
     {
         SetupUIEvents();
         SetupFormEvents();

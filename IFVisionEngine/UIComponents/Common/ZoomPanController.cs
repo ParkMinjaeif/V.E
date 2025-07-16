@@ -237,7 +237,7 @@ namespace IFVisionEngine.UIComponents.Common
         private void OnFormMouseDown(object sender, MouseEventArgs e)
         {
             // 중간 버튼 클릭 시 줌 패닝 시작
-            if (e.Button == MouseButtons.Middle)
+            if (e.Button == MouseButtons.Right)
             {
                 StartZoomPanning(e.Location);
             }
@@ -255,7 +255,7 @@ namespace IFVisionEngine.UIComponents.Common
         private void OnFormMouseUp(object sender, MouseEventArgs e)
         {
             // 줌 패닝 종료
-            if (_isPanning && e.Button == MouseButtons.Middle)
+            if (_isPanning && e.Button == MouseButtons.Right)
             {
                 _isPanning = false;
                 _targetForm.Cursor = Cursors.Default;
