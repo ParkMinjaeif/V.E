@@ -222,7 +222,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                 _dragStart = e.Location;
                 _dragEnd = e.Location;
             }
-            else if (_mouseMode == MouseMode.None && e.Button == MouseButtons.Right)
+            else if (_mouseMode == MouseMode.None && e.Button == MouseButtons.Middle)
             {
                 _isPanning = true;
                 _lastMousePosition = e.Location;
@@ -259,7 +259,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                 _dragEnd = e.Location;
                 pBMain.Invalidate(); // 사각형 시각화
             }
-            else if (_mouseMode == MouseMode.None && e.Button == MouseButtons.Right && _isPanning)
+            else if (_mouseMode == MouseMode.None && e.Button == MouseButtons.Middle && _isPanning)
             {
                 int dx = e.Location.X - _lastMousePosition.X;
                 int dy = e.Location.Y - _lastMousePosition.Y;
@@ -330,7 +330,7 @@ namespace IFVisionEngine.UIComponents.UserControls
                 Cursor = Cursors.Default;
                 pBMain.Invalidate();
             }
-            else if (_mouseMode == MouseMode.None && e.Button == MouseButtons.Right)
+            else if (_mouseMode == MouseMode.None && e.Button == MouseButtons.Middle)
             {
                 _isPanning = false;
                 this.Cursor = Cursors.Default;
