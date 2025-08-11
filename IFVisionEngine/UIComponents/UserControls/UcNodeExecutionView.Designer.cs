@@ -29,34 +29,24 @@
         private void InitializeComponent()
         {
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.SuspendLayout();
             // 
             // treeView1
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView1.Location = new System.Drawing.Point(0, 0);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(420, 244);
+            this.treeView1.Size = new System.Drawing.Size(420, 263);
             this.treeView1.TabIndex = 0;
             this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView1_MouseDown);
-            // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 244);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(420, 356);
-            this.propertyGrid1.TabIndex = 1;
             // 
             // UcNodeExecutionView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.treeView1);
             this.Name = "UcNodeExecutionView";
-            this.Size = new System.Drawing.Size(420, 600);
+            this.Size = new System.Drawing.Size(420, 263);
             this.ResumeLayout(false);
 
         }
@@ -64,6 +54,5 @@
         #endregion
 
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }

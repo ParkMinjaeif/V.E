@@ -13,7 +13,7 @@ namespace IFVisionEngine.UIComponents.Data
     /// <summary>
     /// 노드 실행 결과 데이터를 저장하는 클래스
     /// </summary>
-    public class ResultData
+    public class  ResultData
     {
         public string NodeName { get; set; }
         public string NodeType { get; set; }
