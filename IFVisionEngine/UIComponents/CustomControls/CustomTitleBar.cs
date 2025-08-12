@@ -328,8 +328,7 @@ public class CustomTitleBar : BaseTitleBar
             ("Image Controler", "ImageControler"),
             ("Log", "LogView"),
             ("Selected Node", "NodeSelectedView"),
-            ("Data View", "NodeExecutionView"),
-            ("Result", "ResultView")
+            ("Node Data", "NodeExecutionView")
         };
     }
 
