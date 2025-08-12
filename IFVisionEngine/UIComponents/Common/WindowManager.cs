@@ -255,8 +255,6 @@ namespace IFVisionEngine.UIComponents.Common
                     return AppUIManager.ucNodeSelectedView;
                 case "NodeExecutionView":
                     return AppUIManager.ucNodeExecutionView;
-                case "ResultView":
-                    return AppUIManager.ucResultView;
                 default:
                     return null;
             }
@@ -272,17 +270,15 @@ namespace IFVisionEngine.UIComponents.Common
             switch (windowKey)
             {
                 case "NodeEditor":
-                    return new Size(600, 950);
+                    return new Size(400, 900);
                 case "ImageControler":
-                    return new Size(900, 700);
+                    return new Size(900, 900);
                 case "LogView":
-                    return new Size(900, 200);
+                    return new Size(700, 200);
                 case "NodeSelectedView":
-                    return new Size(300, 250);
+                    return new Size(400, 400);
                 case "NodeExecutionView":
-                    return new Size(300, 250);
-                case "ResultView":
-                    return new Size(300, 400);
+                    return new Size(500, 600);
                 default:
                     return new Size(400, 300); // 기본 크기
             }
@@ -307,8 +303,6 @@ namespace IFVisionEngine.UIComponents.Common
                     return "Selected Node";
                 case "NodeExecutionView":
                     return "Node Data";
-                case "ResultView":
-                    return "Result";
                 default:
                     return "창";
             }

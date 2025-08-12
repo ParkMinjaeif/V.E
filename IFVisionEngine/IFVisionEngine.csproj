@@ -300,12 +300,6 @@
     <Compile Include="UIComponents\UserControls\UcNodeSelectedView.Designer.cs">
       <DependentUpon>UcNodeSelectedView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcResultView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UIComponents\UserControls\UcResultView.Designer.cs">
-      <DependentUpon>UcResultView.cs</DependentUpon>
-    </Compile>
     <Compile Include="UIComponents\UserControls\UcTitleBar.cs">
       <SubType>UserControl</SubType>
     </Compile>

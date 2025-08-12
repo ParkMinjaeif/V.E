@@ -26,7 +26,6 @@ namespace IFVisionEngine.Manager
         public static UcNodeDataView ucNodeDataView; // 노드 데이터 뷰 컨테이너 - 노드 관련 데이터 표시
         public static UcNodeSelectedView ucNodeSelectedView; // 선택된 노드의 속성 및 정보를 표시하는 뷰
         public static UcNodeExecutionView ucNodeExecutionView; // 노드 실행 히스토리 및 흐름을 표시하는 뷰
-        public static UcResultView ucResultView; // 결과 뷰 컨트롤 - 실행 결과 및 이미지 히스토리 표시
         #endregion
 
         #region Initialization Methods
@@ -88,8 +87,6 @@ namespace IFVisionEngine.Manager
                 ucNodeEditor = new UcNodeEditor(_mainFormInstance);
                 ucImageControler = new UcImageControler(_mainFormInstance);
                 ucNodeDataView = new UcNodeDataView(_mainFormInstance);
-
-                ucResultView = new UcResultView();
 
                 Console.WriteLine("✅ 모든 UI 컨트롤 생성 완료");
             }
@@ -276,7 +273,6 @@ namespace IFVisionEngine.Manager
                 ucNodeDataView?.Dispose(); // UI 컨트롤 리소스 해제
                 ucNodeSelectedView?.Dispose(); // UI 컨트롤 리소스 해제
                 ucNodeExecutionView?.Dispose(); // UI 컨트롤 리소스 해제
-                ucResultView?.Dispose(); // UI 컨트롤 리소스 해제
 
                 _mainFormInstance = null; // 참조 초기화
                 ucNodeEditor = null; // 참조 초기화
@@ -285,7 +281,6 @@ namespace IFVisionEngine.Manager
                 ucNodeDataView = null; // 참조 초기화
                 ucNodeSelectedView = null; // 참조 초기화
                 ucNodeExecutionView = null; // 참조 초기화
-                ucResultView = null; // 참조 초기화
 
                 Console.WriteLine("✅ AppUIManager 정리 완료");
             }
