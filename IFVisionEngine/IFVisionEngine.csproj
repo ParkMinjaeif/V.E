@@ -152,6 +152,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Core\Views\UCResultView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Core\Views\UCResultView.Designer.cs">
+      <DependentUpon>UCResultView.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\Theme\Core\IThemable.cs" />
     <Compile Include="UI\Theme\Components\Scrollbar.cs" />
     <Compile Include="UI\Theme\Core\Theme.cs" />
