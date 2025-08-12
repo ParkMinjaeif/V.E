@@ -1,4 +1,4 @@
-﻿namespace IFVisionEngine.UIComponents.UserControls
+﻿namespace IFVisionEngine.UI.Views
 {
     partial class UcNodeExecutionView
     {

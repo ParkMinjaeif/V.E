@@ -1,11 +1,11 @@
 ﻿using IFVisionEngine.UIComponents.Dialogs;
-using IFVisionEngine.UIComponents.UserControls;
+using IFVisionEngine.UI.Views;
 using NodeEditor;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using static IFVisionEngine.UIComponents.UserControls.UcNodeExecutionView;
+using static IFVisionEngine.UI.Views.UcNodeExecutionView;
 
 namespace IFVisionEngine.Manager
 {

@@ -1,7 +1,7 @@
 ﻿using IFVisionEngine.Manager;
 using IFVisionEngine.Themes;
 using IFVisionEngine.UIComponents.Common;
-using IFVisionEngine.UIComponents.UserControls;
+using IFVisionEngine.UI.Views;
 using NodeEditor;
 using OpenCvSharp;
 using Sunny.UI;

@@ -8,7 +8,7 @@ using IFVisionEngine.UIComponents.Data;
 using IFVisionEngine.UIComponents.Managers;
 using IFVisionEngine.Themes;
 
-namespace IFVisionEngine.UIComponents.UserControls
+namespace IFVisionEngine.UI.Views
 {
     public partial class UcResultView : UserControl
     {

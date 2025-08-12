@@ -1,6 +1,6 @@
 ﻿using IFVisionEngine.Manager;
 using IFVisionEngine.UIComponents.CustomControls;
-using IFVisionEngine.UIComponents.UserControls;
+using IFVisionEngine.UI.Views;
 using Sunny.UI;
 using System;
 using System.Collections.Generic;
@@ -328,6 +328,7 @@ public class CustomTitleBar : BaseTitleBar
             ("Image Controler", "ImageControler"),
             ("Log", "LogView"),
             ("Selected Node", "NodeSelectedView"),
+            ("Data View", "NodeExecutionView"),
             ("Result", "ResultView")
         };
     }

@@ -14,7 +14,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using IFVisionEngine.Themes;
 
-namespace IFVisionEngine.UIComponents.UserControls
+namespace IFVisionEngine.UI.Views
 {
     public partial class UcImageControler : UserControl
     {

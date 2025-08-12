@@ -12,7 +12,7 @@ using IFVisionEngine.UIComponents.Data;
 using IFVisionEngine.UIComponents.Managers;
 using IFVisionEngine.Themes;
 
-namespace IFVisionEngine.UIComponents.UserControls
+namespace IFVisionEngine.UI.Views
 {
     /// <summary>
     /// 노드 실행 결과를 관리하고 시각화하는 사용자 컨트롤

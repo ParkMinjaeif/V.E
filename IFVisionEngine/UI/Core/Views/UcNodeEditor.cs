@@ -13,7 +13,7 @@ using static MyNodesContext;
 using System.Dynamic;
 using IFVisionEngine.Themes;
 
-namespace IFVisionEngine.UIComponents.UserControls
+namespace IFVisionEngine.UI.Views
 {
     /// <summary>
     /// 노드 기반 비주얼 프로그래밍 에디터를 제공하는 사용자 컨트롤

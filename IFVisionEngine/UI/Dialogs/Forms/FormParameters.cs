@@ -1,4 +1,4 @@
-﻿using IFVisionEngine.UIComponents.UserControls;
+﻿using IFVisionEngine.UI.Views;
 using System;
 using System.Windows.Forms;
 using System.Drawing;

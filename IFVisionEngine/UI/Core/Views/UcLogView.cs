@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using NodeEditor;
 using IFVisionEngine.Themes;
 
-namespace IFVisionEngine.UIComponents.UserControls
+namespace IFVisionEngine.UI.Views
 {
     public partial class UcLogView: UserControl
     {
