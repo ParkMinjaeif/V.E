@@ -142,9 +142,9 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
-    <Compile Include="Manager\AppUIManager.cs" />
-    <Compile Include="Manager\ImageDataManager.cs" />
-    <Compile Include="Manager\ResultsManager.cs" />
+    <Compile Include="Managers\AppUIManager.cs" />
+    <Compile Include="Managers\ImageDataManager.cs" />
+    <Compile Include="UI\Core\Base\ResultsManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -152,166 +152,160 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Theme\IThemable.cs" />
-    <Compile Include="Theme\Scrollbar.cs" />
-    <Compile Include="Theme\Theme.cs" />
-    <Compile Include="Theme\ThemeManager.cs" />
-    <Compile Include="UIComponents\Common\BaseTitleBar.cs">
+    <Compile Include="UI\Theme\Core\IThemable.cs" />
+    <Compile Include="UI\Theme\Components\Scrollbar.cs" />
+    <Compile Include="UI\Theme\Core\Theme.cs" />
+    <Compile Include="UI\Theme\Core\ThemeManager.cs" />
+    <Compile Include="UI\Core\Base\BaseTitleBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Common\ResizeHelper.cs" />
-    <Compile Include="UIComponents\Common\ThemeHelper.cs" />
-    <Compile Include="UIComponents\Common\WindowManager.cs" />
-    <Compile Include="UIComponents\Common\ZoomPanController.cs" />
-    <Compile Include="UIComponents\CustomControls\CustomTitleBar.cs">
+    <Compile Include="UI\Core\Base\ResizeHelper.cs" />
+    <Compile Include="UI\Theme\Helpers\ThemeHelper.cs" />
+    <Compile Include="UI\Core\Base\WindowManager.cs" />
+    <Compile Include="UI\Core\Base\ZoomPanController.cs" />
+    <Compile Include="UI\Core\Controls\CustomTitleBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\CustomControls\InputBoxControl.cs">
+    <Compile Include="UI\Core\Controls\InputBoxControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\CustomControls\WindowWrapper.cs">
+    <Compile Include="UI\Core\Controls\WindowWrapper.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\CustomControls\WindowWrapper.Designer.cs">
+    <Compile Include="UI\Core\Controls\WindowWrapper.Designer.cs">
       <DependentUpon>WindowWrapper.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Data\RadiaLinesParamter.cs" />
-    <Compile Include="UIComponents\Data\ResultData.cs" />
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.cs">
+    <Compile Include="UI\Shared\Models\RadiaLinesParamter.cs" />
+    <Compile Include="UI\Shared\Models\ResultData.cs" />
+    <Compile Include="UI\Dialogs\Parameter Adjustment\CLAHEParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\CLAHEParameterControl.Designer.cs">
       <DependentUpon>CLAHEParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\ContourParameterControl.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\ContourParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\ContourParameterControl.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\ContourParameterControl.Designer.cs">
       <DependentUpon>ContourParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\EdgeParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\EdgeParameterControl.Designer.cs">
       <DependentUpon>EdgeParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\MomentsParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\MomentsParameterControl.Designer.cs">
       <DependentUpon>MomentsParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\RadialLinesParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\RadialLinesParameterControl.Designer.cs">
       <DependentUpon>RadialLinesParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\CLAHEParameterDescription.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\CLAHEParameterDescription.Designer.cs">
       <DependentUpon>CLAHEParameterDescription.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\ContourParameterDescription.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\ContourParameterDescription.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\ContourParameterDescription.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\ContourParameterDescription.Designer.cs">
       <DependentUpon>ContourParameterDescription.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\EdgeParameterDescription.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\EdgeParameterDescription.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\EdgeParameterDescription.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\EdgeParameterDescription.Designer.cs">
       <DependentUpon>EdgeParameterDescription.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\GaussianBlurParameterDescription.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\GaussianBlurParameterDescription.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\GaussianBlurParameterDescription.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\GaussianBlurParameterDescription.Designer.cs">
       <DependentUpon>GaussianBlurParameterDescription.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\MomentsParameterDescription.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\MomentsParameterDescription.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\MomentsParameterDescription.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\MomentsParameterDescription.Designer.cs">
       <DependentUpon>MomentsParameterDescription.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\RadialLinesParameterDescription.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\RadialLinesParameterDescription.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Description\RadialLinesParameterDescription.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Description\RadialLinesParameterDescription.Designer.cs">
       <DependentUpon>RadialLinesParameterDescription.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Enums\ResizeDirection.cs" />
-    <Compile Include="UIComponents\Forms\FormParameters.cs">
+    <Compile Include="UI\Shared\Enums\ResizeDirection.cs" />
+    <Compile Include="UI\Dialogs\Forms\FormParameters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UIComponents\Forms\FormParameters.Designer.cs">
+    <Compile Include="UI\Dialogs\Forms\FormParameters.Designer.cs">
       <DependentUpon>FormParameters.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.Designer.cs">
+    <Compile Include="UI\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.Designer.cs">
       <DependentUpon>GaussianBlurParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Forms\FormResult\FormResults.cs">
+    <Compile Include="UI\Dialogs\Forms\FormResult\FormResults.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UIComponents\Forms\FormResult\FormResults.Designer.cs">
+    <Compile Include="UI\Dialogs\Forms\FormResult\FormResults.Designer.cs">
       <DependentUpon>FormResults.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\Interface\IPreprocessParameterControl.cs" />
-    <Compile Include="UIComponents\Interface\IResultNode.cs" />
-    <Compile Include="UIComponents\UserControls\UcNodeExecutionView.cs">
+    <Compile Include="UI\Shared\Interfaces\IPreprocessParameterControl.cs" />
+    <Compile Include="UI\Shared\Interfaces\IResultNode.cs" />
+    <Compile Include="UI\Core\Views\UcNodeExecutionView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcNodeExecutionView.Designer.cs">
+    <Compile Include="UI\Core\Views\UcNodeExecutionView.Designer.cs">
       <DependentUpon>UcNodeExecutionView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcImageControler.cs">
+    <Compile Include="UI\Core\Views\UcImageControler.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcImageControler.Designer.cs">
+    <Compile Include="UI\Core\Views\UcImageControler.Designer.cs">
       <DependentUpon>UcImageControler.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcLogView.cs">
+    <Compile Include="UI\Core\Views\UcLogView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcLogView.Designer.cs">
+    <Compile Include="UI\Core\Views\UcLogView.Designer.cs">
       <DependentUpon>UcLogView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcNodeDataView.cs">
+    <Compile Include="UI\Core\Views\UcNodeDataView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcNodeDataView.Designer.cs">
+    <Compile Include="UI\Core\Views\UcNodeDataView.Designer.cs">
       <DependentUpon>UcNodeDataView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcNodeEditor.cs">
+    <Compile Include="UI\Core\Views\UcNodeEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcNodeEditor.Designer.cs">
+    <Compile Include="UI\Core\Views\UcNodeEditor.Designer.cs">
       <DependentUpon>UcNodeEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcNodeSelectedView.cs">
+    <Compile Include="UI\Core\Views\UcNodeSelectedView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcNodeSelectedView.Designer.cs">
+    <Compile Include="UI\Core\Views\UcNodeSelectedView.Designer.cs">
       <DependentUpon>UcNodeSelectedView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIComponents\UserControls\UcTitleBar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UIComponents\UserControls\UcTitleBar.Designer.cs">
-      <DependentUpon>UcTitleBar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Core.cs" />
-    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Detection.cs" />
-    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.ImageIO.cs" />
-    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Inputs.cs" />
-    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Preprocessing.cs" />
-    <Compile Include="Utils\CustomNodeEditor\MyNodesContext.Result.cs" />
+    <Compile Include="Nodes\MyNodesContext.Core.cs" />
+    <Compile Include="Nodes\MyNodesContext.Detection.cs" />
+    <Compile Include="Nodes\MyNodesContext.ImageIO.cs" />
+    <Compile Include="Nodes\MyNodesContext.Inputs.cs" />
+    <Compile Include="Nodes\MyNodesContext.Preprocessing.cs" />
+    <Compile Include="Nodes\MyNodesContext.Result.cs" />
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -320,58 +314,55 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\CLAHEParameterControl.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Adjustment\CLAHEParameterControl.resx">
       <DependentUpon>CLAHEParameterControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\ContourParameterControl.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Adjustment\ContourParameterControl.resx">
       <DependentUpon>ContourParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\EdgeParameterControl.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Adjustment\EdgeParameterControl.resx">
       <DependentUpon>EdgeParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\MomentsParameterControl.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Adjustment\MomentsParameterControl.resx">
       <DependentUpon>MomentsParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\RadialLinesParameterControl.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Adjustment\RadialLinesParameterControl.resx">
       <DependentUpon>RadialLinesParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\CLAHEParameterDescription.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Description\CLAHEParameterDescription.resx">
       <DependentUpon>CLAHEParameterDescription.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\EdgeParameterDescription.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Description\EdgeParameterDescription.resx">
       <DependentUpon>EdgeParameterDescription.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Description\GaussianBlurParameterDescription.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Description\GaussianBlurParameterDescription.resx">
       <DependentUpon>GaussianBlurParameterDescription.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Forms\FormParameters.resx">
+    <EmbeddedResource Include="UI\Dialogs\Forms\FormParameters.resx">
       <DependentUpon>FormParameters.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.resx">
+    <EmbeddedResource Include="UI\Dialogs\Parameter Adjustment\GaussianBlurParameterControl.resx">
       <DependentUpon>GaussianBlurParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\UserControls\UcImageControler.resx">
+    <EmbeddedResource Include="UI\Core\Views\UcImageControler.resx">
       <DependentUpon>UcImageControler.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\UserControls\UcLogView.resx">
+    <EmbeddedResource Include="UI\Core\Views\UcLogView.resx">
       <DependentUpon>UcLogView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\UserControls\UcNodeDataView.resx">
+    <EmbeddedResource Include="UI\Core\Views\UcNodeDataView.resx">
       <DependentUpon>UcNodeDataView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\UserControls\UcNodeEditor.resx">
+    <EmbeddedResource Include="UI\Core\Views\UcNodeEditor.resx">
       <DependentUpon>UcNodeEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\UserControls\UcNodeExecutionView.resx">
+    <EmbeddedResource Include="UI\Core\Views\UcNodeExecutionView.resx">
       <DependentUpon>UcNodeExecutionView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\UserControls\UcNodeSelectedView.resx">
+    <EmbeddedResource Include="UI\Core\Views\UcNodeSelectedView.resx">
       <DependentUpon>UcNodeSelectedView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UIComponents\UserControls\UcTitleBar.resx">
-      <DependentUpon>UcTitleBar.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -387,9 +378,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UIComponents\Dialogs\Result\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="OpenCvSharpExtern.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
