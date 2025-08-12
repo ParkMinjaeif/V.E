@@ -19,7 +19,7 @@ namespace IFVisionEngine.UIComponents.UserControls
     public partial class UcImageControler : UserControl
     {
         // 1. 메인 폼 참조
-        private Form1 _formMainInstance;
+        private Main _formMainInstance;
 
         // 2. 이미지 및 뷰포트 상태 변수
         private Bitmap _currentBitmap;      // 원본 비트맵 이미지
@@ -45,7 +45,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         /// <summary>
         /// 생성자 - 메인폼 참조, 컨트롤 Dock, 이벤트 핸들러 및 부드러운 화면 설정
         /// </summary>
-        public UcImageControler(Form1 mainForm)
+        public UcImageControler(Main mainForm)
         {
             InitializeComponent();
             _formMainInstance = mainForm;

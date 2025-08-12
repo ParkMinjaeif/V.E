@@ -19,11 +19,11 @@ using System.Windows.Forms;
 
 namespace IFVisionEngine
 {
-    public partial class Form1:Form
+    public partial class Main:Form
     {
         private ZoomPanController _zoomController;
 
-        public Form1()
+        public Main()
         {
             InitializeComponent();
             InitializeZoomController();

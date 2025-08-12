@@ -15,9 +15,9 @@ namespace IFVisionEngine.UIComponents.UserControls
 {
     public partial class UcNodeDataView: UserControl
     {
-        private Form1 _formMainInstance;
+        private Main _formMainInstance;
 
-        public UcNodeDataView(Form1 formMainInstance)
+        public UcNodeDataView(Main formMainInstance)
         {
             InitializeComponent();
             _formMainInstance = formMainInstance;

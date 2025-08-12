@@ -22,7 +22,7 @@ namespace IFVisionEngine.UIComponents.UserControls
     {
         #region Fields and Properties
         public MyNodesContext _nodesContext;
-        private Form1 _formMainInstance;
+        private Main _formMainInstance;
         // 이벤트
         public event Action<object> SelectedNodeContextChanged;
 
@@ -58,7 +58,7 @@ namespace IFVisionEngine.UIComponents.UserControls
         #endregion
 
         #region Constructor and Initialization
-        public UcNodeEditor(Form1 mainForm)
+        public UcNodeEditor(Main mainForm)
         {
             InitializeComponent();
             _formMainInstance = mainForm;
