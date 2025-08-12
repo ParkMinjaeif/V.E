@@ -106,10 +106,7 @@ public class CustomTitleBar : BaseTitleBar
         get => TitleText;
         set => TitleText = value;
     }
-    /// <summary>
-    /// 현재 폼이 최대화 상태인지 확인
-    /// </summary>
-    public bool IsMaximized => _isFormMaximized;
+
 
     #endregion
 
@@ -682,15 +679,6 @@ public class CustomTitleBar : BaseTitleBar
     }
 
     /// <summary>
-    /// 복원 정보를 업데이트합니다.
-    /// </summary>
-    /// <param name="form">대상 폼</param>
-    private void UpdateRestoreBounds(Form form)
-    {
-        _restoreBounds = new Rectangle(form.Location, form.Size);
-    }
-
-    /// <summary>
     /// 폼 마우스 업 이벤트를 처리합니다.
     /// 크기 조절을 종료합니다.
     /// </summary>
@@ -984,30 +972,6 @@ public class CustomTitleBar : BaseTitleBar
         FileName = fileName;
         if (icon != null)
             TitleIcon = icon;
-    }
-
-    /// <summary>
-    /// 프로그래밍 방식으로 폼을 최대화합니다.
-    /// </summary>
-    public void MaximizeWindow()
-    {
-        MaximizeForm();
-    }
-
-    /// <summary>
-    /// 프로그래밍 방식으로 폼을 복원합니다.
-    /// </summary>
-    public void RestoreWindow()
-    {
-        RestoreForm();
-    }
-
-    /// <summary>
-    /// 최대화/복원을 토글합니다.
-    /// </summary>
-    public void ToggleMaximize()
-    {
-        ToggleMaximizeRestore();
     }
 
     #endregion

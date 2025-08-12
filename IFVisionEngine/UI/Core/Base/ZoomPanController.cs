@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace IFVisionEngine.UIComponents.Common
@@ -12,9 +13,9 @@ namespace IFVisionEngine.UIComponents.Common
     public class ZoomPanController
     {
         #region Constants
-        private const float MIN_ZOOM = 0.1f;
-        private const float MAX_ZOOM = 5.0f;
-        private const float ZOOM_STEP = 1.2f;
+        private const float MIN_ZOOM = 0.5f;
+        private const float MAX_ZOOM = 2.0f;
+        private const float ZOOM_STEP = 1.1f;
         #endregion
 
         #region Private Fields
@@ -23,25 +24,7 @@ namespace IFVisionEngine.UIComponents.Common
         private PointF _panOffset = PointF.Empty;
         private bool _isPanning = false;
         private Point _lastMousePosition;
-        private Point _lastPanPosition = Point.Empty;
-        private Dictionary<Control, ControlOriginalState> _originalStates = new Dictionary<Control, ControlOriginalState>();
         private float _accumulatedScale = 1.0f;
-        #endregion
-
-        #region Inner Classes
-        private class ControlOriginalState
-        {
-            public Point Location { get; set; }
-            public Size Size { get; set; }
-        }
-        #endregion
-
-        #region Public Properties
-        /// <summary>현재 줌 배율</summary>
-        public float CurrentZoom => _zoomFactor;
-
-        /// <summary>패닝 중인지 여부</summary>
-        public bool IsPanning => _isPanning;
         #endregion
 
         #region Constructor
@@ -59,43 +42,6 @@ namespace IFVisionEngine.UIComponents.Common
             _targetForm.MouseMove += OnFormMouseMove;
             _targetForm.MouseUp += OnFormMouseUp;
             _targetForm.MouseWheel += OnFormMouseWheel;
-        }
-        #endregion
-
-        #region Public Methods
-        /// <summary>줌인</summary>
-        public void ZoomIn()
-        {
-            if (_targetForm != null)
-            {
-                ZoomAt(_targetForm.Width / 2, _targetForm.Height / 2, ZOOM_STEP);
-            }
-        }
-
-        /// <summary>줌아웃</summary>
-        public void ZoomOut()
-        {
-            if (_targetForm != null)
-            {
-                ZoomAt(_targetForm.Width / 2, _targetForm.Height / 2, 1f / ZOOM_STEP);
-            }
-        }
-
-        /// <summary>줌 리셋</summary>
-        public void ResetZoom()
-        {
-            foreach (Control control in _targetForm.Controls)
-            {
-                if (control is WindowWrapper windowWrapper)
-                {
-                    windowWrapper.ResetInnerControlScale();
-                }
-            }
-
-            _zoomFactor = 1.0f;
-            _panOffset = PointF.Empty;
-            _accumulatedScale = 1.0f;
-            _lastPanPosition = Point.Empty;
         }
         #endregion
 
@@ -149,10 +95,18 @@ namespace IFVisionEngine.UIComponents.Common
                     windowWrapper.ApplyInnerControlScale(_accumulatedScale);
                 }
             }
-
+            EnsureTitleBarOnTop();
             _targetForm.Invalidate();
         }
-
+        // 항상 타이틀바가 최상위에 있도록 고정
+        private void EnsureTitleBarOnTop()
+        {
+            var titleBar = _targetForm.Controls.OfType<CustomTitleBar>().FirstOrDefault();
+            if (titleBar != null)
+            {
+                titleBar.BringToFront();
+            }
+        }
         /// <summary>패닝 적용</summary>
         private void ApplyPanning(float deltaX, float deltaY)
         {
@@ -286,7 +240,6 @@ namespace IFVisionEngine.UIComponents.Common
                 _targetForm.MouseUp -= OnFormMouseUp;
                 _targetForm.MouseWheel -= OnFormMouseWheel;
             }
-            _originalStates.Clear();
         }
         #endregion
     }

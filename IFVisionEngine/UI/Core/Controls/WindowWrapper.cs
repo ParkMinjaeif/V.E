@@ -79,7 +79,6 @@ namespace IFVisionEngine.UIComponents.CustomControls
         private ResizeDirection _resizeDirection;
         /// <summary>복원 시 사용할 창의 위치와 크기 정보</summary>
         private Rectangle _restoreBounds;
-
         #endregion
 
         #endregion
@@ -100,16 +99,6 @@ namespace IFVisionEngine.UIComponents.CustomControls
                     _titleLabel.Text = _windowTitle;
             }
         }
-
-        /// <summary>
-        /// 래핑된 내부 컨트롤에 대한 읽기 전용 접근자
-        /// </summary>
-        public UserControl InnerControl => _innerControl;
-
-        /// <summary>
-        /// 현재 창이 최대화 상태인지 확인
-        /// </summary>
-        public bool IsMaximized => _isMaximized;
 
         #endregion
 
@@ -151,16 +140,6 @@ namespace IFVisionEngine.UIComponents.CustomControls
             WindowTitle = title;
         }
 
-        /// <summary>
-        /// 기본 크기로 WindowWrapper를 생성합니다.
-        /// </summary>
-        /// <param name="title">창 제목</param>
-        /// <param name="innerControl">래핑할 UserControl</param>
-        public WindowWrapper(string title, UserControl innerControl)
-            : this(title, innerControl, DEFAULT_RESTORE_SIZE)
-        {
-        }
-
         #endregion
 
         #region Initialization
@@ -193,10 +172,7 @@ namespace IFVisionEngine.UIComponents.CustomControls
             // 초기 복원 경계 설정
             _restoreBounds = new Rectangle(this.Location, this.Size);
         }
-
-        /// <summary>
-        /// 필수 컴포넌트를 초기화합니다. (Designer에서 생성될 수 있음)
-        /// </summary>
+        
 
 
         #endregion
@@ -670,58 +646,9 @@ namespace IFVisionEngine.UIComponents.CustomControls
 
         public void ApplyInnerControlScale(float scaleFactor)
         {
-            //if (_innerControl != null)
-            //{
-            //    ScaleControlRecursively(_innerControl, scaleFactor);
-            //}
+
         }
 
-        private Dictionary<Control, Font> _originalFonts = new Dictionary<Control, Font>();
-
-        private void ScaleControlRecursively(Control control, float scaleFactor)
-        {
-            // 원본 폰트 저장 (처음 한 번만)
-            if (!_originalFonts.ContainsKey(control) && control.Font != null)
-            {
-                _originalFonts[control] = (Font)control.Font.Clone();
-            }
-
-            // 폰트 스케일링
-            if (_originalFonts.ContainsKey(control))
-            {
-                var originalFont = _originalFonts[control];
-                float newSize = Math.Max(6f, originalFont.Size * scaleFactor);
-                control.Font = new Font(originalFont.FontFamily, newSize, originalFont.Style);
-            }
-
-            // 자식 컨트롤들 재귀적으로 처리
-            foreach (Control child in control.Controls)
-            {
-                ScaleControlRecursively(child, scaleFactor);
-            }
-        }
-
-        public void ResetInnerControlScale()
-        {
-            if (_innerControl != null)
-            {
-                ResetControlFontsRecursively(_innerControl);
-            }
-            _originalFonts.Clear();
-        }
-
-        private void ResetControlFontsRecursively(Control control)
-        {
-            if (_originalFonts.ContainsKey(control))
-            {
-                control.Font = (Font)_originalFonts[control].Clone();
-            }
-
-            foreach (Control child in control.Controls)
-            {
-                ResetControlFontsRecursively(child);
-            }
-        }
         #endregion
 
         #region Maximize/Restore Logic
@@ -820,132 +747,5 @@ namespace IFVisionEngine.UIComponents.CustomControls
         }
 
         #endregion
-
-        #region Public Methods
-
-        /// <summary>
-        /// 프로그래밍 방식으로 창을 최대화합니다.
-        /// </summary>
-        public void Maximize()
-        {
-            MaximizeWindow();
-        }
-
-        /// <summary>
-        /// 프로그래밍 방식으로 창을 복원합니다.
-        /// </summary>
-        public void Restore()
-        {
-            RestoreWindow();
-        }
-
-        /// <summary>
-        /// 프로그래밍 방식으로 창을 최소화합니다.
-        /// </summary>
-        public void Minimize()
-        {
-            MinimizeWindow();
-        }
-
-        /// <summary>
-        /// 최대화/복원을 토글합니다.
-        /// </summary>
-        public void ToggleMaximizeRestore()
-        {
-            ToggleMaximize();
-        }
-
-        /// <summary>
-        /// 창의 제목과 크기를 동시에 설정합니다.
-        /// </summary>
-        /// <param name="title">새로운 창 제목</param>
-        /// <param name="size">새로운 창 크기</param>
-        public void SetTitleAndSize(string title, Size size)
-        {
-            WindowTitle = title;
-            if (!_isMaximized)
-            {
-                this.Size = size;
-                SaveCurrentBounds();
-            }
-        }
-
-        /// <summary>
-        /// 창을 화면 중앙에 배치합니다.
-        /// </summary>
-        public void CenterOnScreen()
-        {
-            if (!_isMaximized && this.Parent != null)
-            {
-                int x = (this.Parent.Width - this.Width) / 2;
-                int y = (this.Parent.Height - this.Height) / 2;
-                this.Location = new Point(Math.Max(0, x), Math.Max(0, y));
-                SaveCurrentBounds();
-            }
-        }
-
-        /// <summary>
-        /// 창을 부모 컨테이너 내에서 지정된 위치로 이동합니다.
-        /// </summary>
-        /// <param name="location">새로운 위치</param>
-        public void MoveTo(Point location)
-        {
-            if (!_isMaximized)
-            {
-                this.Location = location;
-                SaveCurrentBounds();
-            }
-        }
-
-        /// <summary>
-        /// 창의 크기를 변경합니다.
-        /// </summary>
-        /// <param name="size">새로운 크기</param>
-        public void ResizeTo(Size size)
-        {
-            if (!_isMaximized)
-            {
-                this.Size = new Size(
-                    Math.Max(MIN_WINDOW_WIDTH, size.Width),
-                    Math.Max(MIN_WINDOW_HEIGHT, size.Height)
-                );
-                SaveCurrentBounds();
-            }
-        }
-
-        #endregion
-
-        #region Utility Methods
-
-        /// <summary>
-        /// 창의 상태 정보를 반환합니다. (디버깅 및 로깅용)
-        /// </summary>
-        /// <returns>창 상태 정보 문자열</returns>
-        public string GetWindowState()
-        {
-            return $"Title: {WindowTitle}, " +
-                   $"Size: {this.Size}, " +
-                   $"Location: {this.Location}, " +
-                   $"IsMaximized: {_isMaximized}, " +
-                   $"IsVisible: {this.Visible}, " +
-                   $"RestoreBounds: {_restoreBounds}";
-        }
-
-        /// <summary>
-        /// 창이 유효한 상태인지 확인합니다.
-        /// </summary>
-        /// <returns>유효성 여부</returns>
-        public bool IsValidState()
-        {
-            return _innerControl != null &&
-                   _titleBarPanel != null &&
-                   _contentPanel != null &&
-                   this.Size.Width >= MIN_WINDOW_WIDTH &&
-                   this.Size.Height >= MIN_WINDOW_HEIGHT;
-        }
-
-
-        #endregion
-
     }
 }

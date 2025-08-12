@@ -42,7 +42,6 @@ namespace IFVisionEngine
             CustomTitleBar titleBar = new CustomTitleBar();
             titleBar.ParentForm = this;
             titleBar.SetFileInfo("IF Vision Engine", Properties.Resources.IF);
-            titleBar.BringToFront();
             this.Controls.Add(titleBar);
         }
 
