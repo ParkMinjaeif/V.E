@@ -16,7 +16,7 @@ namespace IFVisionEngine.Manager
     public static class AppUIManager
     {
         #region Private Fields
-        private static Form1 _mainFormInstance; // 메인 폼 인스턴스 (중복 초기화 방지용)
+        private static Main _mainFormInstance; // 메인 폼 인스턴스 (중복 초기화 방지용)
         #endregion
 
         #region Public UI Control Properties
@@ -36,7 +36,7 @@ namespace IFVisionEngine.Manager
         /// <param name="mainForm">메인 폼 인스턴스</param>
         /// <exception cref="ArgumentNullException">mainForm이 null인 경우</exception>
         /// <exception cref="InvalidOperationException">이미 다른 인스턴스로 초기화된 경우</exception>
-        public static void Initialize(Form1 mainForm)
+        public static void Initialize(Main mainForm)
         {
             // 중복 초기화 방지
             ValidateInitialization(mainForm);
@@ -55,7 +55,7 @@ namespace IFVisionEngine.Manager
         /// 초기화 유효성을 검사합니다.
         /// </summary>
         /// <param name="mainForm">검사할 메인 폼 인스턴스</param>
-        private static void ValidateInitialization(Form1 mainForm)
+        private static void ValidateInitialization(Main mainForm)
         {
             if (mainForm == null)
                 throw new ArgumentNullException(nameof(mainForm), "메인 폼 인스턴스가 null입니다.");
