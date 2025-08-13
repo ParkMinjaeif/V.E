@@ -43,6 +43,7 @@ namespace IFVisionEngine
             titleBar.ParentForm = this;
             titleBar.SetFileInfo("IF Vision Engine", Properties.Resources.IF);
             this.Controls.Add(titleBar);
+
         }
 
         private void InitializeZoomController()
